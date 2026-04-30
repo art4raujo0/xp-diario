@@ -3,25 +3,32 @@ const pool = require("../config/db");
 const router = express.Router();
 
 
-//listar metas
+// =====================
+// LISTAR METAS (COM JOIN)
+// =====================
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT * FROM meta ORDER BY me_id ASC"
-    );
+    const result = await pool.query(`
+      SELECT 
+        m.*,
+        d.di_disciplina
+      FROM meta m
+      LEFT JOIN disciplina d ON d.di_id = m.me_disciplina
+      ORDER BY m.me_id ASC
+    `);
 
     res.json(result.rows);
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      erro: "Erro ao buscar metas"
-    });
+    console.error("Erro ao buscar metas:", error);
+    res.status(500).json({ erro: "Erro ao buscar metas" });
   }
 });
 
 
-//criar metas
+// =====================
+// CRIAR META
+// =====================
 router.post("/", async (req, res) => {
   try {
     const {
@@ -31,10 +38,9 @@ router.post("/", async (req, res) => {
       me_data_inicio
     } = req.body;
 
+    // validação
     if (!me_tipo || !me_tempo_min || me_tempo_min <= 0 || !me_disciplina) {
-      return res.status(400).json({
-        erro: "Dados inválidos"
-      });
+      return res.status(400).json({ erro: "Dados inválidos" });
     }
 
     const result = await pool.query(
@@ -42,21 +48,21 @@ router.post("/", async (req, res) => {
       (me_tipo, me_tempo_min, me_disciplina, me_data_inicio)
       VALUES ($1, $2, $3, $4)
       RETURNING *`,
-      [me_tipo, me_tempo_min, me_disciplina, me_data_inicio]
+      [me_tipo, me_tempo_min, me_disciplina, me_data_inicio || null]
     );
 
     res.status(201).json(result.rows[0]);
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      erro: "Erro ao criar meta"
-    });
+    console.error("Erro ao criar meta:", error);
+    res.status(500).json({ erro: "Erro ao criar meta" });
   }
 });
 
 
-//editar metas
+// =====================
+// ATUALIZAR META
+// =====================
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -69,9 +75,7 @@ router.put("/:id", async (req, res) => {
     } = req.body;
 
     if (!me_tipo || !me_tempo_min || me_tempo_min <= 0 || !me_disciplina) {
-      return res.status(400).json({
-        erro: "Dados inválidos"
-      });
+      return res.status(400).json({ erro: "Dados inválidos" });
     }
 
     const result = await pool.query(
@@ -82,27 +86,25 @@ router.put("/:id", async (req, res) => {
            me_data_inicio = $4
        WHERE me_id = $5
        RETURNING *`,
-      [me_tipo, me_tempo_min, me_disciplina, me_data_inicio, id]
+      [me_tipo, me_tempo_min, me_disciplina, me_data_inicio || null, id]
     );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        erro: "Meta não encontrada"
-      });
+    if (result.rowCount === 0) {
+      return res.status(404).json({ erro: "Meta não encontrada" });
     }
 
     res.json(result.rows[0]);
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      erro: "Erro ao atualizar meta"
-    });
+    console.error("Erro ao atualizar meta:", error);
+    res.status(500).json({ erro: "Erro ao atualizar meta" });
   }
 });
 
 
-//deletar
+// =====================
+// DELETAR META
+// =====================
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -113,18 +115,14 @@ router.delete("/:id", async (req, res) => {
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        erro: "Meta não encontrada"
-      });
+      return res.status(404).json({ erro: "Meta não encontrada" });
     }
 
-    res.json(result.rows[0]);
+    res.json({ mensagem: "Meta deletada com sucesso" });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      erro: "Erro ao deletar meta"
-    });
+    console.error("Erro ao deletar meta:", error);
+    res.status(500).json({ erro: "Erro ao deletar meta" });
   }
 });
 

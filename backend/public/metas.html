@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Metas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+  <h2 class="mb-4">Metas</h2>
+
+  <!-- BOTÃO TOPO -->
+  <button id="btnCriarTopo" class="btn btn-primary mb-3" onclick="mostrarForm()">
+    Criar Meta
+  </button>
+
+  <!-- FORM -->
+  <div id="formMeta" class="card p-4 mb-4 d-none">
+
+    <input type="hidden" id="metaId">
+
+    <div class="mb-2">
+      <label>Tipo</label>
+      <select id="tipo" class="form-control">
+        <option value="diaria">Diária</option>
+        <option value="semanal">Semanal</option>
+        <option value="mensal">Mensal</option>
+      </select>
+    </div>
+
+    <div class="mb-2">
+      <label>Tempo (minutos)</label>
+      <input id="tempo" type="number" class="form-control">
+    </div>
+
+    <div class="mb-2">
+      <label>Disciplina</label>
+      <select id="disciplina" class="form-control"></select>
+    </div>
+
+    <div class="mb-2">
+      <label>Data</label>
+      <input id="data" type="date" class="form-control">
+    </div>
+
+    <button class="btn btn-success mt-3" onclick="salvarMeta()">Salvar</button>
+    <button class="btn btn-secondary mt-2" onclick="cancelar()">Cancelar</button>
+  </div>
+
+  <!-- LISTA -->
+  <div id="lista"></div>
+
+</div>
+
+<script>
+const API_METAS = "/api/metas";
+const API_DISC = "/api/materias";
+
+// =====================
+// DISCIPLINAS
+// =====================
+async function carregarDisciplinas() {
+  try {
+    const res = await fetch(API_DISC);
+    const disciplinas = await res.json();
+
+    const select = document.getElementById("disciplina");
+    select.innerHTML = "";
+
+    disciplinas.forEach(d => {
+      select.innerHTML += `<option value="${d.di_id}">${d.di_disciplina}</option>`;
+    });
+
+  } catch (err) {
+    console.error("Erro ao carregar disciplinas", err);
+  }
+}
+
+// =====================
+// METAS
+// =====================
+async function carregarMetas() {
+  try {
+    const res = await fetch(API_METAS);
+    const metas = await res.json();
+
+    const lista = document.getElementById("lista");
+    const botaoTopo = document.getElementById("btnCriarTopo");
+
+    // 🔴 Estado vazio
+    if (!Array.isArray(metas) || metas.length === 0) {
+
+      botaoTopo.classList.add("d-none");
+
+      lista.innerHTML = `
+        <div class="alert alert-info">
+          Não tem nada aqui 😢<br><br>
+          <button class="btn btn-primary" onclick="mostrarForm()">Criar Meta</button>
+        </div>
+      `;
+      return;
+    }
+
+    // ✅ Estado com dados
+    botaoTopo.classList.remove("d-none");
+
+    lista.innerHTML = `
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Tempo (min)</th>
+            <th>Disciplina</th>
+            <th>Data</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${metas.map(meta => `
+            <tr>
+              <td>${meta.me_tipo}</td>
+              <td>${meta.me_tempo_min} min</td>
+              <td>${meta.di_disciplina || "Sem disciplina"}</td>
+              <td>${formatarData(meta.me_data_inicio)}</td>
+              <td>
+                <button class="btn btn-warning btn-sm" onclick='editar(${JSON.stringify(meta)})'>Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="deletar(${meta.me_id})">Excluir</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+
+  } catch (err) {
+    console.error("Erro ao carregar metas", err);
+  }
+}
+
+// =====================
+// FORMATAR DATA
+// =====================
+function formatarData(data) {
+  if (!data) return '';
+  return new Date(data).toLocaleDateString('pt-BR');
+}
+
+// =====================
+// FORM
+// =====================
+function mostrarForm() {
+  document.getElementById("formMeta").classList.remove("d-none");
+}
+
+function cancelar() {
+  limparForm();
+  document.getElementById("formMeta").classList.add("d-none");
+}
+
+// =====================
+// SALVAR
+// =====================
+async function salvarMeta() {
+  try {
+    const id = document.getElementById("metaId").value;
+
+    const meta = {
+      me_tipo: document.getElementById("tipo").value,
+      me_tempo_min: parseInt(document.getElementById("tempo").value),
+      me_disciplina: parseInt(document.getElementById("disciplina").value),
+      me_data_inicio: document.getElementById("data").value
+    };
+
+    if (id) {
+      await fetch(`${API_METAS}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(meta)
+      });
+    } else {
+      await fetch(API_METAS, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(meta)
+      });
+    }
+
+    cancelar();
+    carregarMetas();
+
+  } catch (err) {
+    console.error("Erro ao salvar meta", err);
+  }
+}
+
+// =====================
+// EDITAR
+// =====================
+function editar(meta) {
+  mostrarForm();
+
+  document.getElementById("metaId").value = meta.me_id;
+  document.getElementById("tipo").value = meta.me_tipo;
+  document.getElementById("tempo").value = meta.me_tempo_min;
+  document.getElementById("disciplina").value = meta.me_disciplina;
+  document.getElementById("data").value = meta.me_data_inicio?.split("T")[0];
+}
+
+// =====================
+// DELETE
+// =====================
+async function deletar(id) {
+  if (!confirm("Deseja excluir essa meta?")) return;
+
+  await fetch(`${API_METAS}/${id}`, { method: "DELETE" });
+  carregarMetas();
+}
+
+// =====================
+// LIMPAR
+// =====================
+function limparForm() {
+  document.getElementById("metaId").value = "";
+  document.getElementById("tipo").value = "diaria";
+  document.getElementById("tempo").value = "";
+  document.getElementById("disciplina").value = "";
+  document.getElementById("data").value = "";
+}
+
+// INIT
+carregarDisciplinas();
+carregarMetas();
+
+</script>
+
+</body>
+</html>
