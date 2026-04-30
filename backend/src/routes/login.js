@@ -44,8 +44,18 @@ router.post('/', async (req, res) => {
             });
         }
 
-        // 4. Valida se a senha digitada corresponde ao hash armazenado no banco
-        const senhaCorreta = await bcrypt.compare(senha, usuario.us_senha_hash);
+        // 4. Valida senha com suporte a base legada (hash bcrypt ou texto puro)
+        let senhaCorreta = false;
+        const hash = usuario.us_senha_hash;
+        const senhaLegada = usuario.us_senha;
+
+        if (hash && typeof hash === 'string' && hash.startsWith('$2')) {
+            senhaCorreta = await bcrypt.compare(senha, hash);
+        } else if (senhaLegada && typeof senhaLegada === 'string') {
+            senhaCorreta = senha === senhaLegada;
+        } else if (hash && typeof hash === 'string') {
+            senhaCorreta = senha === hash;
+        }
 
         if (!senhaCorreta) {
             // Incrementa o número de tentativas falhas no banco

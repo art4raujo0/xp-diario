@@ -1,4 +1,4 @@
-document.getElementById('form-login').addEventListener('submit', async (event) => {
+﻿document.getElementById('form-login').addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const email = document.getElementById('email').value;
@@ -25,7 +25,7 @@ document.getElementById('form-login').addEventListener('submit', async (event) =
       divMensagem.textContent = dados.mensagem;
 
       setTimeout(() => {
-        window.location.href = '/metas';
+        window.location.href = '/app';
       }, 800);
     } else {
       divMensagem.className = 'mt-3 text-danger small text-center fw-bold';
