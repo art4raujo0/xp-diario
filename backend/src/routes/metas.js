@@ -3,9 +3,7 @@ const pool = require("../config/db");
 const router = express.Router();
 
 
-// =====================
-// LISTAR METAS (COM JOIN)
-// =====================
+
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(`
@@ -26,9 +24,7 @@ router.get("/", async (req, res) => {
 });
 
 
-// =====================
-// CRIAR META
-// =====================
+
 router.post("/", async (req, res) => {
   try {
     const {
@@ -60,9 +56,7 @@ router.post("/", async (req, res) => {
 });
 
 
-// =====================
-// ATUALIZAR META
-// =====================
+
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -102,9 +96,7 @@ router.put("/:id", async (req, res) => {
 });
 
 
-// =====================
-// DELETAR META
-// =====================
+
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;

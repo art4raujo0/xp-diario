@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Streak de Estudos — XP Diário</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      color: #f1f5f9;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid #334155;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #f97316;
+      line-height: 1;
+    }
+
+    .card-value.small {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+
+    .card-value.green { color: #22c55e; }
+    .card-value.yellow { color: #eab308; }
+    .card-value.red { color: #ef4444; }
+    .card-value.blue { color: #3b82f6; }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      margin-top: 0.4rem;
+      font-weight: 600;
+    }
+
+    .badge.ativo { background: #166534; color: #86efac; }
+    .badge.inativo { background: #7f1d1d; color: #fca5a5; }
+    .badge.teste { background: #1e3a5f; color: #93c5fd; }
+
+    .section {
+      max-width: 900px;
+      margin: 0 auto 1.5rem;
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid #334155;
+    }
+
+    .section h2 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      margin-bottom: 0.75rem;
+    }
+
+    .datas-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .data-chip {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.78rem;
+      color: #94a3b8;
+    }
+
+    .data-chip.hoje { border-color: #f97316; color: #fb923c; }
+    .data-chip.ontem { border-color: #eab308; color: #facc15; }
+
+    .btn {
+      display: block;
+      margin: 0 auto 2rem;
+      padding: 0.6rem 1.5rem;
+      background: #f97316;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      max-width: 200px;
+    }
+
+    .btn:hover { background: #ea580c; }
+
+    #status {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 1rem;
+    }
+
+    .test-banner {
+      max-width: 900px;
+      margin: 0 auto 1.5rem;
+      background: #1e3a5f;
+      border: 1px solid #2563eb;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: #93c5fd;
+      display: none;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid #0f172a;
+    }
+
+    .info-row:last-child { border-bottom: none; }
+    .info-row span:last-child { color: #cbd5e1; font-weight: 500; }
+  </style>
+</head>
+<body>
+
+  <h1>🔥 Streak de Estudos</h1>
+
+  <button class="btn" onclick="carregar()">Atualizar</button>
+  <div id="status">Carregando...</div>
+
+  <div id="test-banner" class="test-banner">
+    ⚠️ <strong>MODO DE TESTE ATIVO</strong> — A data "hoje" está sendo simulada como
+    <strong id="test-date"></strong> via variável <code>STREAK_TEST_DATE_OVERRIDE</code>.
+    Remova essa variável do <code>.env</code> para usar a data real.
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Streak Atual 🔥</div>
+      <div class="card-value" id="streak-atual">—</div>
+      <div id="streak-status-badge"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Maior Streak Histórico 🏆</div>
+      <div class="card-value blue" id="maior-streak">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Total de Dias com Estudo 📅</div>
+      <div class="card-value green" id="total-dias">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Status de Hoje</div>
+      <div class="card-value small" id="status-hoje">—</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Detalhes</h2>
+    <div class="info-row">
+      <span>Estudou hoje?</span>
+      <span id="det-hoje">—</span>
+    </div>
+    <div class="info-row">
+      <span>Estudou ontem?</span>
+      <span id="det-ontem">—</span>
+    </div>
+    <div class="info-row">
+      <span>Primeiro estudo registrado</span>
+      <span id="det-primeiro">—</span>
+    </div>
+    <div class="info-row">
+      <span>Último estudo registrado</span>
+      <span id="det-ultimo">—</span>
+    </div>
+    <div class="info-row">
+      <span>Data de referência (hoje)</span>
+      <span id="det-ref-hoje">—</span>
+    </div>
+    <div class="info-row">
+      <span>Atualizado em</span>
+      <span id="det-atualizado">—</span>
+    </div>
+  </div>
+
+  <div class="section" id="secao-datas">
+    <h2>Histórico de Dias com Estudo</h2>
+    <div class="datas-grid" id="datas-grid">—</div>
+  </div>
+
+  <script>
+    async function carregar() {
+      document.getElementById("status").textContent = "Carregando...";
+
+      try {
+        const res = await fetch("/api/streak");
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.erro || `HTTP ${res.status}`);
+        }
+
+        const dados = await res.json();
+        renderizar(dados);
+        document.getElementById("status").textContent =
+          "Dados carregados com sucesso.";
+      } catch (e) {
+        document.getElementById("status").textContent =
+          "Erro ao carregar: " + e.message;
+      }
+    }
+
+    function renderizar(dados) {
+      const { streak, historico, referencia } = dados;
+
+      // Banner de teste
+      const banner = document.getElementById("test-banner");
+      if (referencia.modoTeste) {
+        banner.style.display = "block";
+        document.getElementById("test-date").textContent = referencia.testeDateOverride;
+      } else {
+        banner.style.display = "none";
+      }
+
+      // Cards principais
+      document.getElementById("streak-atual").textContent = streak.atual;
+
+      const badgeEl = document.getElementById("streak-status-badge");
+      if (streak.ativo) {
+        badgeEl.innerHTML = '<span class="badge ativo">Ativo</span>';
+      } else {
+        badgeEl.innerHTML = '<span class="badge inativo">Inativo</span>';
+      }
+
+      document.getElementById("maior-streak").textContent = streak.maiorHistorico;
+      document.getElementById("total-dias").textContent = historico.totalDiasComEstudo;
+
+      let statusHoje = "";
+      if (streak.estudouHoje) {
+        statusHoje = "✅ Já estudou hoje!";
+      } else if (streak.ativo) {
+        statusHoje = "⏳ Ainda não estudou hoje";
+      } else {
+        statusHoje = "💤 Streak quebrado";
+      }
+      document.getElementById("status-hoje").textContent = statusHoje;
+
+      // Detalhes
+      document.getElementById("det-hoje").textContent = streak.estudouHoje ? "Sim ✅" : "Não";
+      document.getElementById("det-ontem").textContent = streak.estudouOntem ? "Sim ✅" : "Não";
+      document.getElementById("det-primeiro").textContent = historico.primeiroEstudo || "—";
+      document.getElementById("det-ultimo").textContent = historico.ultimoEstudo || "—";
+      document.getElementById("det-ref-hoje").textContent =
+        referencia.hoje + (referencia.modoTeste ? " ⚠️ (simulado)" : "");
+      document.getElementById("det-atualizado").textContent =
+        new Date(dados.atualizadoEm).toLocaleString("pt-BR");
+
+      // Grid de datas
+      const grid = document.getElementById("datas-grid");
+      if (historico.todasAsDatas.length === 0) {
+        grid.innerHTML = "<span style='color:#64748b'>Nenhum dia registrado ainda.</span>";
+        return;
+      }
+
+      grid.innerHTML = historico.todasAsDatas
+        .map((d) => {
+          let cls = "data-chip";
+          if (d === referencia.hoje) cls += " hoje";
+          else if (d === referencia.ontem) cls += " ontem";
+          return `<span class="${cls}">${d}</span>`;
+        })
+        .join("");
+    }
+
+    carregar();
+  </script>
+</body>
+</html>
