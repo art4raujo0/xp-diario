@@ -1,0 +1,37 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    U([Usuario])
+
+    subgraph DASH[Dashboard e autenticacao]
+        L([Realizar login])
+        VD([Visualizar dashboard])
+        VS([Acompanhar sequencia de estudos])
+        VP([Acompanhar progresso das metas])
+    end
+
+    subgraph MAT[Materias]
+        LM([Visualizar materias])
+        CM([Cadastrar materia])
+        EM([Editar materia])
+        XM([Excluir materia])
+    end
+
+    subgraph MET[Metas]
+        LR([Visualizar metas])
+        CR([Criar meta])
+        ER([Editar meta])
+        XR([Excluir meta])
+    end
+
+    U --> L
+    U --> VD
+    U --> VS
+    U --> VP
+    U --> LM
+    U --> CM
+    U --> EM
+    U --> XM
+    U --> LR
+    U --> CR
+    U --> ER
+    U --> XR

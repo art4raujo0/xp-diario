@@ -1,0 +1,39 @@
+%%{init: {'theme': 'neutral'}}%%
+erDiagram
+    USUARIOS {
+        INT us_id PK
+        VARCHAR us_email
+        VARCHAR us_senha
+        VARCHAR us_senha_hash
+        INT us_tentativas_falhas
+        TIMESTAMP us_bloqueado_ate
+    }
+
+    DISCIPLINA {
+        INT di_id PK
+        VARCHAR di_disciplina
+        VARCHAR di_dificuldade
+        TEXT di_descricao
+        VARCHAR di_cor
+    }
+
+    META {
+        INT me_id PK
+        VARCHAR me_tipo
+        INT me_tempo_min
+        DATE me_data_inicio
+        INT me_disciplina FK
+    }
+
+    ATIVIDADE {
+        INT at_id PK
+        INT at_disciplina FK
+        INT at_tempo_min
+        INT at_tarefas_concluidas
+        DATE at_data
+        VARCHAR at_descricao
+        TIMESTAMP at_criado_em
+    }
+
+    DISCIPLINA ||--o{ META : organiza
+    DISCIPLINA ||--o{ ATIVIDADE : recebe

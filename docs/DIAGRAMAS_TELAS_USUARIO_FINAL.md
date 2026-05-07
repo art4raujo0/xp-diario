@@ -1,4 +1,4 @@
-﻿# Diagramas - Telas para Usuario Final
+# Diagramas - Telas para Usuario Final
 
 ## Diagrama 1 - Fluxo principal do usuario
 
@@ -10,12 +10,30 @@ flowchart TD
     D --> B
     C -- Sim --> E[Salvar token no navegador]
     E --> F[Redirecionar para /app]
-    F --> G[Tela base com menu lateral]
-    G --> H[Tela de Materias]
-    G --> I[Tela de Metas]
+    F --> G[Dashboard com menu lateral]
+    G --> H[Exibir streak atual]
+    G --> I[Exibir progresso das metas ativas]
+    G --> J[Tela de Materias]
+    G --> K[Tela de Metas]
 ```
 
-## Diagrama 2 - Fluxo da tela de materias
+## Diagrama 2 - Fluxo do dashboard (/app)
+
+```mermaid
+flowchart TD
+    A[Abrir /app] --> B{Token existe no navegador?}
+    B -- Nao --> C[Redirecionar para /login]
+    B -- Sim --> D[Consultar /api/streak]
+    D --> E[Consultar /api/progresso]
+    E --> F{Ha metas cadastradas?}
+    F -- Nao --> G[Exibir mensagem de estado vazio]
+    F -- Sim --> H[Exibir percentual geral e resumo]
+    D --> I{Ha sequencia ativa hoje?}
+    I -- Nao --> J[Exibir streak zerado ou offline]
+    I -- Sim --> K[Exibir quantidade de dias consecutivos]
+```
+
+## Diagrama 3 - Fluxo da tela de materias
 
 ```mermaid
 flowchart TD
@@ -38,7 +56,7 @@ flowchart TD
     O --> B
 ```
 
-## Diagrama 3 - Fluxo da tela de metas
+## Diagrama 4 - Fluxo da tela de metas
 
 ```mermaid
 flowchart TD
@@ -50,15 +68,17 @@ flowchart TD
     F --> G[Editar meta]
     F --> H[Excluir meta]
     A --> I[Criar nova meta]
-    I --> J[Salvar na API]
+    I --> J{Dados validos?}
     G --> J
-    H --> K[Confirmar exclusao]
-    K --> L[Remover da API]
-    J --> B
+    J -- Nao --> K[Exibir erro de validacao]
+    J -- Sim --> L[Salvar na API]
+    H --> M[Confirmar exclusao]
+    M --> N[Remover da API]
     L --> B
+    N --> B
 ```
 
-## Diagrama 4 - Sequencia da autenticacao e navegacao
+## Diagrama 5 - Sequencia da autenticacao e carregamento do painel
 
 ```mermaid
 sequenceDiagram
@@ -66,8 +86,8 @@ sequenceDiagram
     participant TL as Tela de Login
     participant API as API /api/login
     participant APP as Tela /app
-    participant TMAT as Tela Materias
-    participant TMET as Tela Metas
+    participant ST as API /api/streak
+    participant PR as API /api/progresso
 
     U->>TL: Informa e-mail e senha
     TL->>API: POST /api/login
@@ -75,23 +95,26 @@ sequenceDiagram
     alt Login valido
         TL->>TL: Salva token no navegador
         TL->>APP: Redireciona para /app
-        APP->>TMAT: Navega por menu lateral
-        APP->>TMET: Navega por menu lateral
+        APP->>ST: GET /api/streak
+        ST-->>APP: Sequencia atual
+        APP->>PR: GET /api/progresso
+        PR-->>APP: Resumo das metas
+        APP-->>U: Exibe dashboard consolidado
     else Login invalido
         TL-->>U: Exibe mensagem de erro
     end
 ```
 
-## Diagrama 5 - Visao Scrum da entrega
+## Diagrama 6 - Visao Scrum da entrega
 
 ```mermaid
 flowchart LR
     A[Backlog da Sprint] --> B[Tela de Login]
-    A --> C[Tela /app com menu lateral]
+    A --> C[Dashboard /app com menu lateral]
     A --> D[Tela de Materias]
     A --> E[Tela de Metas]
     B --> F[Autenticacao inicial]
-    C --> G[Navegacao do usuario]
+    C --> G[Indicadores de streak e progresso]
     D --> H[CRUD de materias + regras]
     E --> I[CRUD de metas]
     F --> J[Incremento apresentado]
@@ -105,7 +128,7 @@ flowchart LR
 1. Mostrar primeiro o fluxo principal
 2. Abrir a tela de login
 3. Demonstrar redirecionamento para `/app`
-4. Mostrar o menu lateral e navegar para Materias
-5. Demonstrar regras de negocio de Materias
-6. Navegar para Metas e mostrar CRUD
+4. Mostrar o dashboard com streak e progresso
+5. Navegar para `Materias` e demonstrar as regras de negocio
+6. Navegar para `Metas` e mostrar CRUD
 7. Fechar com a visao Scrum da entrega

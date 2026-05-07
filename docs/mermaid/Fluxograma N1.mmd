@@ -1,0 +1,55 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart LR
+    subgraph F1[1. Fluxo principal do usuario]
+        A[Usuario acessa o sistema] --> B[Tela de Login]
+        B --> C{Credenciais validas?}
+        C -- Nao --> D[Exibir mensagem de erro]
+        D --> B
+        C -- Sim --> E[Salvar token no navegador]
+        E --> F[Redirecionar para /app]
+        F --> G[Dashboard com menu lateral]
+        G --> H[Tela de Materias]
+        G --> I[Tela de Metas]
+    end
+
+    subgraph F2[2. Fluxo do dashboard]
+        J[Abrir /app] --> K{Token existe?}
+        K -- Nao --> L[Voltar para /login]
+        K -- Sim --> M[Consultar /api/streak]
+        M --> N[Consultar /api/progresso]
+        N --> O{Ha metas cadastradas?}
+        O -- Nao --> P[Exibir estado vazio]
+        O -- Sim --> Q[Exibir resumo de progresso]
+        M --> R[Exibir streak atual]
+    end
+
+    subgraph F3[3. Fluxo da tela de materias]
+        S[Tela de Materias] --> T[Listar materias]
+        T --> U{Existe materia cadastrada?}
+        U -- Nao --> V[Exibir estado vazio]
+        U -- Sim --> W[Exibir tabela de materias]
+        S --> X[Criar nova materia]
+        W --> Y[Editar materia]
+        W --> Z[Excluir materia]
+        X --> AA{Nome valido?}
+        Y --> AA
+        AA -- Nao --> AB[Erro de nome obrigatorio]
+        AA -- Sim --> AC{Materia duplicada?}
+        AC -- Sim --> AD[Erro de duplicidade]
+        AC -- Nao --> AE[Salvar na API]
+    end
+
+    subgraph F4[4. Fluxo da tela de metas]
+        AF[Tela de Metas] --> AG[Listar metas]
+        AF --> AH[Carregar disciplinas]
+        AG --> AI{Existe meta cadastrada?}
+        AI -- Nao --> AJ[Exibir estado vazio]
+        AI -- Sim --> AK[Exibir tabela de metas]
+        AF --> AL[Criar nova meta]
+        AK --> AM[Editar meta]
+        AK --> AN[Excluir meta]
+        AL --> AO{Dados validos?}
+        AM --> AO
+        AO -- Nao --> AP[Erro de validacao]
+        AO -- Sim --> AQ[Salvar na API]
+    end

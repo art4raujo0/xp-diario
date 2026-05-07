@@ -1,0 +1,61 @@
+%%{init: {'theme': 'neutral'}}%%
+classDiagram
+    class Usuario {
+        +int us_id
+        +string us_email
+        +string us_senha_hash
+        +int us_tentativas_falhas
+        +timestamp us_bloqueado_ate
+        +login(email, senha)
+    }
+
+    class Disciplina {
+        +int di_id
+        +string di_disciplina
+        +string di_dificuldade
+        +text di_descricao
+        +string di_cor
+        +criarDisciplina()
+        +editarDisciplina()
+        +removerDisciplina()
+    }
+
+    class Meta {
+        +int me_id
+        +string me_tipo
+        +int me_tempo_min
+        +date me_data_inicio
+        +int me_disciplina
+        +criarMeta()
+        +editarMeta()
+        +removerMeta()
+    }
+
+    class Atividade {
+        +int at_id
+        +int at_disciplina
+        +int at_tempo_min
+        +int at_tarefas_concluidas
+        +date at_data
+        +string at_descricao
+        +registrarAtividade()
+    }
+
+    class StreakService {
+        +calcularStreak(datas)
+        +calcularStreakAtual(datas)
+    }
+
+    class ProgressoResumo {
+        +percentualGeral
+        +metasAtivas
+        +metasAtingidas
+        +totalTempoEstudadoMin
+        +totalTarefasConcluidas
+    }
+
+    Disciplina "1" --> "*" Meta : possui
+    Disciplina "1" --> "*" Atividade : recebe
+    Atividade --> StreakService : alimenta
+    Meta --> ProgressoResumo : compoe
+    Atividade --> ProgressoResumo : alimenta
