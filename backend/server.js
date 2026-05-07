@@ -50,7 +50,7 @@ app.use('/api/materias', materiasRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/atividades', atividadesRoutes);
 app.use('/api/progresso', progressoRoutes);
-app.use("/streak", streakRoutes);
+app.use("/api/streak", streakRoutes); 
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);

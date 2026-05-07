@@ -3,36 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Diario - Painel</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>XP Diário - Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    body { background: #f6f8fb; margin: 0; }
+    body { background: #f6f8fb; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .layout { min-height: 100vh; display: flex; }
-    .sidebar { width: 260px; background: #ffffff; border-right: 1px solid #e9ecef; padding: 24px 16px; }
-    .brand { font-weight: 700; color: #2f2f41; margin-bottom: 20px; font-size: 1.2rem; }
-    .menu-link { display: block; padding: 10px 14px; border-radius: 10px; text-decoration: none; color: #2f2f41; margin-bottom: 8px; }
-    .menu-link:hover { background: #f0ecff; color: #583cd3; }
+    .sidebar { width: 260px; background: #ffffff; border-right: 1px solid #e9ecef; padding: 24px 16px; position: sticky; top: 0; height: 100vh; }
+    .brand { font-weight: 700; color: #2f2f41; margin-bottom: 30px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+    .brand i { color: #6a49f2; }
+    .menu-link { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; text-decoration: none; color: #2f2f41; margin-bottom: 8px; font-weight: 500;}
+    .menu-link:hover, .menu-link.active { background: #f0ecff; color: #583cd3; font-weight: 700; }
     .content { flex: 1; padding: 32px; }
-    .canvas { min-height: 360px; border: 2px dashed #dee2e6; border-radius: 16px; background: #fff; }
+    .card-panel { background: #fff; border: none; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
   </style>
 </head>
 <body>
   <div class="layout">
     <aside class="sidebar">
-      <div class="brand">XP Diario</div>
-      <a class="menu-link" href="/metas">Metas</a>
-      <a class="menu-link" href="/materias">Materias</a>
+      <div class="brand"><i class="fas fa-graduation-cap"></i> XP Diário</div>
+      <a class="menu-link active" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
+      <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
     </aside>
+
     <main class="content">
-      <h2 class="mb-3">Painel</h2>
-      <p class="text-muted">Selecione uma opcao no menu lateral para comecar.</p>
-      <div class="canvas"></div>
+      <h2 class="mb-4 fw-bold text-dark">Meu Painel</h2>
+
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 p-4 shadow-sm border-0" style="border-radius: 16px;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Sequência de Estudos</h6>
+                <h2 class="mb-0 fw-bold text-dark" id="streak-valor">0 dias</h2>
+              </div>
+              <div class="p-3 rounded-circle d-flex justify-content-center align-items-center" style="background-color: #F6F8FB;" id="streak-icon-container">
+                <i class="fas fa-fire fs-4 text-muted" id="streak-icon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8 mb-4">
+          <div class="card h-100 p-4 shadow-sm border-0" style="border-radius: 16px;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="text-muted mb-0 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Progresso das Metas Ativas</h6>
+              <span id="progresso-percentual" class="badge rounded-pill" style="background-color: #f0ecff; color: #583cd3;">0%</span>
+            </div>
+            
+            <div id="progresso-com-dados">
+              <div class="progress mb-3" style="height: 10px; border-radius: 5px; background-color: #f0ecff;">
+                <div id="progresso-barra" class="progress-bar progress-bar-striped progress-bar-animated" 
+                     role="progressbar" style="width: 0%; background-color: #6a49f2;"></div>
+              </div>
+              <div class="row text-center">
+                <div class="col-4">
+                  <small class="text-muted d-block" style="font-size: 0.65rem;">ESTUDADO</small>
+                  <span class="fw-bold small" id="tempo-estudado">0 min</span>
+                </div>
+                <div class="col-4 border-start border-end">
+                  <small class="text-muted d-block" style="font-size: 0.65rem;">METAS</small>
+                  <span class="fw-bold small" id="metas-atingidas">0/0</span>
+                </div>
+                <div class="col-4">
+                  <small class="text-muted d-block" style="font-size: 0.65rem;">TAREFAS</small>
+                  <span class="fw-bold small" id="tarefas-concluidas">0</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="progresso-vazio" class="d-none text-center py-2">
+              <p class="text-muted small mb-0" id="mensagem-vazio"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
     </main>
   </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
-
-
-
-
