@@ -6,6 +6,7 @@ const path = require('path');
 const materiasRoutes = require('./src/routes/materias');
 const metasRoutes = require('./src/routes/metas');
 const loginRoutes = require('./src/routes/login');
+const cadastroRoutes = require('./src/routes/cadastro');
 const atividadesRoutes = require('./src/routes/atividades');
 const progressoRoutes = require('./src/routes/progresso');
 const streakRoutes = require("./src/routes/streak");
@@ -48,6 +49,7 @@ app.get('/materias', (req, res) => {
 app.use('/api/metas', metasRoutes);
 app.use('/api/materias', materiasRoutes);
 app.use('/api/login', loginRoutes);
+app.use('/api/cadastro', cadastroRoutes);
 app.use('/api/atividades', atividadesRoutes);
 app.use('/api/progresso', progressoRoutes);
 app.use("/api/streak", streakRoutes); 
