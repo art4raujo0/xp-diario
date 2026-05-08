@@ -60,7 +60,11 @@ router.get("/", async (req, res) => {
       ORDER BY a.at_data DESC, a.at_id DESC
     `);
 
-    res.json(result.rows);
+    res.json({
+      sucesso: true,
+      total: result.rows.length,
+      historico: result.rows
+    });
   } catch (error) {
     console.error("Erro ao buscar atividades:", error);
 
@@ -134,8 +138,12 @@ router.post("/", async (req, res) => {
     );
 
     res.status(201).json({
-      ...result.rows[0],
-      di_disciplina: disciplinaResult.rows[0].di_disciplina
+      sucesso: true,
+      mensagem: "Registro de estudo salvo com sucesso",
+      dados: {
+        ...result.rows[0],
+        di_disciplina: disciplinaResult.rows[0].di_disciplina
+      }
     });
   } catch (error) {
     console.error("Erro ao registrar atividade:", error);
