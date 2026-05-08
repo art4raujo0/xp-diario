@@ -11,7 +11,7 @@ router.post('/', async (req, res) => {
     // Recebe a senha e o e-mail do corpo da requisição.
     // O (req.body.email || '') evita erros caso venha vazio.
     // O .trim() remove espaços em branco acidentais no início e no final do e-mail.
-    const email = (req.body.email || '').trim();
+    const email = (req.body.email || '').trim().toLowerCase();
     const senha = req.body.senha;
 
     // 1. Validações: Verifica se os campos obrigatórios foram preenchidos
