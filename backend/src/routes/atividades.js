@@ -1,5 +1,7 @@
 const express = require("express");
 const pool = require("../config/db");
+const { autenticar } = require("../middlewares/auth");
+const { desbloquearConquistasElegiveis } = require("../services/conquistasService");
 
 const router = express.Router();
 
@@ -49,16 +51,19 @@ function tratarErroDependenciaBanco(error, res) {
   return null;
 }
 
-router.get("/", async (req, res) => {
+router.get("/", autenticar, async (req, res) => {
   try {
+    const usuarioId = req.usuario.id;
+
     const result = await pool.query(`
       SELECT
         a.*,
         d.di_disciplina
       FROM atividade a
       INNER JOIN disciplina d ON d.di_id = a.at_disciplina
+      WHERE a.at_usuario_id = $1
       ORDER BY a.at_data DESC, a.at_id DESC
-    `);
+    `, [usuarioId]);
 
     res.json({
       sucesso: true,
@@ -78,8 +83,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", autenticar, async (req, res) => {
   try {
+    const usuarioId = req.usuario.id;
     const disciplinaId = Number(req.body.at_disciplina);
     const tempoMin = Number(req.body.at_tempo_min);
     const tarefasConcluidas = req.body.at_tarefas_concluidas === undefined || req.body.at_tarefas_concluidas === null || req.body.at_tarefas_concluidas === ""
@@ -125,17 +131,20 @@ router.post("/", async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO atividade
-      (at_disciplina, at_tempo_min, at_tarefas_concluidas, at_data, at_descricao)
-      VALUES ($1, $2, $3, $4, $5)
+      (at_disciplina, at_tempo_min, at_tarefas_concluidas, at_data, at_descricao, at_usuario_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *`,
       [
         disciplinaId,
         tempoMin,
         tarefasConcluidas,
         dataAtividade,
-        descricao || null
+        descricao || null,
+        usuarioId
       ]
     );
+
+    const desbloqueio = await desbloquearConquistasElegiveis(usuarioId);
 
     res.status(201).json({
       sucesso: true,
@@ -143,7 +152,8 @@ router.post("/", async (req, res) => {
       dados: {
         ...result.rows[0],
         di_disciplina: disciplinaResult.rows[0].di_disciplina
-      }
+      },
+      conquistasDesbloqueadas: desbloqueio.desbloqueadasAgora
     });
   } catch (error) {
     console.error("Erro ao registrar atividade:", error);

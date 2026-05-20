@@ -1,21 +1,19 @@
 const express = require("express");
 const pool = require("../config/db");
 const { calcularStreakAtual } = require("../services/streakService");
+const { autenticar } = require("../middlewares/auth");
 
 const router = express.Router();
 
-// GET /streak
-router.get("/", async (req, res) => {
+router.get("/", autenticar, async (req, res) => {
   try {
-    // Alteração realizada para funcionalidade STREAK
-    // Removido filtro por usuario_id pois a tabela não possui essa coluna
+    const usuarioId = req.usuario.id;
     const result = await pool.query(
-      "SELECT at_data FROM atividade ORDER BY at_data ASC"
+      "SELECT at_data FROM atividade WHERE at_usuario_id = $1 ORDER BY at_data ASC",
+      [usuarioId]
     );
-    // Fim da alteração
 
-    const datas = result.rows.map(r => r.at_data);
-
+    const datas = result.rows.map((r) => r.at_data);
     const streak = calcularStreakAtual(datas);
 
     res.json({
@@ -23,7 +21,6 @@ router.get("/", async (req, res) => {
       total_registros: datas.length,
       dias_registrados: datas
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Erro ao calcular streak" });

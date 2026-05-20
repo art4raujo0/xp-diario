@@ -1,5 +1,7 @@
 const express = require("express");
 const pool = require("../config/db");
+const { autenticar } = require("../middlewares/auth");
+const { desbloquearConquistasElegiveis } = require("../services/conquistasService");
 
 const router = express.Router();
 
@@ -210,16 +212,18 @@ function tratarErroDependenciaBanco(error, res) {
   return null;
 }
 
-router.get("/", async (req, res) => {
+router.get("/", autenticar, async (req, res) => {
   try {
+    const usuarioId = req.usuario.id;
     const metasResult = await pool.query(`
       SELECT
         m.*,
         d.di_disciplina
       FROM meta m
       LEFT JOIN disciplina d ON d.di_id = m.me_disciplina
+      WHERE m.me_usuario_id = $1
       ORDER BY m.me_id ASC
-    `);
+    `, [usuarioId]);
 
     const metas = metasResult.rows;
 
@@ -250,8 +254,9 @@ router.get("/", async (req, res) => {
         COALESCE(at_tarefas_concluidas, 0) AS at_tarefas_concluidas,
         at_data
       FROM atividade
+      WHERE at_usuario_id = $1
       ORDER BY at_data DESC, at_id DESC
-    `);
+    `, [usuarioId]);
 
     const atividades = atividadesResult.rows.map((atividade) => ({
       ...atividade,
@@ -355,6 +360,8 @@ router.get("/", async (req, res) => {
       mensagem = "As metas cadastradas ainda nao estao ativas para calculo de progresso.";
     }
 
+    await desbloquearConquistasElegiveis(usuarioId);
+
     res.json({
       possuiMetas: true,
       mensagem,
@@ -371,6 +378,7 @@ router.get("/", async (req, res) => {
       },
       metas: metasComProgresso
     });
+
   } catch (error) {
     console.error("Erro ao calcular progresso:", error);
 

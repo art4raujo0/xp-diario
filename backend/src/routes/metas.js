@@ -1,19 +1,23 @@
 const express = require("express");
 const pool = require("../config/db");
+const { autenticar } = require("../middlewares/auth");
+const { desbloquearConquistasElegiveis } = require("../services/conquistasService");
 const router = express.Router();
 
 
 
-router.get("/", async (req, res) => {
+router.get("/", autenticar, async (req, res) => {
   try {
+    const usuarioId = req.usuario.id;
     const result = await pool.query(`
       SELECT 
         m.*,
         d.di_disciplina
       FROM meta m
       LEFT JOIN disciplina d ON d.di_id = m.me_disciplina
+      WHERE m.me_usuario_id = $1
       ORDER BY m.me_id ASC
-    `);
+    `, [usuarioId]);
 
     res.json(result.rows);
 
@@ -25,8 +29,9 @@ router.get("/", async (req, res) => {
 
 
 
-router.post("/", async (req, res) => {
+router.post("/", autenticar, async (req, res) => {
   try {
+    const usuarioId = req.usuario.id;
     const {
       me_tipo,
       me_tempo_min,
@@ -41,10 +46,10 @@ router.post("/", async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO meta 
-      (me_tipo, me_tempo_min, me_disciplina, me_data_inicio)
-      VALUES ($1, $2, $3, $4)
+      (me_tipo, me_tempo_min, me_disciplina, me_data_inicio, me_usuario_id)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *`,
-      [me_tipo, me_tempo_min, me_disciplina, me_data_inicio || null]
+      [me_tipo, me_tempo_min, me_disciplina, me_data_inicio || null, usuarioId]
     );
 
     res.status(201).json(result.rows[0]);
@@ -57,8 +62,9 @@ router.post("/", async (req, res) => {
 
 
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", autenticar, async (req, res) => {
   try {
+    const usuarioId = req.usuario.id;
     const { id } = req.params;
 
     const {
@@ -78,15 +84,16 @@ router.put("/:id", async (req, res) => {
            me_tempo_min = $2,
            me_disciplina = $3,
            me_data_inicio = $4
-       WHERE me_id = $5
+       WHERE me_id = $5 AND me_usuario_id = $6
        RETURNING *`,
-      [me_tipo, me_tempo_min, me_disciplina, me_data_inicio || null, id]
+      [me_tipo, me_tempo_min, me_disciplina, me_data_inicio || null, id, usuarioId]
     );
 
     if (result.rowCount === 0) {
       return res.status(404).json({ erro: "Meta não encontrada" });
     }
 
+    await desbloquearConquistasElegiveis(usuarioId);
     res.json(result.rows[0]);
 
   } catch (error) {
@@ -97,13 +104,14 @@ router.put("/:id", async (req, res) => {
 
 
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", autenticar, async (req, res) => {
   try {
+    const usuarioId = req.usuario.id;
     const { id } = req.params;
 
     const result = await pool.query(
-      "DELETE FROM meta WHERE me_id = $1 RETURNING *",
-      [id]
+      "DELETE FROM meta WHERE me_id = $1 AND me_usuario_id = $2 RETURNING *",
+      [id, usuarioId]
     );
 
     if (result.rowCount === 0) {
