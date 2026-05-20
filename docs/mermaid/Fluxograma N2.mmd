@@ -1,14 +1,10 @@
 %%{init: {'theme': 'neutral'}}%%
-flowchart LR
-    A[Backlog da Sprint] --> B[Tela de Login]
-    A --> C[Dashboard /app com menu lateral]
-    A --> D[Tela de Materias]
-    A --> E[Tela de Metas]
-    B --> F[Autenticacao inicial]
-    C --> G[Indicadores de streak e progresso]
-    D --> H[CRUD de materias e regras]
-    E --> I[CRUD de metas]
-    F --> J[Incremento apresentado]
-    G --> J
-    H --> J
-    I --> J
+flowchart TD
+    A[GET /api/perfil] --> B[Validar JWT]
+    B --> C[Buscar usuario no banco]
+    C --> D[Retornar us_pontos_total]
+
+    E[GET /api/conquistas] --> F[Validar JWT]
+    F --> G[Calcular metricas do usuario]
+    G --> H[Desbloquear elegiveis nao desbloqueadas]
+    H --> I[Retornar todas com status]

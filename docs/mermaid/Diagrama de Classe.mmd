@@ -2,60 +2,61 @@
 classDiagram
     class Usuario {
         +int us_id
+        +string us_nome
         +string us_email
-        +string us_senha_hash
-        +int us_tentativas_falhas
-        +timestamp us_bloqueado_ate
-        +login(email, senha)
+        +int us_pontos_total
     }
 
     class Disciplina {
         +int di_id
         +string di_disciplina
-        +string di_dificuldade
-        +text di_descricao
-        +string di_cor
-        +criarDisciplina()
-        +editarDisciplina()
-        +removerDisciplina()
     }
 
     class Meta {
         +int me_id
-        +string me_tipo
-        +int me_tempo_min
-        +date me_data_inicio
+        +int me_usuario_id
         +int me_disciplina
-        +criarMeta()
-        +editarMeta()
-        +removerMeta()
+        +int me_tempo_min
+        +string me_tipo
     }
 
     class Atividade {
         +int at_id
+        +int at_usuario_id
         +int at_disciplina
         +int at_tempo_min
-        +int at_tarefas_concluidas
         +date at_data
-        +string at_descricao
-        +registrarAtividade()
+    }
+
+    class Conquista {
+        +int co_id
+        +string co_codigo
+        +string co_titulo
+        +string co_criterio_tipo
+        +int co_criterio_valor
+    }
+
+    class UsuarioConquista {
+        +int uc_id
+        +int uc_usuario_id
+        +int uc_conquista_id
+        +timestamp uc_desbloqueado_em
     }
 
     class StreakService {
-        +calcularStreak(datas)
         +calcularStreakAtual(datas)
     }
 
-    class ProgressoResumo {
-        +percentualGeral
-        +metasAtivas
-        +metasAtingidas
-        +totalTempoEstudadoMin
-        +totalTarefasConcluidas
+    class ConquistasService {
+        +desbloquearConquistasElegiveis(usuarioId)
+        +listarConquistasComStatus(usuarioId)
     }
 
-    Disciplina "1" --> "*" Meta : possui
+    Usuario "1" --> "*" Meta : possui
+    Usuario "1" --> "*" Atividade : registra
+    Usuario "1" --> "*" UsuarioConquista : possui
+    Disciplina "1" --> "*" Meta : organiza
     Disciplina "1" --> "*" Atividade : recebe
+    Conquista "1" --> "*" UsuarioConquista : referencia
     Atividade --> StreakService : alimenta
-    Meta --> ProgressoResumo : compoe
-    Atividade --> ProgressoResumo : alimenta
+    Atividade --> ConquistasService : dispara avaliacao
