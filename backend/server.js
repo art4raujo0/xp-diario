@@ -46,6 +46,14 @@ app.get('/materias', (req, res) => {
   res.sendFile(path.join(publicPath, 'materias.html'));
 });
 
+app.get('/cadastro', (req, res) => {
+  res.sendFile(path.join(publicPath, 'cadastro.html'));
+});
+
+app.get('/estudos', (req, res) => {
+  res.sendFile(path.join(publicPath, 'estudos.html'));
+});
+
 
 
 app.use('/api/metas', metasRoutes);

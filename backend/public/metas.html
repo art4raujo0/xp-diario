@@ -26,6 +26,7 @@
       <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
       <a class="menu-link active" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
       <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
+      <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
     </aside>
 
     <main class="content">
@@ -72,9 +73,19 @@
   </div>
 
 <script>
-// Mantive suas funções originais idênticas
 const API_METAS = "/api/metas";
 const API_DISC = "/api/materias";
+
+function token() {
+  return localStorage.getItem('xp_diario_token');
+}
+
+function cabecalhos() {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token()}`
+  };
+}
 
 async function carregarDisciplinas() {
   try {
@@ -87,7 +98,10 @@ async function carregarDisciplinas() {
 
 async function carregarMetas() {
   try {
-    const res = await fetch(API_METAS);
+    const res = await fetch(API_METAS, { headers: cabecalhos() });
+
+    if (res.status === 401) { window.location.href = '/login'; return; }
+
     const metas = await res.json();
     const lista = document.getElementById("lista");
 
@@ -144,11 +158,12 @@ async function salvarMeta() {
     me_disciplina: parseInt(document.getElementById("disciplina").value),
     me_data_inicio: document.getElementById("data").value
   };
-  await fetch(id ? `${API_METAS}/${id}` : API_METAS, {
+  const res = await fetch(id ? `${API_METAS}/${id}` : API_METAS, {
     method: id ? "PUT" : "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: cabecalhos(),
     body: JSON.stringify(meta)
   });
+  if (res.status === 401) { window.location.href = '/login'; return; }
   cancelar(); carregarMetas();
 }
 
@@ -163,7 +178,8 @@ function editar(meta) {
 
 async function deletar(id) {
   if (confirm("Deseja excluir essa meta?")) {
-    await fetch(`${API_METAS}/${id}`, { method: "DELETE" });
+    const res = await fetch(`${API_METAS}/${id}`, { method: "DELETE", headers: cabecalhos() });
+    if (res.status === 401) { window.location.href = '/login'; return; }
     carregarMetas();
   }
 }
@@ -175,7 +191,7 @@ function limparForm() {
   document.getElementById("data").value = "";
 }
 
-carregarDisciplinas(); carregarMetas();
+if (!token()) { window.location.href = '/login'; } else { carregarDisciplinas(); carregarMetas(); }
 </script>
 </body>
 </html>
