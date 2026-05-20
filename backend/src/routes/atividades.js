@@ -144,6 +144,14 @@ router.post("/", autenticar, async (req, res) => {
       ]
     );
 
+    const pontosResult = await pool.query(
+      `UPDATE usuarios
+       SET us_pontos_total = COALESCE(us_pontos_total, 0) + $1
+       WHERE us_id = $2
+       RETURNING us_pontos_total`,
+      [tempoMin, usuarioId]
+    );
+
     const desbloqueio = await desbloquearConquistasElegiveis(usuarioId);
 
     res.status(201).json({
@@ -152,6 +160,10 @@ router.post("/", autenticar, async (req, res) => {
       dados: {
         ...result.rows[0],
         di_disciplina: disciplinaResult.rows[0].di_disciplina
+      },
+      pontuacao: {
+        pontosGanhos: tempoMin,
+        totalPontos: Number(pontosResult.rows[0]?.us_pontos_total || 0)
       },
       conquistasDesbloqueadas: desbloqueio.desbloqueadasAgora
     });

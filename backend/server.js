@@ -11,6 +11,7 @@ const atividadesRoutes = require('./src/routes/atividades');
 const progressoRoutes = require('./src/routes/progresso');
 const streakRoutes = require("./src/routes/streak");
 const conquistasRoutes = require("./src/routes/conquistas");
+const perfilRoutes = require("./src/routes/perfil");
 
 
 const app = express();
@@ -55,6 +56,7 @@ app.use('/api/atividades', atividadesRoutes);
 app.use('/api/progresso', progressoRoutes);
 app.use("/api/streak", streakRoutes); 
 app.use("/api/conquistas", conquistasRoutes);
+app.use("/api/perfil", perfilRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
