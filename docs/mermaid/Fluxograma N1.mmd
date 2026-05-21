@@ -1,0 +1,11 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart LR
+    A[Usuario faz login] --> B{Token valido?}
+    B -- Nao --> C[Exibir erro]
+    B -- Sim --> D[Acessar app]
+    D --> E[Registrar atividade]
+    E --> F[Salvar atividade por usuario]
+    F --> G[Somar pontos no usuario]
+    F --> H[Avaliar conquistas]
+    G --> I[Perfil atualizado]
+    H --> J[Lista de conquistas atualizada]

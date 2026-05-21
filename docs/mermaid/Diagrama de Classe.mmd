@@ -1,0 +1,62 @@
+%%{init: {'theme': 'neutral'}}%%
+classDiagram
+    class Usuario {
+        +int us_id
+        +string us_nome
+        +string us_email
+        +int us_pontos_total
+    }
+
+    class Disciplina {
+        +int di_id
+        +string di_disciplina
+    }
+
+    class Meta {
+        +int me_id
+        +int me_usuario_id
+        +int me_disciplina
+        +int me_tempo_min
+        +string me_tipo
+    }
+
+    class Atividade {
+        +int at_id
+        +int at_usuario_id
+        +int at_disciplina
+        +int at_tempo_min
+        +date at_data
+    }
+
+    class Conquista {
+        +int co_id
+        +string co_codigo
+        +string co_titulo
+        +string co_criterio_tipo
+        +int co_criterio_valor
+    }
+
+    class UsuarioConquista {
+        +int uc_id
+        +int uc_usuario_id
+        +int uc_conquista_id
+        +timestamp uc_desbloqueado_em
+    }
+
+    class StreakService {
+        +calcularStreakAtual(datas)
+    }
+
+    class ConquistasService {
+        +desbloquearConquistasElegiveis(usuarioId)
+        +listarConquistasComStatus(usuarioId)
+    }
+
+    Usuario "1" --> "*" Meta : possui
+    Usuario "1" --> "*" Atividade : registra
+    Usuario "1" --> "*" UsuarioConquista : possui
+    Disciplina "1" --> "*" Meta : organiza
+    Disciplina "1" --> "*" Atividade : recebe
+    Conquista "1" --> "*" UsuarioConquista : referencia
+    Atividade --> StreakService : alimenta
+    Atividade --> ConquistasService : dispara avaliacao

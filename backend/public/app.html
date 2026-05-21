@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XP Diário - Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { background: #f6f8fb; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .layout { min-height: 100vh; display: flex; }
+    .sidebar { width: 260px; background: #ffffff; border-right: 1px solid #e9ecef; padding: 24px 16px; position: sticky; top: 0; height: 100vh; }
+    .brand { font-weight: 700; color: #2f2f41; margin-bottom: 30px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+    .brand i { color: #6a49f2; }
+    .menu-link { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; text-decoration: none; color: #2f2f41; margin-bottom: 8px; font-weight: 500;}
+    .menu-link:hover, .menu-link.active { background: #f0ecff; color: #583cd3; font-weight: 700; }
+    .content { flex: 1; padding: 32px; }
+    .card-panel { background: #fff; border: none; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    /* Botão sino */
+    #btn-notificacoes { position: relative; background: #fff; border: 1px solid #e9ecef; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: background 0.15s; }
+    #btn-notificacoes:hover { background: #f0ecff; border-color: #6a49f2; }
+    #btn-notificacoes i { color: #6a49f2; font-size: 1.1rem; }
+    #badge-notif { position: absolute; top: 4px; right: 4px; width: 10px; height: 10px; background: #22c55e; border-radius: 50%; border: 2px solid #fff; display: none; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand"><i class="fas fa-graduation-cap"></i> XP Diário</div>
+      <a class="menu-link active" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
+      <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
+      <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
+    </aside>
+
+    <main class="content">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark mb-0">Meu Painel</h2>
+        <button id="btn-notificacoes" title="Configurar notificações" onclick="abrirModalNotificacoes()">
+          <i class="fas fa-bell"></i>
+          <span id="badge-notif"></span>
+        </button>
+      </div>
+
+      <!-- Modal de Notificações -->
+      <div class="modal fade" id="modalNotificacoes" tabindex="-1" aria-labelledby="modalNotifLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+            <div class="modal-header border-0 pb-0">
+              <h5 class="modal-title fw-bold" id="modalNotifLabel">
+                <i class="fas fa-bell me-2" style="color: #6a49f2;"></i>Notificações de Lembrete
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body pt-3">
+              <p class="text-muted small mb-4">Receba lembretes diários no seu e-mail para não esquecer de estudar.</p>
+
+              <!-- Toggle ativo/inativo -->
+              <div class="d-flex align-items-center justify-content-between mb-4 p-3" style="background: #f6f8fb; border-radius: 12px;">
+                <div>
+                  <div class="fw-semibold text-dark">Ativar lembretes</div>
+                  <div class="text-muted small">Você receberá 1 e-mail por dia no horário escolhido</div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" type="checkbox" role="switch" id="notif-ativo" style="width: 2.8em; height: 1.5em; cursor: pointer;">
+                </div>
+              </div>
+
+              <!-- Horário -->
+              <div class="mb-3">
+                <label for="notif-horario" class="form-label fw-semibold text-dark">Horário do lembrete</label>
+                <input type="time" class="form-control" id="notif-horario" style="border-radius: 10px; border: 1px solid #e9ecef; padding: 10px 14px;">
+                <div class="form-text">O sistema envia no máximo 1 notificação por dia neste horário.</div>
+              </div>
+
+              <!-- Fuso horário -->
+              <div class="mb-1">
+                <label for="notif-fuso" class="form-label fw-semibold text-dark">Fuso horário</label>
+                <select class="form-select" id="notif-fuso" style="border-radius: 10px; border: 1px solid #e9ecef; padding: 10px 14px;">
+                  <option value="America/Sao_Paulo">Brasília (UTC-3)</option>
+                  <option value="America/Manaus">Manaus (UTC-4)</option>
+                  <option value="America/Belem">Belém / Fortaleza (UTC-3)</option>
+                  <option value="America/Noronha">Fernando de Noronha (UTC-2)</option>
+                  <option value="America/Rio_Branco">Acre (UTC-5)</option>
+                  <option value="America/New_York">New York (UTC-5/-4)</option>
+                  <option value="Europe/Lisbon">Lisboa (UTC+0/+1)</option>
+                  <option value="Europe/London">Londres (UTC+0/+1)</option>
+                  <option value="UTC">UTC</option>
+                </select>
+              </div>
+
+              <!-- Feedback de salvamento -->
+              <div id="notif-feedback" class="mt-3 d-none"></div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+              <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 10px;">Cancelar</button>
+              <button type="button" class="btn text-white fw-semibold" id="btn-salvar-notif"
+                      style="background: #6a49f2; border-radius: 10px; min-width: 120px;"
+                      onclick="salvarNotificacoes()">
+                Salvar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 p-4 shadow-sm border-0" style="border-radius: 16px;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Sequência de Estudos</h6>
+                <h2 class="mb-0 fw-bold text-dark" id="streak-valor">0 dias</h2>
+              </div>
+              <div class="p-3 rounded-circle d-flex justify-content-center align-items-center" style="background-color: #F6F8FB;" id="streak-icon-container">
+                <i class="fas fa-fire fs-4 text-muted" id="streak-icon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8 mb-4">
+          <div class="card h-100 p-4 shadow-sm border-0" style="border-radius: 16px;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="text-muted mb-0 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">Progresso das Metas Ativas</h6>
+              <span id="progresso-percentual" class="badge rounded-pill" style="background-color: #f0ecff; color: #583cd3;">0%</span>
+            </div>
+            
+            <div id="progresso-com-dados">
+              <div class="progress mb-3" style="height: 10px; border-radius: 5px; background-color: #f0ecff;">
+                <div id="progresso-barra" class="progress-bar progress-bar-striped progress-bar-animated" 
+                     role="progressbar" style="width: 0%; background-color: #6a49f2;"></div>
+              </div>
+              <div class="row text-center">
+                <div class="col-4">
+                  <small class="text-muted d-block" style="font-size: 0.65rem;">ESTUDADO</small>
+                  <span class="fw-bold small" id="tempo-estudado">0 min</span>
+                </div>
+                <div class="col-4 border-start border-end">
+                  <small class="text-muted d-block" style="font-size: 0.65rem;">METAS</small>
+                  <span class="fw-bold small" id="metas-atingidas">0/0</span>
+                </div>
+                <div class="col-4">
+                  <small class="text-muted d-block" style="font-size: 0.65rem;">TAREFAS</small>
+                  <span class="fw-bold small" id="tarefas-concluidas">0</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="progresso-vazio" class="d-none text-center py-2">
+              <p class="text-muted small mb-0" id="mensagem-vazio"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
