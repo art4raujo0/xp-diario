@@ -6,7 +6,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
-  background: #f1f5f9;
+  background: #f4f5f8;
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #1e293b;
@@ -18,7 +18,7 @@ body {
 /* === Sidebar === */
 .sidebar {
   width: 260px;
-  background: #1e1b4b;
+  background: #1d1d2b;
   padding: 24px 16px;
   position: sticky;
   top: 0;
@@ -41,7 +41,7 @@ body {
 .brand-icon {
   width: 40px;
   height: 40px;
-  background: #6366f1;
+  background: #685ed4;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -71,7 +71,7 @@ body {
 
 .menu-link i { width: 18px; text-align: center; font-size: 0.9rem; }
 .menu-link:hover { background: rgba(255,255,255,0.08); color: #fff; }
-.menu-link.active { background: #6366f1; color: #fff; font-weight: 600; }
+.menu-link.active { background: #685ed4; color: #fff; font-weight: 600; }
 
 .sidebar-footer {
   border-top: 1px solid rgba(255,255,255,0.08);
@@ -164,8 +164,8 @@ body {
   transition: background 0.15s, border-color 0.15s;
 }
 
-#btn-notificacoes:hover { background: #ede9fe; border-color: #6366f1; }
-#btn-notificacoes i { color: #6366f1; font-size: 1.05rem; }
+#btn-notificacoes:hover { background: #ede9fe; border-color: #463acb; }
+#btn-notificacoes i { color: #463acb; font-size: 1.05rem; }
 #badge-notif {
   position: absolute; top: 4px; right: 4px;
   width: 10px; height: 10px;
@@ -243,15 +243,15 @@ body {
 
 /* === Buttons (Bootstrap overrides) === */
 .btn-primary {
-  background-color: #6366f1 !important;
-  border-color: #6366f1 !important;
+  background-color: #463acb !important;
+  border-color: #463acb !important;
   border-radius: 8px !important;
   font-weight: 600;
 }
 
 .btn-primary:hover, .btn-primary:focus {
-  background-color: #4f46e5 !important;
-  border-color: #4f46e5 !important;
+  background-color: #3b31b0 !important;
+  border-color: #3b31b0 !important;
 }
 
 .btn-success { border-radius: 8px !important; font-weight: 600; }
@@ -268,8 +268,8 @@ body {
 }
 
 .form-control:focus, .form-select:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+  border-color: #463acb;
+  box-shadow: 0 0 0 3px rgba(70,58,203,0.1);
 }
 
 .form-label { color: #374151; font-size: 0.875rem; font-weight: 500; }
@@ -297,7 +297,7 @@ body {
 
 /* === Progress === */
 .progress { background: #ede9fe; border-radius: 99px; }
-.progress-bar { background-color: #6366f1 !important; border-radius: 99px; }
+.progress-bar { background-color: #463acb !important; border-radius: 99px; }
 
 /* === Alerts === */
 .alert { border-radius: 10px; font-size: 0.9rem; }

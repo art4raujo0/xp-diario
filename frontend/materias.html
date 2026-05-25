@@ -71,7 +71,7 @@
           </div>
           <div class="col-md-3 mb-3">
             <label class="form-label">Cor</label>
-            <input id="cor" type="color" class="form-control form-control-color w-100" value="#6366f1">
+            <input id="cor" type="color" class="form-control form-control-color w-100" value="#463acb">
           </div>
         </div>
         <div class="d-flex gap-2">
@@ -124,7 +124,7 @@
       document.getElementById('nome').value = '';
       document.getElementById('dificuldade').value = '';
       document.getElementById('descricao').value = '';
-      document.getElementById('cor').value = '#6366f1';
+      document.getElementById('cor').value = '#463acb';
     }
 
     async function carregarMaterias() {
@@ -144,7 +144,7 @@
 
         lista.innerHTML = `<div class="row g-3">
           ${materias.map(m => {
-            const cor = m.di_cor || '#6366f1';
+            const cor = m.di_cor || '#463acb';
             return `
               <div class="col-sm-6 col-md-4 col-lg-3">
                 <div class="disc-card">
@@ -209,7 +209,7 @@
       document.getElementById('nome').value = materia.di_disciplina || '';
       document.getElementById('dificuldade').value = materia.di_dificuldade || '';
       document.getElementById('descricao').value = materia.di_descricao || '';
-      document.getElementById('cor').value = materia.di_cor || '#6366f1';
+      document.getElementById('cor').value = materia.di_cor || '#463acb';
     }
 
     async function deletar(id) {
