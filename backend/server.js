@@ -17,7 +17,7 @@ const { iniciarScheduler } = require("./src/services/notificacoesService");
 
 
 const app = express();
-const publicPath = path.join(__dirname, 'public');
+const publicPath = path.join(__dirname, '..', 'frontend');
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
