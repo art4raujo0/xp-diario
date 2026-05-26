@@ -43,6 +43,14 @@ classDiagram
         +timestamp uc_desbloqueado_em
     }
 
+    class NotificacaoConfig {
+        +int nc_id
+        +int nc_usuario_id
+        +boolean nc_ativo
+        +time nc_horario
+        +string nc_fuso_horario
+    }
+
     class StreakService {
         +calcularStreakAtual(datas)
     }
@@ -55,6 +63,7 @@ classDiagram
     Usuario "1" --> "*" Meta : possui
     Usuario "1" --> "*" Atividade : registra
     Usuario "1" --> "*" UsuarioConquista : possui
+    Usuario "1" --> "0..1" NotificacaoConfig : configura
     Disciplina "1" --> "*" Meta : organiza
     Disciplina "1" --> "*" Atividade : recebe
     Conquista "1" --> "*" UsuarioConquista : referencia

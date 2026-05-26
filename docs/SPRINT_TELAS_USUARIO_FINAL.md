@@ -12,6 +12,7 @@ O backend atual atende autenticacao, organizacao de estudo e motivacao com:
 6. Conquistas automaticas por usuario
 7. Pontuacao acumulativa por usuario
 8. Perfil com pontuacao total
+9. Configuracao de notificacoes por usuario (email)
 
 ## Endpoints principais (estado atual)
 
@@ -24,10 +25,12 @@ O backend atual atende autenticacao, organizacao de estudo e motivacao com:
 - `GET /api/progresso` (autenticado)
 - `GET /api/conquistas` (autenticado)
 - `GET /api/perfil` (autenticado)
+- `GET|PUT /api/notificacoes` (autenticado)
 
 ## Regras de negocio vigentes
 
-- Dados de estudo, metas, streak e progresso sao isolados por usuario autenticado
+- Dados de estudo, metas, streak, progresso, perfil e notificacoes sao isolados por usuario autenticado
+- Materias estao em escopo global no estado atual (sem isolamento por usuario e sem JWT)
 - Conquistas sao desbloqueadas automaticamente por criterio e apenas uma vez por usuario
 - Pontuacao e proporcional ao tempo registrado (`1 ponto por minuto`)
 - Pontuacao e acumulativa e fica disponivel no perfil

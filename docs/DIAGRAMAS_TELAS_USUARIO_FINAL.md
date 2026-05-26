@@ -15,6 +15,7 @@ flowchart TD
     G --> I[Atualizar pontos]
     G --> J[Recalcular conquistas]
     F --> K[Consultar perfil]
+    F --> L[Configurar notificacoes de lembrete]
 ```
 
 ## Diagrama 2 - Sequencia do registro de estudo
@@ -41,4 +42,14 @@ flowchart LR
     A[GET /api/perfil] --> B[Validar JWT]
     B --> C[Buscar usuario]
     C --> D[Retornar us_pontos_total]
+```
+
+## Diagrama 4 - Consulta de streak (estado atual da resposta)
+
+```mermaid
+flowchart LR
+    A[GET /api/streak] --> B[Validar JWT]
+    B --> C[Buscar datas em atividade por usuario]
+    C --> D[Calcular streak atual]
+    D --> E[Retornar streak + total_registros + dias_registrados]
 ```

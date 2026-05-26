@@ -4,6 +4,7 @@ Este arquivo consolida o estado real do codigo backend apos as historias de:
 
 - conquistas automaticas por usuario
 - pontuacao acumulativa por estudo
+- notificacoes de lembrete por email
 
 ## DER vigente (texto fonte)
 
@@ -57,9 +58,20 @@ erDiagram
         TIMESTAMP uc_desbloqueado_em
     }
 
+    NOTIFICACOES_CONFIG {
+        INT nc_id PK
+        INT nc_usuario_id FK
+        BOOLEAN nc_ativo
+        TIME nc_horario
+        VARCHAR nc_fuso_horario
+        DATE nc_ultimo_envio
+        TIMESTAMP nc_atualizado_em
+    }
+
     USUARIOS ||--o{ META : possui
     USUARIOS ||--o{ ATIVIDADE : registra
     USUARIOS ||--o{ USUARIO_CONQUISTA : desbloqueia
+    USUARIOS ||--o| NOTIFICACOES_CONFIG : configura
     CONQUISTA ||--o{ USUARIO_CONQUISTA : referencia
     DISCIPLINA ||--o{ META : organiza
     DISCIPLINA ||--o{ ATIVIDADE : recebe
