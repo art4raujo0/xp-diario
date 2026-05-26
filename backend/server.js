@@ -56,6 +56,14 @@ app.get('/estudos', (req, res) => {
   res.sendFile(path.join(publicPath, 'estudos.html'));
 });
 
+app.get('/conquistas', (req, res) => {
+  res.sendFile(path.join(publicPath, 'conquistas.html'));
+});
+
+app.get('/perfil', (req, res) => {
+  res.sendFile(path.join(publicPath, 'perfil.html'));
+});;
+
 
 
 app.use('/api/metas', metasRoutes);
