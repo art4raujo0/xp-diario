@@ -16,7 +16,8 @@ function autenticar(req, res, next) {
 
     req.usuario = {
       id: Number(payload.id),
-      email: payload.email
+      email: payload.email,
+      tipo: payload.tipo || 'aluno'
     };
 
     if (!Number.isInteger(req.usuario.id) || req.usuario.id <= 0) {

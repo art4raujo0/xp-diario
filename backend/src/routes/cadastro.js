@@ -10,6 +10,7 @@ router.post('/', async (req, res) => {
   const email = (req.body.email || '').trim().toLowerCase();
   const senha = req.body.senha;
   const confirmarSenha = req.body.confirmarSenha;
+  const tipo = ['professor', 'aluno'].includes(req.body.us_tipo) ? req.body.us_tipo : 'aluno';
 
   if (!nome || !email || !senha || !confirmarSenha) {
     return res.status(400).json({ erro: 'Todos os campos são obrigatórios.' });
@@ -44,15 +45,15 @@ router.post('/', async (req, res) => {
 
     const senhaHash = await bcrypt.hash(senha, 10);
     const novoUsuario = await pool.query(
-      `INSERT INTO usuarios (us_nome, us_email, us_senha_hash)
-       VALUES ($1, $2, $3)
-       RETURNING us_id, us_nome, us_email`,
-      [nome, email, senhaHash]
+      `INSERT INTO usuarios (us_nome, us_email, us_senha_hash, us_tipo)
+       VALUES ($1, $2, $3, $4)
+       RETURNING us_id, us_nome, us_email, us_tipo`,
+      [nome, email, senhaHash, tipo]
     );
 
     const usuario = novoUsuario.rows[0];
     const token = jwt.sign(
-      { id: usuario.us_id, email: usuario.us_email },
+      { id: usuario.us_id, email: usuario.us_email, tipo: usuario.us_tipo },
       process.env.JWT_SECRET || 'chave_super_secreta_padrao',
       { expiresIn: '24h' }
     );
@@ -60,6 +61,7 @@ router.post('/', async (req, res) => {
     return res.status(201).json({
       mensagem: 'Conta criada com sucesso.',
       token,
+      tipo: usuario.us_tipo,
       usuario
     });
   } catch (erro) {

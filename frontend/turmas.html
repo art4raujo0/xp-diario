@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XP Diário - Turmas</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar">
+      <a class="brand" href="/app">
+        <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div>
+          <div class="brand-name">XP Diário</div>
+          <div class="brand-sub">Estudo Inteligente</div>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
+        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
+        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
+        <a class="menu-link active" href="/turmas"><i class="fas fa-users"></i> Turmas</a>
+        <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
+        <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
+      </nav>
+      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
+        <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
+        <div class="ctx-info">
+          <div class="ctx-nome" id="ctx-nome">Minha Área</div>
+          <div class="ctx-sub">Contexto atual</div>
+        </div>
+        <i class="fas fa-right-left ctx-switch-icon"></i>
+      </div>
+      <div class="sidebar-footer">
+        <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <span class="topbar-brand">XP Diário</span>
+      </div>
+
+      <!-- Mensagem compartilhada -->
+      <div id="mensagem" class="mb-3" style="display:none;"></div>
+
+      <!-- View: Professor / Admin -->
+      <div id="view-professor" class="d-none">
+        <div class="page-header">
+          <div>
+            <h2>Turmas</h2>
+            <p class="page-subtitle">Crie e gerencie suas turmas de alunos</p>
+          </div>
+          <button class="btn btn-primary" onclick="toggleFormCriar()"
+            style="background:#463acb;border-color:#463acb;border-radius:10px;font-size:0.88rem;padding:9px 18px;">
+            <i class="fas fa-plus me-2"></i>Nova Turma
+          </button>
+        </div>
+
+        <!-- Formulário criar turma -->
+        <div id="form-criar" class="card-panel p-4 mb-4 d-none">
+          <h6 class="fw-bold mb-3" style="color:#1e293b;">Nova Turma</h6>
+          <div class="d-flex gap-3 flex-wrap">
+            <div style="flex:1;min-width:200px;">
+              <input type="text" id="input-nome-turma" class="form-control" placeholder="Nome da turma"
+                style="border-radius:10px;" onkeydown="if(event.key==='Enter')criarTurma()">
+            </div>
+            <button id="btn-criar-turma" class="btn" onclick="criarTurma()"
+              style="background:#463acb;color:#fff;border-radius:10px;font-size:0.88rem;padding:9px 18px;border:none;white-space:nowrap;">
+              <i class="fas fa-check me-2"></i>Criar Turma
+            </button>
+            <button class="btn" onclick="toggleFormCriar()"
+              style="background:#f1f5f9;color:#64748b;border-radius:10px;font-size:0.88rem;padding:9px 18px;border:none;">
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <div id="lista-professor"></div>
+      </div>
+
+      <!-- View: Aluno -->
+      <div id="view-aluno" class="d-none">
+        <div class="page-header">
+          <div>
+            <h2>Minhas Turmas</h2>
+            <p class="page-subtitle">Turmas em que você está matriculado</p>
+          </div>
+          <button class="btn btn-primary" onclick="toggleFormEntrar()"
+            style="background:#463acb;border-color:#463acb;border-radius:10px;font-size:0.88rem;padding:9px 18px;">
+            <i class="fas fa-sign-in-alt me-2"></i>Entrar em Turma
+          </button>
+        </div>
+
+        <!-- Formulário entrar na turma -->
+        <div id="form-entrar" class="card-panel p-4 mb-4 d-none">
+          <h6 class="fw-bold mb-2" style="color:#1e293b;">Entrar em uma Turma</h6>
+          <p class="text-muted small mb-3">Peça o código de 6 letras ao seu professor e informe abaixo.</p>
+          <div class="d-flex gap-3 flex-wrap">
+            <div style="flex:1;min-width:200px;">
+              <input type="text" id="input-codigo" class="form-control" placeholder="Código (ex: AB3K9X)"
+                maxlength="6" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')entrarTurma()"
+                style="border-radius:10px;text-transform:uppercase;font-family:monospace;letter-spacing:3px;font-size:1.05rem;font-weight:700;text-align:center;">
+            </div>
+            <button id="btn-entrar-turma" class="btn" onclick="entrarTurma()"
+              style="background:#463acb;color:#fff;border-radius:10px;font-size:0.88rem;padding:9px 18px;border:none;white-space:nowrap;">
+              <i class="fas fa-sign-in-alt me-2"></i>Entrar
+            </button>
+            <button class="btn" onclick="toggleFormEntrar()"
+              style="background:#f1f5f9;color:#64748b;border-radius:10px;font-size:0.88rem;padding:9px 18px;border:none;">
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <div id="lista-aluno"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal: Alunos da Turma -->
+  <div class="modal fade" id="modal-detalhes" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="modal-title-detalhes">Alunos da Turma</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body" id="modal-body-detalhes"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Turma -->
+  <div class="modal fade" id="modal-editar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">Editar Turma</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Nome da Turma</label>
+            <input type="text" id="edit-nome-turma" class="form-control" style="border-radius:10px;">
+          </div>
+          <div class="d-flex align-items-center gap-3 p-3 mb-1" style="background:#f8fafc;border-radius:10px;">
+            <div style="flex:1;">
+              <div class="fw-semibold small">Turma ativa</div>
+              <div class="text-muted" style="font-size:0.78rem;">Alunos só podem entrar em turmas ativas</div>
+            </div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" role="switch" id="edit-ativa"
+                style="width:2.5em;height:1.4em;cursor:pointer;">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn" data-bs-dismiss="modal"
+            style="background:#f1f5f9;color:#64748b;border:none;border-radius:10px;">Cancelar</button>
+          <button type="button" id="btn-salvar-edicao" class="btn" onclick="salvarEdicao()"
+            style="background:#463acb;color:#fff;border:none;border-radius:10px;">
+            <i class="fas fa-check me-1"></i>Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/utils.js"></script>
+  <script src="/context.js"></script>
+  <script src="/turmas.js"></script>
+</body>
+</html>

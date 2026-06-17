@@ -1,3 +1,11 @@
+let tipoSelecionado = 'aluno';
+
+function selecionarTipo(tipo) {
+  tipoSelecionado = tipo;
+  document.getElementById('btn-tipo-aluno').classList.toggle('active', tipo === 'aluno');
+  document.getElementById('btn-tipo-professor').classList.toggle('active', tipo === 'professor');
+}
+
 function toggleSenha(campoId, btn) {
     const campo = document.getElementById(campoId);
     const icone = btn.querySelector('i');
@@ -60,7 +68,7 @@ document.getElementById('form-cadastro').addEventListener('submit', async (event
         const resposta = await fetch('/api/cadastro', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, email, senha, confirmarSenha })
+            body: JSON.stringify({ nome, email, senha, confirmarSenha, us_tipo: tipoSelecionado })
         });
 
         const dados = await resposta.json();

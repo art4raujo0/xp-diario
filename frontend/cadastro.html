@@ -115,6 +115,23 @@
         .toggle-senha:hover {
             color: #2F2F41;
         }
+        .tipo-btn {
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px 10px;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.15s;
+            text-align: center;
+            flex: 1;
+        }
+        .tipo-btn.active {
+            border-color: #463acb;
+            background: #ede9fe;
+            color: #463acb;
+        }
+        .tipo-btn:hover:not(.active) { background: #f1f5f9; border-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -125,6 +142,22 @@
         <div class="brand-tagline">Estudo Inteligente</div>
 
         <h4 class="login-title">Criar Conta</h4>
+
+        <div class="mb-4">
+          <p style="color:#6c757d;font-size:0.85rem;margin-bottom:8px;text-align:left;">Como você vai usar o XP Diário?</p>
+          <div class="d-flex gap-2">
+            <button type="button" class="tipo-btn active" id="btn-tipo-aluno" onclick="selecionarTipo('aluno')">
+              <i class="fas fa-user-graduate" style="display:block;font-size:1.4rem;margin-bottom:6px;"></i>
+              <span style="display:block;font-weight:700;font-size:0.9rem;">Estudante</span>
+              <span style="display:block;font-size:0.72rem;opacity:0.75;margin-top:2px;">Estudo pessoal ou em turmas</span>
+            </button>
+            <button type="button" class="tipo-btn" id="btn-tipo-professor" onclick="selecionarTipo('professor')">
+              <i class="fas fa-chalkboard-teacher" style="display:block;font-size:1.4rem;margin-bottom:6px;"></i>
+              <span style="display:block;font-weight:700;font-size:0.9rem;">Professor</span>
+              <span style="display:block;font-size:0.72rem;opacity:0.75;margin-top:2px;">Crie e gerencie turmas</span>
+            </button>
+          </div>
+        </div>
 
         <form id="form-cadastro">
             <div class="mb-3">

@@ -13,7 +13,11 @@ const streakRoutes = require("./src/routes/streak");
 const conquistasRoutes = require("./src/routes/conquistas");
 const perfilRoutes = require("./src/routes/perfil");
 const notificacoesRoutes = require("./src/routes/notificacoes");
+const relatorioRoutes = require("./src/routes/relatorio");
+const turmasRoutes = require("./src/routes/turmas");
+const adminRoutes = require("./src/routes/admin");
 const { iniciarScheduler } = require("./src/services/notificacoesService");
+const { executarMigracoes } = require("./src/config/migrar");
 
 
 const app = express();
@@ -62,7 +66,15 @@ app.get('/conquistas', (req, res) => {
 
 app.get('/perfil', (req, res) => {
   res.sendFile(path.join(publicPath, 'perfil.html'));
-});;
+});
+
+app.get('/relatorio', (req, res) => {
+  res.sendFile(path.join(publicPath, 'relatorio.html'));
+});
+
+app.get('/turmas', (req, res) => {
+  res.sendFile(path.join(publicPath, 'turmas.html'));
+});
 
 
 
@@ -76,8 +88,11 @@ app.use("/api/streak", streakRoutes);
 app.use("/api/conquistas", conquistasRoutes);
 app.use("/api/perfil", perfilRoutes);
 app.use("/api/notificacoes", notificacoesRoutes);
+app.use("/api/relatorio", relatorioRoutes);
+app.use("/api/turmas", turmasRoutes);
+app.use("/api/admin", adminRoutes);
 
-iniciarScheduler();
+executarMigracoes().then(() => iniciarScheduler());
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
