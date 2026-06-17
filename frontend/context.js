@@ -118,10 +118,7 @@ function _renderizarOpcoes(turmas) {
     html += `
       <div style="padding:16px 8px;text-align:center;color:#94a3b8;font-size:0.85rem;">
         <i class="fas fa-users" style="display:block;font-size:1.5rem;margin-bottom:8px;"></i>
-        Nenhuma turma encontrada.<br>
-        <a href="/turmas" onclick="fecharContexto()" style="color:#463acb;font-weight:600;text-decoration:none;margin-top:6px;display:inline-block;">
-          ${tipo === 'professor' || tipo === 'admin' ? 'Criar uma turma' : 'Entrar em uma turma'}
-        </a>
+        ${tipo === 'professor' || tipo === 'admin' ? 'Nenhuma turma criada ainda.' : 'Você não está em nenhuma turma.'}
       </div>`;
   } else {
     turmas.forEach(t => {
@@ -145,6 +142,25 @@ function _renderizarOpcoes(turmas) {
     });
   }
 
+  // Campo para aluno entrar em turma via código
+  if (tipo === 'aluno') {
+    html += `
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid #f1f5f9;">
+        <div style="font-size:0.73rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.06em;padding:0 4px 8px;">Entrar em turma</div>
+        <div style="display:flex;gap:8px;padding:0 4px;">
+          <input type="text" id="ctx-codigo-input" placeholder="Código da turma" maxlength="6"
+            oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter')_entrarTurmaContexto()"
+            style="flex:1;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.82rem;font-family:monospace;letter-spacing:2px;font-weight:700;text-align:center;text-transform:uppercase;outline:none;">
+          <button onclick="_entrarTurmaContexto()" id="ctx-btn-entrar"
+            style="background:#463acb;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;">
+            <i class="fas fa-sign-in-alt"></i> Entrar
+          </button>
+        </div>
+        <div id="ctx-entrar-msg" style="font-size:0.78rem;padding:6px 4px 0;min-height:20px;"></div>
+      </div>`;
+  }
+
   html += `
     <div style="margin-top:12px;padding-top:12px;border-top:1px solid #f1f5f9;">
       <a href="/turmas" onclick="fecharContexto()"
@@ -162,8 +178,12 @@ function selecionarContexto(tipo, turmaId, turmaNome) {
   renderizarContextoSidebar();
   renderizarContextoBanner();
   fecharContexto();
-  // Recarrega a página para que todos os dados reflitam o novo contexto
-  setTimeout(() => window.location.reload(), 280);
+  if (tipo === 'turma') {
+    // Ir para o hub da turma para ver o "quarto" correto
+    setTimeout(() => window.location.href = '/turmas', 280);
+  } else {
+    setTimeout(() => window.location.reload(), 280);
+  }
 }
 
 function renderizarContextoBanner() {
@@ -185,6 +205,44 @@ function renderizarContextoBanner() {
 
   const topbar = document.querySelector('.content .topbar');
   if (topbar) topbar.after(banner);
+}
+
+async function _entrarTurmaContexto() {
+  const input = document.getElementById('ctx-codigo-input');
+  const btn = document.getElementById('ctx-btn-entrar');
+  const msg = document.getElementById('ctx-entrar-msg');
+  const codigo = (input?.value || '').trim().toUpperCase();
+
+  if (!codigo) {
+    if (msg) { msg.style.color = '#ef4444'; msg.textContent = 'Informe o código da turma.'; }
+    return;
+  }
+
+  const token = localStorage.getItem('xp_diario_token');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+  if (msg) { msg.style.color = '#94a3b8'; msg.textContent = ''; }
+
+  try {
+    const res = await fetch('/api/turmas/entrar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ codigo })
+    });
+    const dados = await res.json();
+
+    if (res.ok) {
+      if (msg) { msg.style.color = '#22c55e'; msg.textContent = dados.mensagem || 'Você entrou na turma!'; }
+      if (input) input.value = '';
+      // Após entrar, já muda para o contexto da turma automaticamente
+      setTimeout(() => selecionarContexto('turma', dados.turma.tu_id, dados.turma.tu_nome), 900);
+    } else {
+      if (msg) { msg.style.color = '#ef4444'; msg.textContent = dados.erro || 'Erro ao entrar na turma.'; }
+    }
+  } catch {
+    if (msg) { msg.style.color = '#ef4444'; msg.textContent = 'Erro ao conectar com o servidor.'; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar'; }
+  }
 }
 
 function filtrarContextos(busca) {

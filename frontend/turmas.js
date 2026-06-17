@@ -1,8 +1,17 @@
 // turmas.js — Página de gestão de turmas
 
 document.addEventListener('DOMContentLoaded', () => {
-  const tipo = getUserTipo();
+  const ctx = getContexto();
 
+  // Contexto de turma ativo → mostrar dashboard da turma específica
+  if (ctx.tipo === 'turma' && ctx.turma_id) {
+    document.getElementById('view-dashboard').classList.remove('d-none');
+    carregarDashboardTurma(ctx.turma_id);
+    return;
+  }
+
+  // Contexto pessoal → view normal por papel
+  const tipo = getUserTipo();
   if (tipo === 'professor' || tipo === 'admin') {
     document.getElementById('view-professor').classList.remove('d-none');
     carregarTurmasProfessor();
@@ -11,6 +20,143 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarTurmasAluno();
   }
 });
+
+// ── Dashboard de Turma ────────────────────────────────────────────────────────
+
+async function carregarDashboardTurma(turmaId) {
+  const token = localStorage.getItem('xp_diario_token');
+  const container = document.getElementById('dashboard-content');
+
+  try {
+    const res = await fetch(`/api/turmas/${turmaId}`, { headers: { Authorization: `Bearer ${token}` } });
+    const dados = await res.json();
+
+    if (!res.ok) {
+      // Turma não encontrada ou sem acesso → volta para área pessoal
+      selecionarContexto('pessoal', null, 'Minha Área');
+      return;
+    }
+
+    renderizarDashboardTurma(dados.turma, dados.alunos || []);
+  } catch {
+    container.innerHTML = '<div class="text-danger p-3 text-center"><i class="fas fa-exclamation-triangle me-2"></i>Erro ao carregar dados da turma.</div>';
+  }
+}
+
+function renderizarDashboardTurma(turma, alunos) {
+  const container = document.getElementById('dashboard-content');
+  const tipo = getUserTipo();
+  const cores = ['#5b5ef4', '#7c3aed', '#2563eb', '#0891b2', '#059669', '#d97706'];
+  const cor = cores[(turma.tu_id || 0) % cores.length];
+  const inicial = (turma.tu_nome || '?')[0].toUpperCase();
+
+  // Ordenar por XP decrescente
+  const ranking = [...alunos].sort((a, b) => (b.us_pontos_total || 0) - (a.us_pontos_total || 0));
+
+  let myId = null;
+  try {
+    const payload = JSON.parse(atob(localStorage.getItem('xp_diario_token').split('.')[1]));
+    myId = payload.id;
+  } catch {}
+
+  const medalhas = ['🥇', '🥈', '🥉'];
+  const totalXP = alunos.reduce((s, a) => s + (a.us_pontos_total || 0), 0);
+  const mediaXP = alunos.length ? Math.round(totalXP / alunos.length) : 0;
+
+  const leaderboardHtml = ranking.length === 0
+    ? '<div class="text-center text-muted small py-4">Nenhum aluno matriculado ainda.</div>'
+    : ranking.map((a, idx) => {
+        const isMe = a.us_id === myId;
+        const medal = medalhas[idx] || `${idx + 1}º`;
+        return `
+          <div class="rank-row${isMe ? ' me' : ''}">
+            <div class="rank-pos">${medal}</div>
+            <div class="rank-nome${isMe ? ' me' : ''}">${a.us_nome}${isMe ? ' <span style="font-size:0.72rem;opacity:0.8;">(você)</span>' : ''}</div>
+            <div class="rank-xp">${(a.us_pontos_total || 0).toLocaleString('pt-BR')} XP</div>
+          </div>`;
+      }).join('');
+
+  container.innerHTML = `
+    <div class="page-header">
+      <div class="d-flex align-items-center gap-3">
+        <div style="width:52px;height:52px;border-radius:16px;background:${cor};display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#fff;flex-shrink:0;">${inicial}</div>
+        <div>
+          <h2 style="margin:0;font-size:1.3rem;">${turma.tu_nome}</h2>
+          <p class="page-subtitle" style="margin:2px 0 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            ${turma.professor_nome ? `<span><i class="fas fa-chalkboard-teacher me-1"></i>Prof. ${turma.professor_nome}</span>` : ''}
+            <span style="display:inline-flex;align-items:center;gap:3px;border-radius:99px;padding:2px 9px;font-size:0.7rem;font-weight:600;background:${turma.tu_ativa ? '#f0fdf4' : '#f1f5f9'};color:${turma.tu_ativa ? '#16a34a' : '#94a3b8'};">
+              <i class="fas fa-circle" style="font-size:0.45rem;"></i>${turma.tu_ativa ? 'Ativa' : 'Inativa'}
+            </span>
+          </p>
+        </div>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        ${(tipo === 'professor' || tipo === 'admin') && turma.tu_codigo ? `
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;">
+            <i class="fas fa-key" style="color:#94a3b8;font-size:0.8rem;"></i>
+            <code style="font-size:0.9rem;font-weight:700;color:#463acb;letter-spacing:3px;">${turma.tu_codigo}</code>
+            <button onclick="copiarCodigo('${turma.tu_codigo}')" style="color:#94a3b8;border:none;background:none;cursor:pointer;font-size:0.8rem;padding:0;margin-left:2px;" title="Copiar código">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>` : ''}
+        <button onclick="selecionarContexto('pessoal',null,'Minha Área')"
+          style="background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:0.85rem;padding:8px 16px;cursor:pointer;">
+          <i class="fas fa-arrow-left me-1"></i> Minha Área
+        </button>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="turma-stat">
+          <div><div class="turma-stat-label">Alunos</div><div class="turma-stat-value">${alunos.length}</div></div>
+          <div class="turma-stat-icon" style="background:#ede9fe;color:#7c3aed;"><i class="fas fa-users"></i></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="turma-stat">
+          <div><div class="turma-stat-label">XP Total</div><div class="turma-stat-value">${totalXP.toLocaleString('pt-BR')}</div></div>
+          <div class="turma-stat-icon" style="background:#ede9fe;color:#5b5ef4;"><i class="fas fa-bolt"></i></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="turma-stat">
+          <div><div class="turma-stat-label">XP Médio</div><div class="turma-stat-value">${mediaXP.toLocaleString('pt-BR')}</div></div>
+          <div class="turma-stat-icon" style="background:#dcfce7;color:#16a34a;"><i class="fas fa-chart-line"></i></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="turma-stat">
+          <div><div class="turma-stat-label">Líder</div><div class="turma-stat-value" style="font-size:0.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ranking[0]?.us_nome?.split(' ')[0] || '—'}</div></div>
+          <div class="turma-stat-icon" style="background:#fef9c3;color:#ca8a04;"><i class="fas fa-crown"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-panel p-4">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-bold mb-0" style="color:#1e293b;"><i class="fas fa-trophy me-2" style="color:#d97706;"></i>Ranking da Turma</h6>
+        <span style="font-size:0.78rem;color:#94a3b8;">${alunos.length} participante${alunos.length !== 1 ? 's' : ''}</span>
+      </div>
+      ${leaderboardHtml}
+    </div>
+
+    ${(tipo === 'professor' || tipo === 'admin') ? `
+    <div class="card-panel p-4 mt-3">
+      <h6 class="fw-bold mb-3" style="color:#1e293b;"><i class="fas fa-tools me-2" style="color:#64748b;"></i>Gerenciar Turma</h6>
+      <div class="d-flex gap-2 flex-wrap">
+        <button class="btn btn-primary" onclick="abrirEditar(${turma.tu_id},${JSON.stringify(turma.tu_nome)},${turma.tu_ativa})"
+          style="border-radius:10px;font-size:0.85rem;padding:8px 16px;">
+          <i class="fas fa-pen me-2"></i>Editar Turma
+        </button>
+        <button onclick="abrirDetalhes(${turma.tu_id})"
+          style="background:#f1f5f9;color:#1e293b;border:none;border-radius:10px;font-size:0.85rem;padding:8px 16px;cursor:pointer;">
+          <i class="fas fa-eye me-2"></i>Ver Alunos (modal)
+        </button>
+      </div>
+    </div>` : ''}
+  `;
+}
 
 // ── Professor / Admin ────────────────────────────────────────────────────────
 
