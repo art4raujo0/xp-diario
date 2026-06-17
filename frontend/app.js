@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     carregarStreak(token);
     carregarProgresso(token);
     carregarConfigNotificacoes(token);
+    carregarDisciplinasDashboard(token);
+    carregarTarefasDashboard(token);
+    carregarConquisitasDashboard(token);
 
     // Mascote motivacional — aparece após 2s
     setTimeout(() => {
@@ -231,4 +234,112 @@ function exibirFeedbackNotif(mensagem, tipo) {
     feedback.className = `mt-3 alert alert-${tipo} py-2 px-3 small`;
     feedback.textContent = mensagem;
     feedback.classList.remove('d-none');
+}
+
+// ============================================================
+// --- DISCIPLINAS NO DASHBOARD ---
+// ============================================================
+async function carregarDisciplinasDashboard(token) {
+    const container = document.getElementById('dashboard-disciplinas');
+    if (!container) return;
+    try {
+        const res = await fetch('/api/materias', { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!res.ok) throw new Error();
+        const materias = await res.json();
+        if (!Array.isArray(materias) || !materias.length) {
+            container.innerHTML = `<p class="text-muted small text-center py-2">Nenhuma matéria cadastrada. <a href="/materias" style="color:var(--primary);">Adicionar →</a></p>`;
+            return;
+        }
+        const top = materias.slice(0, 5);
+        const coresPadrao = ['#5B4FCF','#3B82F6','#22C55E','#F59E0B','#EF4444'];
+        container.innerHTML = top.map((m, i) => {
+            const cor = m.di_cor || coresPadrao[i % coresPadrao.length];
+            const dif = m.di_dificuldade || '';
+            const difPct = dif === 'facil' ? 30 : dif === 'media' ? 60 : dif === 'dificil' ? 90 : 50;
+            return `
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-semibold" style="font-size:0.85rem;color:var(--text-dark);">${m.di_disciplina}</span>
+                <span class="diff-badge diff-${dif || 'default'}" style="font-size:0.7rem;">${dif || 'geral'}</span>
+              </div>
+              <div style="background:#F1F5F9;border-radius:99px;height:6px;">
+                <div style="width:${difPct}%;background:${cor};border-radius:99px;height:100%;transition:width .6s ease;"></div>
+              </div>
+            </div>`;
+        }).join('');
+    } catch {
+        container.innerHTML = `<p class="text-muted small text-center py-2">Erro ao carregar matérias.</p>`;
+    }
+}
+
+// ============================================================
+// --- TAREFAS NO DASHBOARD ---
+// ============================================================
+async function carregarTarefasDashboard(token) {
+    const container = document.getElementById('dashboard-tarefas');
+    if (!container) return;
+    try {
+        const res = await fetch('/api/tarefas', { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!res.ok) throw new Error();
+        const dados = await res.json();
+        const lista = dados.tarefas || [];
+        const pendentes = lista.filter(t => t.ta_status === 'pendente').slice(0, 5);
+        if (!pendentes.length) {
+            container.innerHTML = `<div class="text-center py-3"><div style="font-size:2rem;margin-bottom:6px;">✅</div><p class="text-muted small mb-0">Todas as tarefas concluídas!</p></div>`;
+            return;
+        }
+        container.innerHTML = pendentes.map(t => {
+            const hoje = new Date().toISOString().slice(0, 10);
+            const prazo = t.ta_prazo ? String(t.ta_prazo).slice(0, 10) : null;
+            const atrasada = prazo && prazo < hoje;
+            const tagCor = atrasada ? '#FEF2F2' : (prazo === hoje ? '#FFF7ED' : '#F0FDF4');
+            const tagTxt = atrasada ? '#DC2626' : (prazo === hoje ? '#EA580C' : '#16A34A');
+            const tagLabel = atrasada ? 'Atrasada' : (prazo === hoje ? 'Hoje' : (prazo || 'Sem prazo'));
+            return `
+            <div class="d-flex align-items-start gap-2 mb-2 p-2" style="border-radius:8px;background:#FAFBFC;border:1.5px solid #F1F5F9;">
+              <div style="width:16px;height:16px;border-radius:4px;border:2px solid #CBD5E1;flex-shrink:0;margin-top:3px;"></div>
+              <div style="flex:1;min-width:0;">
+                <div class="fw-semibold" style="font-size:0.83rem;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.ta_titulo}</div>
+                <span style="font-size:0.68rem;font-weight:600;padding:1px 7px;border-radius:99px;background:${tagCor};color:${tagTxt};">${tagLabel}</span>
+              </div>
+            </div>`;
+        }).join('');
+    } catch {
+        container.innerHTML = `<p class="text-muted small text-center py-2">Erro ao carregar tarefas.</p>`;
+    }
+}
+
+// ============================================================
+// --- CONQUISTAS NO DASHBOARD ---
+// ============================================================
+async function carregarConquisitasDashboard(token) {
+    const container = document.getElementById('dashboard-conquistas');
+    if (!container) return;
+    try {
+        const res = await fetch('/api/conquistas', { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!res.ok) throw new Error();
+        const dados = await res.json();
+        const lista = dados.conquistas || [];
+        const desbloqueadas = lista.filter(c => c.status === 'desbloqueada').slice(0, 4);
+        if (!desbloqueadas.length) {
+            container.innerHTML = `<div class="text-center py-3"><div style="font-size:2rem;margin-bottom:6px;">🏆</div><p class="text-muted small mb-0">Continue estudando para desbloquear conquistas!</p></div>`;
+            return;
+        }
+        const icones = { 'sequencia': '🔥', 'tempo': '⏰', 'metas': '🎯', 'tarefas': '✅', 'disciplinas': '📚', 'sessoes': '⚡' };
+        container.innerHTML = `<div class="row g-2">${desbloqueadas.map(c => {
+            const icone = icones[c.criterio?.tipo] || '🏅';
+            return `
+            <div class="col-6">
+              <div class="d-flex align-items-center gap-2 p-2" style="border-radius:10px;background:#FFFBEB;border:1.5px solid #FDE68A;">
+                <span style="font-size:1.5rem;line-height:1;">${icone}</span>
+                <div style="min-width:0;">
+                  <div class="fw-bold" style="font-size:0.78rem;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.co_titulo}</div>
+                  <span style="font-size:0.65rem;color:#B45309;font-weight:600;">Desbloqueada ✓</span>
+                </div>
+              </div>
+            </div>`;
+        }).join('')}</div>`;
+    } catch {
+        container.innerHTML = `<p class="text-muted small text-center py-2">Erro ao carregar conquistas.</p>`;
+    }
 }

@@ -20,6 +20,7 @@
           <div class="brand-sub">Estudo Inteligente</div>
         </div>
       </a>
+
       <nav class="sidebar-nav">
         <a class="menu-link active" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
         <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
@@ -32,6 +33,7 @@
         <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
+
       <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
         <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
         <div class="ctx-info">
@@ -40,10 +42,18 @@
         </div>
         <i class="fas fa-right-left ctx-switch-icon"></i>
       </div>
+
+      <div class="sidebar-tip">
+        ✨ Cada estudo é um passo rumo ao seu melhor!
+      </div>
+
       <div class="sidebar-mascot">
-        <div class="sidebar-mascot-char">🧙</div>
+        <div class="sidebar-mascot-char">
+          <img src="/img/slime.svg" alt="Mascote" style="width:36px;height:auto;" onerror="this.parentElement.textContent='🧙'">
+        </div>
         <div class="sidebar-mascot-label">+XP a cada estudo!</div>
       </div>
+
       <div class="sidebar-footer">
         <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
       </div>
@@ -52,52 +62,63 @@
     <main class="content">
       <div class="topbar">
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <span class="topbar-brand">XP Diário</span>
+        <span class="topbar-brand">Dashboard</span>
       </div>
 
       <!-- Hero Banner -->
       <div class="hero-banner">
+        <span class="hero-sparkle">✦</span>
+        <span class="hero-sparkle">✦</span>
+        <span class="hero-sparkle">✦</span>
         <div class="hero-text">
           <div class="hero-greeting" id="hero-saudacao">Bem-vindo de volta! 👋</div>
           <div class="hero-title" id="hero-titulo">Pronto para mais um dia de estudos?</div>
           <div class="hero-stats">
             <span class="hero-stat streak">
-              <i class="fas fa-fire"></i> <span id="hero-streak-val">0 dias</span>
+              <i class="fas fa-fire"></i>
+              <span id="hero-streak-val">0 dias</span>
             </span>
             <span class="hero-stat level">
-              <i class="fas fa-star"></i> XP Diário
+              <i class="fas fa-star"></i>
+              <span id="hero-xp-val">0 XP</span>
             </span>
           </div>
+          <div class="xp-bar-wrap">
+            <div class="xp-bar-track">
+              <div class="xp-bar-fill" id="hero-xp-bar" style="width:0%"></div>
+            </div>
+            <span class="xp-bar-label" id="hero-xp-label">Nível 1</span>
+          </div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:12px;z-index:1;">
-          <button id="btn-notificacoes" title="Configurar notificações" onclick="abrirModalNotificacoes()"
-            style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;">
-            <i class="fas fa-bell"></i>
-            <span id="badge-notif"></span>
-          </button>
-          <div class="hero-mascot">🧙</div>
+        <div class="hero-mascot" style="z-index:1;">
+          <img src="/img/personagem-sentado.svg" alt="Personagem" onerror="this.outerHTML='<span style=\'font-size:4rem;\'>🧙</span>'">
         </div>
+        <button id="btn-notificacoes" title="Configurar notificações" onclick="abrirModalNotificacoes()"
+          style="position:absolute;top:18px;right:18px;z-index:2;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <i class="fas fa-bell"></i>
+          <span id="badge-notif"></span>
+        </button>
       </div>
 
       <!-- Modal de Notificações -->
       <div class="modal fade" id="modalNotificacoes" tabindex="-1" aria-labelledby="modalNotifLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+          <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
             <div class="modal-header border-0 pb-0">
               <h5 class="modal-title fw-bold" id="modalNotifLabel">
-                <i class="fas fa-bell me-2" style="color: #463acb;"></i>Notificações de Lembrete
+                <i class="fas fa-bell me-2" style="color:var(--primary);"></i>Notificações de Lembrete
               </h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body pt-3">
               <p class="text-muted small mb-4">Receba lembretes diários no seu e-mail para não esquecer de estudar.</p>
-              <div class="d-flex align-items-center justify-content-between mb-4 p-3" style="background: #f8fafc; border-radius: 12px;">
+              <div class="d-flex align-items-center justify-content-between mb-4 p-3" style="background:#f8fafc;border-radius:12px;">
                 <div>
                   <div class="fw-semibold text-dark">Ativar lembretes</div>
                   <div class="text-muted small">Você receberá 1 e-mail por dia no horário escolhido</div>
                 </div>
                 <div class="form-check form-switch mb-0">
-                  <input class="form-check-input" type="checkbox" role="switch" id="notif-ativo" style="width: 2.8em; height: 1.5em; cursor: pointer;">
+                  <input class="form-check-input" type="checkbox" role="switch" id="notif-ativo" style="width:2.8em;height:1.5em;cursor:pointer;">
                 </div>
               </div>
               <div class="mb-3">
@@ -177,29 +198,95 @@
         </div>
       </div>
 
-      <!-- Progress Card -->
-      <div class="card-panel p-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-semibold m-0" style="color:#64748b; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px;">Progresso das Metas Ativas</h6>
-          <span id="progresso-percentual" class="badge rounded-pill" style="background:#ede9fe; color:#7c3aed; font-size:0.8rem; padding:5px 12px;">0%</span>
-        </div>
-        <div id="progresso-com-dados">
-          <div class="progress mb-2" style="height: 8px;">
-            <div id="progresso-barra" class="progress-bar progress-bar-striped progress-bar-animated"
-                 role="progressbar" style="width: 0%;"></div>
+      <!-- Grid: Disciplinas + Tarefas -->
+      <div class="row g-4 mb-4">
+
+        <!-- Progresso por Disciplina -->
+        <div class="col-12 col-lg-7">
+          <div class="card-panel p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold m-0" style="font-size:0.95rem;color:var(--text-dark);">
+                <i class="fas fa-book-open me-2" style="color:var(--primary);"></i>Progresso por Disciplina
+              </h6>
+              <a href="/materias" class="small fw-semibold" style="color:var(--primary);text-decoration:none;">Ver todas →</a>
+            </div>
+            <div id="dashboard-disciplinas">
+              <div class="text-muted small text-center py-3">
+                <i class="fas fa-spinner fa-spin me-1"></i> Carregando...
+              </div>
+            </div>
           </div>
-          <p class="text-muted small mb-0 mt-2">Complete suas sessões de estudo para avançar no progresso das metas.</p>
         </div>
-        <div id="progresso-vazio" class="d-none text-center py-2">
-          <p class="text-muted small mb-0" id="mensagem-vazio"></p>
+
+        <!-- Tarefas Pendentes -->
+        <div class="col-12 col-lg-5">
+          <div class="card-panel p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold m-0" style="font-size:0.95rem;color:var(--text-dark);">
+                <i class="fas fa-list-check me-2" style="color:var(--orange);"></i>Tarefas Pendentes
+              </h6>
+              <a href="/tarefas" class="small fw-semibold" style="color:var(--primary);text-decoration:none;">Ver todas →</a>
+            </div>
+            <div id="dashboard-tarefas">
+              <div class="text-muted small text-center py-3">
+                <i class="fas fa-spinner fa-spin me-1"></i> Carregando...
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- Grid: Metas Progress + Conquistas -->
+      <div class="row g-4 mb-4">
+
+        <!-- Progresso das Metas -->
+        <div class="col-12 col-md-6">
+          <div class="card-panel p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold m-0" style="font-size:0.95rem;color:var(--text-dark);">
+                <i class="fas fa-bullseye me-2" style="color:var(--violet);"></i>Metas Ativas
+              </h6>
+              <span id="progresso-percentual" class="game-badge purple">0%</span>
+            </div>
+            <div id="progresso-com-dados">
+              <div class="progress mb-2" style="height:8px;">
+                <div id="progresso-barra" class="progress-bar progress-bar-striped progress-bar-animated"
+                     role="progressbar" style="width:0%;"></div>
+              </div>
+              <p class="text-muted small mb-0 mt-2">Complete suas sessões de estudo para avançar no progresso das metas.</p>
+            </div>
+            <div id="progresso-vazio" class="d-none text-center py-2">
+              <p class="text-muted small mb-0" id="mensagem-vazio"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conquistas Recentes -->
+        <div class="col-12 col-md-6">
+          <div class="card-panel p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold m-0" style="font-size:0.95rem;color:var(--text-dark);">
+                <i class="fas fa-trophy me-2" style="color:var(--gold);"></i>Conquistas Recentes
+              </h6>
+              <a href="/conquistas" class="small fw-semibold" style="color:var(--primary);text-decoration:none;">Ver todas →</a>
+            </div>
+            <div id="dashboard-conquistas">
+              <div class="text-muted small text-center py-3">
+                <i class="fas fa-spinner fa-spin me-1"></i> Carregando...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 
-  <!-- Mascote motivacional fixo -->
+  <!-- Mascote flutuante -->
   <div class="mascot-bubble" id="mascot-bubble" style="display:none;">
-    <div class="mascot-bubble-char">🧙</div>
+    <div class="mascot-bubble-char">
+      <img src="/img/slime.svg" alt="Slime" onerror="this.parentElement.textContent='🟢'">
+    </div>
     <div class="mascot-bubble-text" id="mascot-msg">Continue assim! 🔥</div>
   </div>
 
@@ -209,4 +296,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 96" width="80" height="96">
+
+  <!-- Sombra -->
+  <ellipse cx="40" cy="93" rx="16" ry="3" fill="#000" opacity="0.15"/>
+
+  <!-- Sapatos -->
+  <rect x="22" y="84" width="13" height="8" rx="4" fill="#1F2937"/>
+  <rect x="45" y="84" width="13" height="8" rx="4" fill="#1F2937"/>
+
+  <!-- Pernas (calça azul escuro) -->
+  <rect x="24" y="68" width="11" height="20" rx="4" fill="#1E40AF"/>
+  <rect x="45" y="68" width="11" height="20" rx="4" fill="#1E40AF"/>
+
+  <!-- Corpo (camisa azul) -->
+  <rect x="20" y="44" width="40" height="30" rx="8" fill="#3B82F6"/>
+
+  <!-- Gola branca -->
+  <rect x="33" y="44" width="14" height="7" rx="3" fill="#fff"/>
+
+  <!-- Braço esquerdo -->
+  <rect x="8" y="46" width="13" height="22" rx="6" fill="#3B82F6"/>
+  <!-- Mão esquerda -->
+  <ellipse cx="14" cy="70" rx="5" ry="5" fill="#FFCCAA"/>
+
+  <!-- Braço direito (segurando livro) -->
+  <rect x="59" y="46" width="13" height="22" rx="6" fill="#3B82F6"/>
+  <!-- Mão direita -->
+  <ellipse cx="66" cy="70" rx="5" ry="5" fill="#FFCCAA"/>
+
+  <!-- Livro roxo -->
+  <rect x="57" y="56" width="16" height="20" rx="2" fill="#7C3AED"/>
+  <rect x="58" y="57" width="14" height="18" rx="1" fill="#8B5CF6"/>
+  <!-- Lombada livro -->
+  <rect x="57" y="56" width="3" height="20" rx="1" fill="#5B21B6"/>
+  <!-- Linha detalhe no livro -->
+  <line x1="61" y1="62" x2="71" y2="62" stroke="#C4B5FD" stroke-width="1.2"/>
+  <line x1="61" y1="66" x2="71" y2="66" stroke="#C4B5FD" stroke-width="1.2"/>
+  <line x1="61" y1="70" x2="71" y2="70" stroke="#C4B5FD" stroke-width="1.2"/>
+
+  <!-- Pescoço -->
+  <rect x="34" y="37" width="12" height="9" rx="4" fill="#FFCCAA"/>
+
+  <!-- Cabeça (grande, chibi) -->
+  <ellipse cx="40" cy="24" rx="22" ry="22" fill="#FFCCAA"/>
+
+  <!-- Cabelo castanho escuro (bloco principal) -->
+  <ellipse cx="40" cy="8" rx="21" ry="10" fill="#5C2D0E"/>
+  <!-- Franja esquerda -->
+  <path d="M18 18 Q22 6 30 10 Q24 18 22 22Z" fill="#5C2D0E"/>
+  <!-- Franja direita bagunçada -->
+  <path d="M62 18 Q58 6 50 10 Q56 18 58 22Z" fill="#5C2D0E"/>
+  <!-- Mechas no topo -->
+  <path d="M35 4 Q38 0 40 5" stroke="#7B3F10" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M41 3 Q44 -1 46 4" stroke="#7B3F10" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Bochechas rosadas -->
+  <ellipse cx="23" cy="28" rx="5" ry="3" fill="#FDA4AF" opacity="0.65"/>
+  <ellipse cx="57" cy="28" rx="5" ry="3" fill="#FDA4AF" opacity="0.65"/>
+
+  <!-- Olho esquerdo (grande, azul escuro) -->
+  <ellipse cx="29" cy="24" rx="6" ry="6.5" fill="#1E3A5F"/>
+  <ellipse cx="29" cy="24" rx="4.5" ry="5" fill="#2563EB"/>
+  <ellipse cx="29" cy="24" rx="2.5" ry="3" fill="#1E3A5F"/>
+  <ellipse cx="30.5" cy="22" rx="1.5" ry="1.5" fill="#fff"/>
+  <ellipse cx="27.5" cy="25.5" rx="0.7" ry="0.7" fill="#fff"/>
+
+  <!-- Olho direito -->
+  <ellipse cx="51" cy="24" rx="6" ry="6.5" fill="#1E3A5F"/>
+  <ellipse cx="51" cy="24" rx="4.5" ry="5" fill="#2563EB"/>
+  <ellipse cx="51" cy="24" rx="2.5" ry="3" fill="#1E3A5F"/>
+  <ellipse cx="52.5" cy="22" rx="1.5" ry="1.5" fill="#fff"/>
+  <ellipse cx="49.5" cy="25.5" rx="0.7" ry="0.7" fill="#fff"/>
+
+  <!-- Nariz pequeno -->
+  <ellipse cx="40" cy="30" rx="1.5" ry="1" fill="#E8A87C"/>
+
+  <!-- Sorriso suave -->
+  <path d="M33 34 Q40 39 47 34" stroke="#C47B4C" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+</svg>

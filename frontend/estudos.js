@@ -213,4 +213,232 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   carregarMaterias();
   carregarHistorico();
+
+  // Popula o select do timer também
+  carregarMateriasTimer();
+
+  // Contador de chars no resumo
+  const resumo = document.getElementById('timer-resumo');
+  if (resumo) {
+    resumo.addEventListener('input', () => {
+      const count = document.getElementById('timer-resumo-count');
+      if (count) count.textContent = `${resumo.value.length}/500`;
+    });
+  }
 });
+
+// ============================================================
+// TIMER — Sessão ao Vivo
+// ============================================================
+let _timerInterval = null;
+let _timerSegundos = 0;
+let _timerPausado = false;
+let _timerPausas = 0;
+let _timerInicio = null;
+
+async function carregarMateriasTimer() {
+  try {
+    const res = await fetch(API_MATERIAS, { headers: { 'Authorization': `Bearer ${token()}` } });
+    const materias = await res.json();
+    const select = document.getElementById('timer-materia');
+    if (!select) return;
+    if (!Array.isArray(materias) || !materias.length) {
+      select.innerHTML = '<option value="">Nenhuma matéria cadastrada</option>';
+      return;
+    }
+    select.innerHTML = '<option value="">Selecione uma disciplina</option>' +
+      materias.map(m => `<option value="${m.di_id}">${m.di_disciplina}</option>`).join('');
+  } catch {}
+}
+
+function iniciarSessaoAoVivo() {
+  document.getElementById('timer-view').style.display = 'block';
+  document.getElementById('normal-view').style.display = 'none';
+
+  _timerSegundos = 0;
+  _timerPausado = false;
+  _timerPausas = 0;
+  _timerInicio = new Date();
+
+  // Mostra hora de início
+  const inicio = document.getElementById('timer-inicio');
+  if (inicio) inicio.textContent = _timerInicio.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  // Resetar displays
+  _atualizarDisplayTimer();
+  document.getElementById('timer-xp').textContent = '0 XP';
+  document.getElementById('timer-xp-badge').textContent = '+0 XP';
+  document.getElementById('timer-pausas').textContent = '0';
+  document.getElementById('timer-msg').textContent = '';
+
+  const btnPausar = document.getElementById('btn-timer-pausar');
+  if (btnPausar) btnPausar.innerHTML = '<i class="fas fa-pause me-2"></i>Pausar';
+
+  const statusDot = document.getElementById('timer-status-dot');
+  if (statusDot) statusDot.style.background = '#22C55E';
+  const statusText = document.getElementById('timer-status-text');
+  if (statusText) statusText.textContent = 'Sessão em andamento';
+
+  clearInterval(_timerInterval);
+  _timerInterval = setInterval(_tickTimer, 1000);
+}
+
+function _tickTimer() {
+  if (_timerPausado) return;
+  _timerSegundos++;
+  _atualizarDisplayTimer();
+}
+
+function _atualizarDisplayTimer() {
+  const h = Math.floor(_timerSegundos / 3600);
+  const m = Math.floor((_timerSegundos % 3600) / 60);
+  const s = _timerSegundos % 60;
+
+  const label = h > 0
+    ? `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+    : `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+  const display = document.getElementById('timer-display');
+  if (display) display.textContent = label;
+
+  const duracao = document.getElementById('timer-duracao');
+  if (duracao) duracao.textContent = label;
+
+  // Anel — preenche a cada 60 segundos
+  const ring = document.getElementById('timer-ring');
+  if (ring) {
+    const totalCirc = 534; // 2 * π * 85 ≈ 534
+    const segsNoMinuto = _timerSegundos % 60;
+    const dashOffset = totalCirc * (1 - segsNoMinuto / 60);
+    ring.style.strokeDashoffset = dashOffset;
+  }
+
+  // XP: 1 por minuto
+  const xp = Math.floor(_timerSegundos / 60);
+  const xpEl = document.getElementById('timer-xp');
+  if (xpEl) xpEl.textContent = `${xp} XP`;
+  const xpBadge = document.getElementById('timer-xp-badge');
+  if (xpBadge) xpBadge.textContent = `+${xp} XP`;
+}
+
+function pausarTimer() {
+  const btn = document.getElementById('btn-timer-pausar');
+  const statusDot = document.getElementById('timer-status-dot');
+  const statusText = document.getElementById('timer-status-text');
+
+  if (_timerPausado) {
+    // Retomar
+    _timerPausado = false;
+    if (btn) btn.innerHTML = '<i class="fas fa-pause me-2"></i>Pausar';
+    if (statusDot) statusDot.style.background = '#22C55E';
+    if (statusText) statusText.textContent = 'Sessão em andamento';
+  } else {
+    // Pausar
+    _timerPausado = true;
+    _timerPausas++;
+    document.getElementById('timer-pausas').textContent = _timerPausas;
+    if (btn) btn.innerHTML = '<i class="fas fa-play me-2"></i>Retomar';
+    if (statusDot) statusDot.style.background = '#F59E0B';
+    if (statusText) statusText.textContent = 'Pausado';
+  }
+}
+
+function encerrarTimer() {
+  clearInterval(_timerInterval);
+  _timerInterval = null;
+  _timerPausado = false;
+
+  const minutos = Math.max(1, Math.floor(_timerSegundos / 60));
+  const resumo = (document.getElementById('timer-resumo')?.value || '').trim();
+  const materiaId = document.getElementById('timer-materia')?.value || '';
+  const objetivo = document.getElementById('timer-objetivo')?.value || '';
+  const descFinal = [objetivo, resumo].filter(Boolean).join('\n\n').slice(0, 500);
+
+  // Esconde a view do timer
+  document.getElementById('timer-view').style.display = 'none';
+  document.getElementById('normal-view').style.display = 'block';
+
+  // Pré-preenche o formulário manual
+  document.getElementById('formEstudo').classList.remove('d-none');
+  document.getElementById('data').value = dataHoje();
+  document.getElementById('tempo').value = minutos;
+  if (materiaId) {
+    const sel = document.getElementById('materia');
+    if (sel) sel.value = materiaId;
+  }
+  if (descFinal) document.getElementById('descricao').value = descFinal;
+
+  // Scroll para o form
+  document.getElementById('formEstudo').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  exibirMensagem(
+    `<i class="fas fa-circle-check text-success me-2"></i>Sessão encerrada: <strong>${minutos} min</strong>. Revise os campos e salve!`,
+    'info'
+  );
+}
+
+async function salvarSessaoTimer() {
+  const materiaId = parseInt(document.getElementById('timer-materia').value);
+  const minutos = Math.max(1, Math.floor(_timerSegundos / 60));
+  const resumo = (document.getElementById('timer-resumo')?.value || '').trim();
+  const objetivo = (document.getElementById('timer-objetivo')?.value || '').trim();
+  const descFinal = [objetivo, resumo].filter(Boolean).join('\n\n').slice(0, 500);
+  const msg = document.getElementById('timer-msg');
+
+  if (!materiaId) {
+    msg.style.color = '#DC2626';
+    msg.textContent = 'Selecione uma disciplina antes de salvar.';
+    return;
+  }
+
+  if (_timerSegundos < 60) {
+    msg.style.color = '#DC2626';
+    msg.textContent = 'Sessão muito curta (mínimo 1 minuto).';
+    return;
+  }
+
+  const btn = document.getElementById('btn-salvar-timer');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Salvando...';
+  msg.textContent = '';
+
+  try {
+    const res = await fetch(API_ATIVIDADES, {
+      method: 'POST',
+      headers: cabecalhos(),
+      body: JSON.stringify({
+        at_disciplina: materiaId,
+        at_tempo_min: minutos,
+        at_tarefas_concluidas: 0,
+        at_data: dataHoje(),
+        at_descricao: descFinal || undefined
+      })
+    });
+
+    if (res.status === 401) { window.location.href = '/login'; return; }
+
+    const dados = await res.json();
+
+    if (res.ok) {
+      clearInterval(_timerInterval);
+      document.getElementById('timer-view').style.display = 'none';
+      document.getElementById('normal-view').style.display = 'block';
+      exibirMensagem(
+        `<i class="fas fa-circle-check text-success me-2"></i><strong>Sessão salva!</strong> +${dados.pontuacao?.pontosGanhos || minutos} XP`,
+        'success'
+      );
+      carregarHistorico();
+    } else {
+      msg.style.color = '#DC2626';
+      msg.textContent = dados.erro || 'Erro ao salvar.';
+    }
+  } catch {
+    msg.style.color = '#DC2626';
+    msg.textContent = 'Erro ao conectar com o servidor.';
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check me-2"></i>Salvar sessão realizada <span id="timer-xp-badge" style="background:rgba(255,255,255,0.2);border-radius:6px;padding:2px 8px;font-size:0.78rem;margin-left:6px;">+0 XP</span>';
+    }
+  }
+}

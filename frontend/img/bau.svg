@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 40" width="48" height="40">
+
+  <!-- Sombra -->
+  <ellipse cx="24" cy="38.5" rx="18" ry="2.5" fill="#000" opacity="0.18"/>
+
+  <!-- Corpo principal do baú -->
+  <rect x="4" y="20" width="40" height="18" rx="3" fill="#8B5E3C"/>
+
+  <!-- Highlight na frente do corpo -->
+  <rect x="5" y="21" width="38" height="4" rx="2" fill="#A0714A" opacity="0.6"/>
+
+  <!-- Tampa do baú -->
+  <rect x="4" y="8" width="40" height="14" rx="4" fill="#6B4A2A"/>
+
+  <!-- Highlight da tampa (brilho no topo) -->
+  <rect x="6" y="9" width="36" height="5" rx="3" fill="#C4813E" opacity="0.5"/>
+  <rect x="8" y="10" width="20" height="2.5" rx="1.5" fill="#D4956A" opacity="0.45"/>
+
+  <!-- Faixa horizontal do centro (reforço) -->
+  <rect x="4" y="18" width="40" height="4" rx="1" fill="#F59E0B"/>
+
+  <!-- Canto metálico superior esquerdo -->
+  <rect x="4" y="8" width="6" height="6" rx="1" fill="#F59E0B"/>
+  <rect x="5" y="9" width="4" height="4" rx="0.5" fill="#FDE68A"/>
+
+  <!-- Canto metálico superior direito -->
+  <rect x="38" y="8" width="6" height="6" rx="1" fill="#F59E0B"/>
+  <rect x="39" y="9" width="4" height="4" rx="0.5" fill="#FDE68A"/>
+
+  <!-- Canto metálico inferior esquerdo -->
+  <rect x="4" y="32" width="6" height="6" rx="1" fill="#F59E0B"/>
+  <rect x="5" y="33" width="4" height="4" rx="0.5" fill="#FDE68A"/>
+
+  <!-- Canto metálico inferior direito -->
+  <rect x="38" y="32" width="6" height="6" rx="1" fill="#F59E0B"/>
+  <rect x="39" y="33" width="4" height="4" rx="0.5" fill="#FDE68A"/>
+
+  <!-- Dobradiças (2) na tampa -->
+  <rect x="14" y="17" width="6" height="4" rx="1.5" fill="#D97706"/>
+  <rect x="28" y="17" width="6" height="4" rx="1.5" fill="#D97706"/>
+
+  <!-- Fechadura central -->
+  <rect x="20" y="19" width="8" height="8" rx="2" fill="#D97706"/>
+  <rect x="21" y="20" width="6" height="6" rx="1.5" fill="#F59E0B"/>
+  <!-- Buraco da fechadura -->
+  <circle cx="24" cy="23" r="1.8" fill="#92400E"/>
+  <rect x="23.2" y="23" width="1.6" height="3" rx="0.5" fill="#92400E"/>
+
+  <!-- Estrelas brilhantes ao redor -->
+  <g fill="#FDE68A" opacity="0.9">
+    <!-- Estrela top-left -->
+    <polygon points="2,5 2.8,7.2 5,7.2 3.2,8.5 3.8,10.8 2,9.5 0.2,10.8 0.8,8.5 -1,7.2 1.2,7.2" transform="scale(0.7) translate(1,-1)"/>
+    <!-- Estrela top-right usando path simples -->
+    <path d="M44 2 L44.7 4.2 L47 4.2 L45.2 5.5 L45.8 7.8 L44 6.5 L42.2 7.8 L42.8 5.5 L41 4.2 L43.3 4.2Z" opacity="0.85"/>
+    <!-- Estrela pequena direita -->
+    <path d="M47 14 L47.5 15.5 L49 15.5 L47.8 16.4 L48.2 18 L47 17.1 L45.8 18 L46.2 16.4 L45 15.5 L46.5 15.5Z" opacity="0.7"/>
+  </g>
+
+  <!-- Brilho extra na tampa -->
+  <ellipse cx="32" cy="12" rx="3" ry="1.5" fill="#FDE68A" opacity="0.4"/>
+
+</svg>

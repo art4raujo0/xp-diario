@@ -7,77 +7,189 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
-    .auth-layout{min-height:100vh;display:flex;}
-    .auth-left{width:45%;background:linear-gradient(135deg,#1a1032 0%,#4338ca 50%,#7c3aed 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 40px;color:#fff;position:relative;overflow:hidden;}
-    .auth-left::before{content:'';position:absolute;top:-80px;right:-60px;width:280px;height:280px;background:rgba(255,255,255,0.05);border-radius:50%;pointer-events:none;}
-    .auth-left::after{content:'';position:absolute;bottom:-100px;left:-60px;width:240px;height:240px;background:rgba(255,255,255,0.04);border-radius:50%;pointer-events:none;}
-    .auth-brand{text-align:center;margin-bottom:28px;z-index:1;}
-    .auth-brand-icon{font-size:3.2rem;margin-bottom:10px;line-height:1;}
-    .auth-brand-title{font-size:1.75rem;font-weight:800;margin:0 0 8px;}
-    .auth-brand-sub{opacity:.75;font-size:.875rem;margin:0;max-width:240px;}
-    .auth-mascot{font-size:4.5rem;line-height:1;margin:12px 0 24px;z-index:1;filter:drop-shadow(0 8px 16px rgba(0,0,0,.3));}
-    .auth-features{z-index:1;width:100%;max-width:260px;}
-    .auth-feature{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.875rem;opacity:.88;border-bottom:1px solid rgba(255,255,255,.1);}
-    .auth-feature:last-child{border-bottom:none;}
-    .auth-right{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 32px;background:#f4f5ff;}
-    .auth-form-wrap{width:100%;max-width:400px;}
-    .auth-logo{display:flex;align-items:center;gap:8px;font-size:1.05rem;font-weight:700;color:#5b5ef4;text-decoration:none;margin-bottom:24px;}
-    .auth-logo span{font-size:1.3rem;}
-    .auth-form-wrap h2{font-size:1.5rem;font-weight:700;color:#1e293b;margin:0 0 5px;}
-    .auth-subtitle{color:#64748b;font-size:.875rem;margin:0 0 22px;}
-    .input-icon-wrap{position:relative;}
-    .input-icon-wrap i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.82rem;pointer-events:none;z-index:2;}
-    .input-icon-wrap .form-control{padding-left:36px;}
-    .auth-switch{text-align:center;color:#64748b;font-size:.875rem;margin-top:18px;margin-bottom:0;}
-    .auth-switch a{color:#5b5ef4;font-weight:600;text-decoration:none;}
-    .auth-switch a:hover{text-decoration:underline;}
-    .tipo-btn{border:2px solid #e2e8f0;background:#f8fafc;border-radius:12px;padding:16px 10px;cursor:pointer;color:#64748b;transition:all 0.15s;text-align:center;flex:1;}
-    .tipo-btn.active{border-color:#5b5ef4;background:#ede9fe;color:#5b5ef4;}
-    .tipo-btn:hover:not(.active){background:#f1f5f9;border-color:#cbd5e1;}
-    .input-wrapper{position:relative;}
-    .toggle-senha{position:absolute;right:1rem;top:50%;transform:translateY(-50%);cursor:pointer;color:#94a3b8;background:none;border:none;padding:0;z-index:2;}
-    .toggle-senha:hover{color:#1e293b;}
-    @media(max-width:767px){.auth-left{width:100%;padding:24px;min-height:auto;}.auth-mascot{font-size:3rem;margin:8px 0 12px;}.auth-features{display:none;}.auth-right{padding:20px 16px;align-items:flex-start;}}
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: #F8F9FC; }
+
+    .auth-layout { min-height: 100vh; display: flex; }
+
+    .auth-left {
+      width: 44%;
+      background: linear-gradient(150deg, #1E1B4B 0%, #312E81 30%, #4F46E5 65%, #7C3AED 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 48px 40px; color: #fff;
+      position: relative; overflow: hidden;
+    }
+    .auth-left::before {
+      content: ''; position: absolute; top: -80px; right: -60px;
+      width: 300px; height: 300px; background: rgba(255,255,255,0.05);
+      border-radius: 50%; pointer-events: none;
+    }
+    .auth-left::after {
+      content: ''; position: absolute; bottom: -100px; left: -60px;
+      width: 260px; height: 260px; background: rgba(255,255,255,0.04);
+      border-radius: 50%; pointer-events: none;
+    }
+
+    .auth-brand { text-align: center; margin-bottom: 28px; z-index: 1; }
+    .auth-brand-title { font-family: 'Nunito', sans-serif; font-size: 2rem; font-weight: 900; margin: 0 0 8px; }
+    .auth-brand-sub { opacity: .75; font-size: .9rem; margin: 0; max-width: 240px; line-height: 1.5; }
+
+    .auth-mascot {
+      z-index: 1; margin: 12px 0 24px;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+      animation: float 4s ease-in-out infinite;
+    }
+    .auth-mascot img { width: 160px; height: auto; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    .auth-features { z-index: 1; width: 100%; max-width: 280px; }
+    .auth-feature {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; font-size: .875rem; opacity: .88;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .auth-feature:last-child { border-bottom: none; }
+    .auth-feature-icon {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; flex-shrink: 0;
+    }
+
+    .auth-right {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 40px 32px; background: #F8F9FC; overflow-y: auto;
+    }
+    .auth-form-wrap { width: 100%; max-width: 400px; }
+
+    .auth-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 900;
+      background: linear-gradient(135deg, #5B4FCF, #7C3AED);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; text-decoration: none; margin-bottom: 24px;
+    }
+    .auth-logo-icon {
+      width: 36px; height: 36px; border-radius: 9px;
+      background: linear-gradient(135deg, #5B4FCF, #7C3AED);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1rem; flex-shrink: 0;
+    }
+    .auth-form-wrap h2 {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.6rem; font-weight: 800; color: #1E293B; margin: 0 0 5px;
+    }
+    .auth-subtitle { color: #64748B; font-size: .875rem; margin: 0 0 20px; }
+
+    .form-label { color: #374151; font-size: 0.875rem; font-weight: 500; }
+    .input-icon-wrap { position: relative; }
+    .input-icon-wrap > i {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      color: #94a3b8; font-size: .82rem; pointer-events: none; z-index: 2;
+    }
+    .input-icon-wrap .form-control { padding-left: 36px; }
+    .form-control {
+      border-radius: 10px; border: 1.5px solid #E5E7EB;
+      font-size: 0.9rem; padding: 10px 12px; background: #FAFBFC;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-control:focus {
+      border-color: #5B4FCF; box-shadow: 0 0 0 3px rgba(91,79,207,0.12);
+      background: #fff; outline: none;
+    }
+    .input-wrapper { position: relative; }
+    .toggle-senha {
+      position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+      cursor: pointer; color: #94a3b8; background: none; border: none; padding: 0; z-index: 2;
+    }
+    .toggle-senha:hover { color: #1E293B; }
+
+    .tipo-btn {
+      border: 2px solid #E5E7EB; background: #FAFBFC; border-radius: 12px;
+      padding: 16px 10px; cursor: pointer; color: #64748B; transition: all 0.15s;
+      text-align: center; flex: 1; font-family: inherit;
+    }
+    .tipo-btn.active { border-color: #5B4FCF; background: #EDE9FE; color: #5B4FCF; }
+    .tipo-btn:hover:not(.active) { background: #F1F5F9; border-color: #CBD5E1; }
+
+    .btn-cadastrar {
+      background: linear-gradient(90deg, #5B4FCF, #7C3AED);
+      color: #fff; border: none; border-radius: 10px;
+      font-weight: 700; font-size: 0.95rem; padding: 11px;
+      width: 100%; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(91,79,207,0.28);
+      transition: opacity 0.15s, transform 0.1s; font-family: inherit;
+    }
+    .btn-cadastrar:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-cadastrar:active { transform: translateY(0); }
+
+    .auth-switch { text-align: center; color: #64748B; font-size: .875rem; margin-top: 18px; margin-bottom: 0; }
+    .auth-switch a { color: #5B4FCF; font-weight: 600; text-decoration: none; }
+    .auth-switch a:hover { text-decoration: underline; }
+
+    @media (max-width: 767px) {
+      .auth-left { display: none; }
+      .auth-right { padding: 24px 20px; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
-
   <div class="auth-layout">
 
-    <!-- LEFT PANEL -->
+    <!-- Painel esquerdo -->
     <div class="auth-left">
       <div class="auth-brand">
-        <div class="auth-brand-icon">🎓</div>
         <h1 class="auth-brand-title">XP Diário</h1>
         <p class="auth-brand-sub">Transforme seus estudos em uma aventura épica</p>
       </div>
 
-      <div class="auth-mascot">🧙</div>
+      <div class="auth-mascot">
+        <img src="/img/personagem.svg" alt="Personagem"
+             onerror="this.outerHTML='<span style=\'font-size:5rem;display:block;\'>🧙</span>'">
+      </div>
 
       <div class="auth-features">
-        <div class="auth-feature"><span>⚔️</span> Ganhe XP por sessão</div>
-        <div class="auth-feature"><span>🔥</span> Mantenha sua sequência</div>
-        <div class="auth-feature"><span>🏆</span> Desbloqueie conquistas</div>
-        <div class="auth-feature"><span>📊</span> Acompanhe seu progresso</div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">⚔️</div>
+          <span>Ganhe XP por cada sessão de estudo</span>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">🔥</div>
+          <span>Mantenha sua sequência diária</span>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">🏆</div>
+          <span>Desbloqueie conquistas incríveis</span>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">📊</div>
+          <span>Acompanhe seu progresso em detalhes</span>
+        </div>
       </div>
     </div>
 
-    <!-- RIGHT PANEL -->
+    <!-- Painel direito -->
     <div class="auth-right">
       <div class="auth-form-wrap">
 
         <a href="/app" class="auth-logo">
-          <span>🎓</span> XP Diário
+          <div class="auth-logo-icon"><i class="fas fa-graduation-cap"></i></div>
+          <span>XP Diário</span>
         </a>
 
-        <h2>Criar sua conta</h2>
-        <p class="auth-subtitle">Comece sua jornada de estudos gamificados</p>
+        <h2>Criar sua conta ✨</h2>
+        <p class="auth-subtitle">Comece sua aventura de estudos agora!</p>
 
         <!-- Role selector -->
         <div class="mb-4">
-          <p class="small text-secondary mb-2">Como você vai usar o XP Diário?</p>
+          <p class="form-label mb-2">Como você vai usar o XP Diário?</p>
           <div class="d-flex gap-2">
             <button type="button" class="tipo-btn active" id="btn-tipo-aluno" onclick="selecionarTipo('aluno')">
               <i class="fas fa-user-graduate" style="display:block;font-size:1.4rem;margin-bottom:6px;"></i>
@@ -93,9 +205,8 @@
         </div>
 
         <form id="form-cadastro">
-
           <div class="mb-3">
-            <label for="nome" class="form-label small fw-semibold text-secondary">Nome</label>
+            <label for="nome" class="form-label">Nome</label>
             <div class="input-icon-wrap">
               <i class="fas fa-user"></i>
               <input type="text" class="form-control" id="nome" placeholder="Seu nome completo" required>
@@ -103,7 +214,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="email" class="form-label small fw-semibold text-secondary">E-mail</label>
+            <label for="email" class="form-label">E-mail</label>
             <div class="input-icon-wrap">
               <i class="fas fa-envelope"></i>
               <input type="email" class="form-control" id="email" placeholder="nome@exemplo.com" required>
@@ -111,7 +222,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="senha" class="form-label small fw-semibold text-secondary">Senha</label>
+            <label for="senha" class="form-label">Senha</label>
             <div class="input-icon-wrap input-wrapper">
               <i class="fas fa-lock"></i>
               <input type="password" class="form-control" id="senha" placeholder="Mínimo 6 caracteres" required>
@@ -122,7 +233,7 @@
           </div>
 
           <div class="mb-4">
-            <label for="confirmarSenha" class="form-label small fw-semibold text-secondary">Confirmar Senha</label>
+            <label for="confirmarSenha" class="form-label">Confirmar Senha</label>
             <div class="input-icon-wrap input-wrapper">
               <i class="fas fa-lock"></i>
               <input type="password" class="form-control" id="confirmarSenha" placeholder="Repita a senha" required>
@@ -132,17 +243,16 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary w-100" id="btn-cadastrar">Criar Conta</button>
+          <button type="submit" class="btn-cadastrar" id="btn-cadastrar">
+            <i class="fas fa-user-plus me-2"></i>Criar Conta
+          </button>
 
           <p class="auth-switch">Já tem uma conta? <a href="/login">Entrar</a></p>
-
         </form>
 
-        <div id="mensagem" class="mt-3 small"></div>
-
+        <div id="mensagem" class="mt-3 small text-center"></div>
       </div>
     </div>
-
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

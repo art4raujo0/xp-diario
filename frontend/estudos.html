@@ -9,34 +9,122 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <style>
-    .xp-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: #ede9fe; color: #7c3aed;
-      border-radius: 99px; padding: 4px 12px;
-      font-size: 0.8rem; font-weight: 700;
+    /* === Sessão ao vivo === */
+    .timer-view { display: none; }
+    .timer-wrap {
+      display: flex;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.16);
+      min-height: 520px;
+      margin-bottom: 28px;
     }
-    .conquista-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: #fff8e1; color: #f59e0b;
-      border: 1px solid #fde68a; border-radius: 99px;
-      padding: 4px 12px; font-size: 0.8rem; font-weight: 700;
+    .timer-left {
+      flex: 1;
+      background: linear-gradient(145deg, #1E1B4B 0%, #312E81 40%, #4F46E5 80%);
+      padding: 36px 32px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; position: relative; overflow: hidden; color: #fff;
     }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #463acb; display: inline-block; margin-right: 6px; }
+    .timer-left::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 240px; height: 240px; background: rgba(255,255,255,0.04);
+      border-radius: 50%; pointer-events: none;
+    }
+    .timer-left::after {
+      content: ''; position: absolute; bottom: -80px; left: -40px;
+      width: 200px; height: 200px; background: rgba(255,255,255,0.03);
+      border-radius: 50%; pointer-events: none;
+    }
+    .timer-status-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 99px; padding: 6px 16px; font-size: 0.8rem; font-weight: 600;
+      margin-bottom: 24px; z-index: 1;
+    }
+    .timer-status-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #22C55E;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+      50%       { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
+    }
+    .timer-ring-wrap {
+      position: relative; z-index: 1; margin-bottom: 20px;
+    }
+    .timer-display {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%); text-align: center;
+    }
+    .timer-display-time {
+      font-family: 'Nunito', sans-serif; font-size: 3rem; font-weight: 900;
+      letter-spacing: 2px; line-height: 1;
+    }
+    .timer-display-label { font-size: 0.72rem; opacity: 0.65; margin-top: 4px; }
+    .timer-tagline { font-size: 1rem; font-weight: 600; opacity: 0.85; margin-bottom: 6px; z-index: 1; }
+    .timer-xp-box {
+      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px; padding: 12px 28px; text-align: center;
+      margin: 16px 0; z-index: 1;
+    }
+    .timer-xp-value {
+      font-family: 'Nunito', sans-serif; font-size: 1.8rem; font-weight: 900; color: #FDE68A; line-height: 1;
+    }
+    .timer-xp-label { font-size: 0.7rem; opacity: 0.7; margin-top: 2px; }
+    .timer-controls { display: flex; gap: 12px; z-index: 1; margin-top: 8px; }
+    .btn-timer-pause {
+      background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.3);
+      color: #fff; border-radius: 10px; padding: 10px 24px; font-weight: 600;
+      cursor: pointer; font-family: inherit; font-size: 0.9rem; transition: background 0.15s;
+    }
+    .btn-timer-pause:hover { background: rgba(255,255,255,0.22); }
+    .btn-timer-stop {
+      background: #EF4444; border: none; color: #fff; border-radius: 10px;
+      padding: 10px 24px; font-weight: 600; cursor: pointer;
+      font-family: inherit; font-size: 0.9rem; transition: background 0.15s;
+      box-shadow: 0 4px 12px rgba(239,68,68,0.35);
+    }
+    .btn-timer-stop:hover { background: #DC2626; }
 
+    /* Mascot character in timer */
+    .timer-mascot {
+      position: absolute; bottom: 16px; right: 16px; z-index: 1;
+      opacity: 0.85; animation: float 4s ease-in-out infinite;
+    }
+    .timer-mascot img { width: 80px; height: auto; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); }
+
+    .timer-right {
+      width: 340px; padding: 28px; background: #fff;
+      display: flex; flex-direction: column; gap: 14px; overflow-y: auto;
+    }
+
+    @media (max-width: 767px) {
+      .timer-wrap { flex-direction: column; }
+      .timer-right { width: 100%; }
+      .timer-left { padding: 28px 20px; }
+    }
+
+    /* === Historical session list === */
     .session-list { display: flex; flex-direction: column; }
-    .session-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f1f5f9; }
+    .session-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #F1F5F9; }
     .session-item:last-child { border-bottom: none; padding-bottom: 0; }
-    .session-dot { width: 10px; height: 10px; border-radius: 50%; background: #5b5ef4; margin-top: 5px; flex-shrink: 0; }
+    .session-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--primary); margin-top: 5px; flex-shrink: 0; }
     .session-body { flex: 1; min-width: 0; }
     .session-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .session-materia { font-weight: 600; color: #1e293b; font-size: 0.9rem; }
-    .session-data { font-size: 0.78rem; color: #94a3b8; }
+    .session-materia { font-weight: 600; color: var(--text-dark); font-size: 0.9rem; }
+    .session-data { font-size: 0.78rem; color: #94A3B8; }
     .session-chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .session-chip { display: inline-flex; align-items: center; gap: 5px; border-radius: 99px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; }
-    .session-chip.time  { background: #eff6ff; color: #2563eb; }
-    .session-chip.xp    { background: #ede9fe; color: #7c3aed; }
-    .session-chip.tasks { background: #f0fdf4; color: #16a34a; }
-    .session-desc { font-size: 0.8rem; color: #64748b; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .session-chip.time  { background: #EFF6FF; color: #2563EB; }
+    .session-chip.xp    { background: #EDE9FE; color: #7C3AED; }
+    .session-chip.tasks { background: #F0FDF4; color: #16A34A; }
+    .session-desc { font-size: 0.8rem; color: #64748B; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .xp-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #EDE9FE; color: #7C3AED;
+      border-radius: 99px; padding: 4px 12px; font-size: 0.8rem; font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -70,8 +158,13 @@
         </div>
         <i class="fas fa-right-left ctx-switch-icon"></i>
       </div>
+      <div class="sidebar-tip">
+        ✨ Cada estudo é um passo rumo ao seu melhor!
+      </div>
       <div class="sidebar-mascot">
-        <div class="sidebar-mascot-char">🧙</div>
+        <div class="sidebar-mascot-char">
+          <img src="/img/slime.svg" alt="Mascote" style="width:36px;height:auto;" onerror="this.parentElement.textContent='🧙'">
+        </div>
         <div class="sidebar-mascot-label">+XP a cada estudo!</div>
       </div>
       <div class="sidebar-footer">
@@ -82,74 +175,179 @@
     <main class="content">
       <div class="topbar">
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <span class="topbar-brand">XP Diário</span>
+        <span class="topbar-brand">Sessão de Estudo</span>
       </div>
 
-      <div class="page-header">
-        <div>
-          <h2>⏱ Registrar Estudo</h2>
-          <p class="page-subtitle">Registre uma sessão de estudo</p>
+      <!-- ====================================================
+           TIMER VIEW (Sessão ao Vivo)
+           ==================================================== -->
+      <div class="timer-view" id="timer-view">
+        <div class="timer-wrap">
+
+          <!-- Esquerda: painel escuro com timer -->
+          <div class="timer-left">
+            <div class="timer-status-badge">
+              <span class="timer-status-dot" id="timer-status-dot"></span>
+              <span id="timer-status-text">Sessão em andamento</span>
+            </div>
+
+            <!-- Anel circular -->
+            <div class="timer-ring-wrap">
+              <svg width="200" height="200" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="9"/>
+                <circle id="timer-ring" cx="100" cy="100" r="85" fill="none"
+                        stroke="#FDE68A" stroke-width="9" stroke-linecap="round"
+                        stroke-dasharray="534" stroke-dashoffset="534"
+                        transform="rotate(-90 100 100)"
+                        style="transition:stroke-dashoffset 0.5s linear;"/>
+              </svg>
+              <div class="timer-display">
+                <div class="timer-display-time" id="timer-display">00:00</div>
+                <div class="timer-display-label">tempo decorrido</div>
+              </div>
+            </div>
+
+            <div class="timer-tagline">Foque no que importa!</div>
+
+            <div class="timer-xp-box">
+              <div class="timer-xp-value" id="timer-xp">0 XP</div>
+              <div class="timer-xp-label">nesta sessão</div>
+            </div>
+
+            <div class="timer-controls">
+              <button class="btn-timer-pause" id="btn-timer-pausar" onclick="pausarTimer()">
+                <i class="fas fa-pause me-2"></i>Pausar
+              </button>
+              <button class="btn-timer-stop" onclick="encerrarTimer()">
+                <i class="fas fa-stop me-2"></i>Encerrar
+              </button>
+            </div>
+
+            <!-- Mascote no canto -->
+            <div class="timer-mascot">
+              <img src="/img/personagem-sentado.svg" alt="Estudando" onerror="this.style.display='none'">
+            </div>
+          </div>
+
+          <!-- Direita: detalhes da sessão -->
+          <div class="timer-right">
+            <div>
+              <h5 class="fw-bold mb-1">Detalhes da Sessão</h5>
+              <p class="text-muted small mb-0">Concentre-se e conquiste seus objetivos!</p>
+            </div>
+
+            <div>
+              <label class="form-label">Disciplina</label>
+              <select id="timer-materia" class="form-select">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Objetivo da sessão <span class="text-muted fw-normal">(opcional)</span></label>
+              <textarea id="timer-objetivo" class="form-control" rows="3"
+                        placeholder="Ex: Resolver exercícios de funções do 1° grau"></textarea>
+            </div>
+
+            <div style="background:#F8FAFC;border-radius:12px;padding:14px 16px;">
+              <div class="fw-semibold mb-3" style="font-size:0.88rem;">Informações da Sessão</div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small"><i class="fas fa-clock me-2 text-primary"></i>Início</span>
+                <span class="fw-semibold small" id="timer-inicio">—</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small"><i class="fas fa-hourglass me-2 text-warning"></i>Duração</span>
+                <span class="fw-semibold small" id="timer-duracao">00:00</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted small"><i class="fas fa-pause me-2 text-muted"></i>Pausas</span>
+                <span class="fw-semibold small" id="timer-pausas">0</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label fw-semibold">Resumo da sessão <span class="text-muted fw-normal">(opcional)</span></label>
+              <textarea id="timer-resumo" class="form-control" rows="3"
+                        placeholder="O que você aprendeu? Isso te ajuda a fixar o conteúdo..."></textarea>
+              <div class="form-text" id="timer-resumo-count" style="text-align:right;">0/500</div>
+            </div>
+
+            <button onclick="salvarSessaoTimer()" class="btn btn-primary w-100" id="btn-salvar-timer">
+              <i class="fas fa-check me-2"></i>Salvar sessão realizada
+              <span id="timer-xp-badge" style="background:rgba(255,255,255,0.2);border-radius:6px;padding:2px 8px;font-size:0.78rem;margin-left:6px;">+0 XP</span>
+            </button>
+
+            <div id="timer-msg" class="small" style="min-height:16px;"></div>
+          </div>
         </div>
-        <button class="btn btn-primary px-4" onclick="mostrarForm()">
-          <i class="fas fa-plus me-2"></i>Nova Sessão
-        </button>
       </div>
 
-      <div id="mensagem" class="mb-3"></div>
-
-      <div id="formEstudo" class="card-panel p-4 mb-4 d-none">
-        <h6 class="fw-bold mb-4" style="color:#1e293b;">
-          <i class="fas fa-pen-to-square me-2" style="color:var(--primary);"></i>Nova Sessão de Estudo
-        </h6>
-        <div class="row g-3">
-          <div class="col-md-4">
-            <label class="form-label fw-semibold">
-              <i class="fas fa-book me-1 text-muted"></i>Matéria <span class="text-danger">*</span>
-            </label>
-            <select id="materia" class="form-select">
-              <option value="">Carregando...</option>
-            </select>
+      <!-- ====================================================
+           NORMAL VIEW
+           ==================================================== -->
+      <div id="normal-view">
+        <div class="page-header">
+          <div>
+            <h2><i class="fas fa-clock me-2" style="font-size:1.2rem;color:var(--primary);"></i>Registrar Estudo</h2>
+            <p class="page-subtitle">Inicie uma sessão ao vivo ou registre manualmente</p>
           </div>
-          <div class="col-md-3">
-            <label class="form-label fw-semibold">
-              <i class="fas fa-clock me-1 text-muted"></i>Tempo (min) <span class="text-danger">*</span>
-            </label>
-            <input id="tempo" type="number" class="form-control" placeholder="Ex: 45" min="1">
-          </div>
-          <div class="col-md-2">
-            <label class="form-label fw-semibold">
-              <i class="fas fa-list-check me-1 text-muted"></i>Tarefas concluídas
-            </label>
-            <input id="tarefas" type="number" class="form-control" placeholder="0" min="0" value="0">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label fw-semibold">
-              <i class="fas fa-calendar me-1 text-muted"></i>Data
-            </label>
-            <input id="data" type="date" class="form-control">
-          </div>
-          <div class="col-12">
-            <label class="form-label fw-semibold">
-              <i class="fas fa-align-left me-1 text-muted"></i>Descrição
-              <span class="text-muted fw-normal" style="font-size:0.8rem;"> (opcional)</span>
-            </label>
-            <textarea id="descricao" class="form-control" rows="2" placeholder="Ex: Revisão do capítulo 3..."></textarea>
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn-pixel" onclick="iniciarSessaoAoVivo()">
+              <i class="fas fa-play me-2"></i>Sessão ao Vivo
+            </button>
+            <button class="btn btn-light" onclick="mostrarForm()">
+              <i class="fas fa-plus me-2"></i>Registrar Manualmente
+            </button>
           </div>
         </div>
-        <div class="d-flex gap-2 align-items-center mt-3">
-          <button class="btn btn-success px-4" onclick="salvarRegistro()">
-            <i class="fas fa-floppy-disk me-2"></i>Salvar Sessão
-          </button>
-          <button class="btn btn-light px-4" onclick="cancelar()">Cancelar</button>
-          <span class="text-muted ms-1" style="font-size:0.8rem;"><span class="text-danger">*</span> obrigatórios</span>
+
+        <div id="mensagem" class="mb-3"></div>
+
+        <!-- Formulário manual -->
+        <div id="formEstudo" class="card-panel p-4 mb-4 d-none">
+          <h6 class="fw-bold mb-4">
+            <i class="fas fa-pen-to-square me-2" style="color:var(--primary);"></i>Nova Sessão de Estudo
+          </h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Matéria <span class="text-danger">*</span></label>
+              <select id="materia" class="form-select">
+                <option value="">Carregando...</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Tempo (min) <span class="text-danger">*</span></label>
+              <input id="tempo" type="number" class="form-control" placeholder="Ex: 45" min="1">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Tarefas concluídas</label>
+              <input id="tarefas" type="number" class="form-control" placeholder="0" min="0" value="0">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Data</label>
+              <input id="data" type="date" class="form-control">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Descrição <span class="text-muted fw-normal" style="font-size:0.8rem;">(opcional)</span></label>
+              <textarea id="descricao" class="form-control" rows="2" placeholder="Ex: Revisão do capítulo 3..."></textarea>
+            </div>
+          </div>
+          <div class="d-flex gap-2 align-items-center mt-3">
+            <button class="btn btn-success px-4" onclick="salvarRegistro()">
+              <i class="fas fa-floppy-disk me-2"></i>Salvar Sessão
+            </button>
+            <button class="btn btn-light px-4" onclick="cancelar()">Cancelar</button>
+          </div>
+        </div>
+
+        <!-- Histórico -->
+        <div id="lista" class="card-panel p-3">
+          <div class="p-4 text-center text-muted">
+            <i class="fas fa-spinner fa-spin me-2"></i>Carregando histórico...
+          </div>
         </div>
       </div>
 
-      <div id="lista" class="card-panel p-3">
-        <div class="p-4 text-center text-muted">
-          <i class="fas fa-spinner fa-spin me-2"></i>Carregando histórico...
-        </div>
-      </div>
     </main>
   </div>
 

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 80" width="96" height="80">
+
+  <!-- Plataforma / pedaço de grama -->
+  <ellipse cx="52" cy="76" rx="30" ry="5" fill="#16A34A" opacity="0.35"/>
+  <rect x="22" y="70" width="60" height="8" rx="4" fill="#22C55E"/>
+  <!-- Detalhes grama -->
+  <ellipse cx="30" cy="70" rx="4" ry="2" fill="#4ADE80"/>
+  <ellipse cx="44" cy="69" rx="3" ry="2" fill="#4ADE80"/>
+  <ellipse cx="60" cy="70" rx="4" ry="2" fill="#4ADE80"/>
+  <ellipse cx="74" cy="69.5" rx="3.5" ry="2" fill="#4ADE80"/>
+
+  <!-- Perna esquerda estendida (sentado) -->
+  <rect x="26" y="58" width="12" height="18" rx="5" fill="#1E40AF" transform="rotate(30 32 67)"/>
+  <!-- Pé esquerdo -->
+  <rect x="22" y="68" width="13" height="7" rx="3.5" fill="#1F2937" transform="rotate(10 28 72)"/>
+
+  <!-- Perna direita dobrada (sentado) -->
+  <rect x="50" y="52" width="11" height="20" rx="5" fill="#1E40AF" transform="rotate(-20 55 62)"/>
+  <!-- Pé direito -->
+  <rect x="56" y="65" width="13" height="7" rx="3.5" fill="#1F2937" transform="rotate(-15 62 69)"/>
+
+  <!-- Corpo (camisa azul) -->
+  <rect x="28" y="36" width="36" height="28" rx="8" fill="#3B82F6"/>
+
+  <!-- Gola branca -->
+  <rect x="39" y="36" width="12" height="7" rx="3" fill="#fff"/>
+
+  <!-- Braço esquerdo (apoiado) -->
+  <rect x="16" y="38" width="13" height="20" rx="6" fill="#3B82F6" transform="rotate(15 22 48)"/>
+  <!-- Mão esquerda no chão -->
+  <ellipse cx="19" cy="60" rx="5" ry="4.5" fill="#FFCCAA" transform="rotate(15 19 60)"/>
+
+  <!-- Braço direito segurando livro -->
+  <rect x="63" y="36" width="13" height="22" rx="6" fill="#3B82F6"/>
+  <!-- Mão direita -->
+  <ellipse cx="69" cy="60" rx="5" ry="5" fill="#FFCCAA"/>
+
+  <!-- Livro aberto (roxo) -->
+  <!-- Página esquerda -->
+  <path d="M44 38 Q38 37 34 40 L34 64 Q38 61 44 62Z" fill="#7C3AED"/>
+  <!-- Página direita -->
+  <path d="M44 38 Q50 37 54 40 L54 64 Q50 61 44 62Z" fill="#8B5CF6"/>
+  <!-- Lombada central do livro aberto -->
+  <rect x="43" y="38" width="2" height="26" rx="1" fill="#5B21B6"/>
+  <!-- Linhas de texto na página esquerda -->
+  <line x1="36" y1="45" x2="43" y2="44" stroke="#C4B5FD" stroke-width="1" opacity="0.8"/>
+  <line x1="36" y1="49" x2="43" y2="48" stroke="#C4B5FD" stroke-width="1" opacity="0.8"/>
+  <line x1="36" y1="53" x2="43" y2="52" stroke="#C4B5FD" stroke-width="1" opacity="0.8"/>
+  <line x1="36" y1="57" x2="43" y2="56" stroke="#C4B5FD" stroke-width="1" opacity="0.8"/>
+  <!-- Linhas de texto na página direita -->
+  <line x1="46" y1="44" x2="52" y2="45" stroke="#DDD6FE" stroke-width="1" opacity="0.8"/>
+  <line x1="46" y1="48" x2="52" y2="49" stroke="#DDD6FE" stroke-width="1" opacity="0.8"/>
+  <line x1="46" y1="52" x2="52" y2="53" stroke="#DDD6FE" stroke-width="1" opacity="0.8"/>
+  <line x1="46" y1="56" x2="52" y2="57" stroke="#DDD6FE" stroke-width="1" opacity="0.8"/>
+
+  <!-- Pescoço -->
+  <rect x="40" y="28" width="10" height="10" rx="4" fill="#FFCCAA"/>
+
+  <!-- Cabeça grande chibi -->
+  <ellipse cx="46" cy="16" rx="20" ry="20" fill="#FFCCAA"/>
+
+  <!-- Cabelo castanho escuro -->
+  <ellipse cx="46" cy="2" rx="19" ry="9" fill="#5C2D0E"/>
+  <!-- Franja esquerda -->
+  <path d="M26 12 Q30 2 38 6 Q32 14 30 17Z" fill="#5C2D0E"/>
+  <!-- Franja direita -->
+  <path d="M66 12 Q62 2 54 6 Q60 14 62 17Z" fill="#5C2D0E"/>
+  <!-- Mechas no topo -->
+  <path d="M41 -1 Q44 -4 46 1" stroke="#7B3F10" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M47 -2 Q50 -5 52 0" stroke="#7B3F10" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Bochechas rosadas -->
+  <ellipse cx="29" cy="20" rx="5" ry="3" fill="#FDA4AF" opacity="0.6"/>
+  <ellipse cx="63" cy="20" rx="5" ry="3" fill="#FDA4AF" opacity="0.6"/>
+
+  <!-- Olho esquerdo (expressão concentrada - levemente semicerrado) -->
+  <!-- Pálpebra semicerrada -->
+  <ellipse cx="35" cy="16" rx="5.5" ry="5.5" fill="#1E3A5F"/>
+  <ellipse cx="35" cy="16" rx="4" ry="4.5" fill="#2563EB"/>
+  <ellipse cx="35" cy="16" rx="2" ry="2.5" fill="#1E3A5F"/>
+  <ellipse cx="36.2" cy="14.2" rx="1.3" ry="1.3" fill="#fff"/>
+  <!-- Pálpebra superior (olho meio fechado) -->
+  <path d="M29.5 13 Q35 10 40.5 13" stroke="#5C2D0E" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+
+  <!-- Olho direito (concentrado) -->
+  <ellipse cx="57" cy="16" rx="5.5" ry="5.5" fill="#1E3A5F"/>
+  <ellipse cx="57" cy="16" rx="4" ry="4.5" fill="#2563EB"/>
+  <ellipse cx="57" cy="16" rx="2" ry="2.5" fill="#1E3A5F"/>
+  <ellipse cx="58.2" cy="14.2" rx="1.3" ry="1.3" fill="#fff"/>
+  <!-- Pálpebra superior (olho meio fechado) -->
+  <path d="M51.5 13 Q57 10 62.5 13" stroke="#5C2D0E" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+
+  <!-- Nariz pequeno -->
+  <ellipse cx="46" cy="22" rx="1.5" ry="1" fill="#E8A87C"/>
+
+  <!-- Boca neutra/concentrada -->
+  <path d="M40 26 Q46 29 52 26" stroke="#C47B4C" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+
+  <!-- Bolinha de pensamento / estrelinhas de foco -->
+  <circle cx="76" cy="8" r="2" fill="#FDE68A" opacity="0.9"/>
+  <circle cx="82" cy="4" r="1.4" fill="#FDE68A" opacity="0.75"/>
+  <circle cx="86" cy="10" r="1" fill="#FDE68A" opacity="0.6"/>
+
+</svg>
