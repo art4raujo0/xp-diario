@@ -44,6 +44,10 @@ async function executarMigracoes() {
 
     // Migração 007 — matérias por usuário
     `ALTER TABLE disciplina ADD COLUMN IF NOT EXISTS di_usuario_id INTEGER REFERENCES usuarios(us_id)`,
+
+    // Migração 008 — reset de senha
+    `ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS us_reset_token VARCHAR(64)`,
+    `ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS us_reset_token_expiry TIMESTAMPTZ`,
   ];
 
   for (const stmt of statements) {

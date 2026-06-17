@@ -18,6 +18,7 @@ const tarefasRoutes = require("./src/routes/tarefas");
 const relatorioRoutes = require("./src/routes/relatorio");
 const turmasRoutes = require("./src/routes/turmas");
 const adminRoutes = require("./src/routes/admin");
+const authRoutes = require("./src/routes/auth");
 const { iniciarScheduler } = require("./src/services/notificacoesService");
 const { executarMigracoes } = require("./src/config/migrar");
 
@@ -94,6 +95,10 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(publicPath, 'admin.html'));
 });
 
+app.get('/redefinir-senha', (req, res) => {
+  res.sendFile(path.join(publicPath, 'redefinir-senha.html'));
+});;
+
 
 
 app.use('/api/metas', metasRoutes);
@@ -111,6 +116,7 @@ app.use("/api/tarefas", tarefasRoutes);
 app.use("/api/relatorio", relatorioRoutes);
 app.use("/api/turmas", turmasRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/auth", authRoutes);
 
 executarMigracoes().then(() => iniciarScheduler());
 

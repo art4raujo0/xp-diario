@@ -80,7 +80,11 @@
           </div>
 
           <div class="mb-4">
-            <label for="senha" class="form-label small fw-semibold text-secondary">Senha</label>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label for="senha" class="form-label small fw-semibold text-secondary mb-0">Senha</label>
+              <a href="#" class="small" style="color:#5b5ef4;font-weight:600;text-decoration:none;"
+                data-bs-toggle="modal" data-bs-target="#modal-esqueci">Esqueci minha senha</a>
+            </div>
             <div class="input-icon-wrap">
               <i class="fas fa-lock"></i>
               <input type="password" class="form-control" id="senha" placeholder="Sua senha" required>
@@ -98,6 +102,29 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Modal: Esqueci a senha -->
+  <div class="modal fade" id="modal-esqueci" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+      <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" style="font-size:1.05rem;">🔐 Recuperar senha</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body pt-2">
+          <p class="text-muted small mb-3">Informe seu e-mail cadastrado e enviaremos um link para criar uma nova senha.</p>
+          <div class="input-icon-wrap mb-3">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="esqueci-email" class="form-control" placeholder="nome@exemplo.com">
+          </div>
+          <div id="esqueci-msg" class="small mb-2" style="min-height:20px;"></div>
+          <button id="btn-esqueci" class="btn btn-primary w-100" onclick="enviarRecuperacao()">
+            Enviar link de recuperação
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -151,7 +151,11 @@ function renderizarDashboardTurma(turma, alunos) {
         </button>
         <button onclick="abrirDetalhes(${turma.tu_id})"
           style="background:#f1f5f9;color:#1e293b;border:none;border-radius:10px;font-size:0.85rem;padding:8px 16px;cursor:pointer;">
-          <i class="fas fa-eye me-2"></i>Ver Alunos (modal)
+          <i class="fas fa-eye me-2"></i>Ver Alunos
+        </button>
+        <button onclick="excluirTurma(${turma.tu_id},${JSON.stringify(turma.tu_nome)})"
+          style="background:#fee2e2;color:#dc2626;border:none;border-radius:10px;font-size:0.85rem;padding:8px 16px;cursor:pointer;">
+          <i class="fas fa-trash me-2"></i>Excluir Turma
         </button>
       </div>
     </div>` : ''}
@@ -221,6 +225,7 @@ function renderizarListaProfessor(turmas) {
           <div class="d-flex gap-2 flex-shrink-0">
             <button class="btn-icon" title="Ver alunos" onclick="abrirDetalhes(${t.tu_id})"><i class="fas fa-eye"></i></button>
             <button class="btn-icon" title="Editar" onclick="abrirEditar(${t.tu_id},${JSON.stringify(t.tu_nome)},${t.tu_ativa})"><i class="fas fa-pen"></i></button>
+            <button class="btn-icon danger" title="Excluir turma" onclick="excluirTurma(${t.tu_id},${JSON.stringify(t.tu_nome)})"><i class="fas fa-trash"></i></button>
           </div>
         </div>
       </div>
@@ -390,6 +395,35 @@ async function salvarEdicao() {
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-check me-1"></i>Salvar';
+  }
+}
+
+async function excluirTurma(turmaId, nomeTurma) {
+  if (!confirm(`Excluir a turma "${nomeTurma}"?\n\nEsta ação não pode ser desfeita. Todos os alunos serão desvinculados.`)) return;
+
+  const token = localStorage.getItem('xp_diario_token');
+
+  try {
+    const res = await fetch(`/api/turmas/${turmaId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const dados = await res.json();
+
+    if (res.ok) {
+      mostrarMensagem('ok', dados.mensagem);
+      const ctx = getContexto();
+      if (ctx.tipo === 'turma' && ctx.turma_id === turmaId) {
+        // Estava no contexto desta turma — volta para área pessoal
+        setTimeout(() => selecionarContexto('pessoal', null, 'Minha Área'), 1000);
+      } else {
+        carregarTurmasProfessor();
+      }
+    } else {
+      mostrarMensagem('err', dados.erro || 'Erro ao excluir turma.');
+    }
+  } catch {
+    mostrarMensagem('err', 'Erro ao conectar com o servidor.');
   }
 }
 

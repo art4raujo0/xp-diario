@@ -1,3 +1,44 @@
+async function enviarRecuperacao() {
+  const email = (document.getElementById('esqueci-email')?.value || '').trim();
+  const msg = document.getElementById('esqueci-msg');
+  const btn = document.getElementById('btn-esqueci');
+
+  if (!email) {
+    msg.style.color = '#dc2626';
+    msg.textContent = 'Informe seu e-mail.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+  msg.textContent = '';
+
+  try {
+    const res = await fetch('/api/auth/esqueci-senha', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const dados = await res.json();
+
+    if (res.ok) {
+      msg.style.color = '#16a34a';
+      msg.textContent = dados.mensagem;
+      btn.textContent = 'Link enviado!';
+    } else {
+      msg.style.color = '#dc2626';
+      msg.textContent = dados.erro || 'Erro ao enviar. Tente novamente.';
+      btn.disabled = false;
+      btn.textContent = 'Enviar link de recuperação';
+    }
+  } catch {
+    msg.style.color = '#dc2626';
+    msg.textContent = 'Erro ao conectar com o servidor.';
+    btn.disabled = false;
+    btn.textContent = 'Enviar link de recuperação';
+  }
+}
+
 document.getElementById('form-login').addEventListener('submit', async (event) => {
     // Evita que a página recarregue ao clicar no botão
     event.preventDefault();
