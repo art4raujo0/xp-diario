@@ -258,9 +258,26 @@ router.get("/", autenticar, async (req, res) => {
       ORDER BY at_data DESC, at_id DESC
     `, [usuarioId]);
 
+    const tarefasResult = await pool.query(`
+      SELECT
+        ta_id,
+        ta_disciplina_id,
+        ta_status,
+        ta_concluida_em
+      FROM tarefa
+      WHERE ta_usuario_id = $1
+        AND ta_status = 'concluida'
+      ORDER BY ta_concluida_em DESC, ta_id DESC
+    `, [usuarioId]);
+
     const atividades = atividadesResult.rows.map((atividade) => ({
       ...atividade,
       at_data: parseData(atividade.at_data)
+    }));
+
+    const tarefasConcluidas = tarefasResult.rows.map((tarefa) => ({
+      ...tarefa,
+      ta_concluida_em: parseData(tarefa.ta_concluida_em)
     }));
 
     const metasComProgresso = metas.map((meta) => {
@@ -281,15 +298,26 @@ router.get("/", autenticar, async (req, res) => {
           })
         : [];
 
+      const tarefasConcluidasDaMeta = periodo.ativa
+        ? tarefasConcluidas.filter((tarefa) => {
+            if (Number(tarefa.ta_disciplina_id) !== Number(meta.me_disciplina)) {
+              return false;
+            }
+            return true;
+          })
+        : [];
+
       const tempoEstudadoMin = atividadesDaMeta.reduce(
         (acumulado, atividade) => acumulado + Number(atividade.at_tempo_min || 0),
         0
       );
 
-      const tarefasConcluidas = atividadesDaMeta.reduce(
+      const tarefasConcluidasPorAtividade = atividadesDaMeta.reduce(
         (acumulado, atividade) => acumulado + Number(atividade.at_tarefas_concluidas || 0),
         0
       );
+
+      const totalTarefasConcluidas = tarefasConcluidasPorAtividade + tarefasConcluidasDaMeta.length;
 
       const percentual = calcularPercentual(tempoEstudadoMin, tempoMetaMin);
       const percentualExibicao = Math.min(percentual, 100);
@@ -324,7 +352,9 @@ router.get("/", autenticar, async (req, res) => {
           valorMeta: tempoMetaMin,
           percentual,
           percentualExibicao,
-          tarefasConcluidas,
+          tarefasConcluidas: totalTarefasConcluidas,
+          tarefasConcluidasPorAtividade,
+          tarefasConcluidasReais: tarefasConcluidasDaMeta.length,
           quantidadeAtividades,
           atingiuMeta,
           indicadorVisual,

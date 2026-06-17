@@ -13,6 +13,7 @@ const streakRoutes = require("./src/routes/streak");
 const conquistasRoutes = require("./src/routes/conquistas");
 const perfilRoutes = require("./src/routes/perfil");
 const notificacoesRoutes = require("./src/routes/notificacoes");
+const tarefasRoutes = require("./src/routes/tarefas");
 const { iniciarScheduler } = require("./src/services/notificacoesService");
 
 
@@ -56,6 +57,10 @@ app.get('/estudos', (req, res) => {
   res.sendFile(path.join(publicPath, 'estudos.html'));
 });
 
+app.get('/tarefas', (req, res) => {
+  res.sendFile(path.join(publicPath, 'tarefas.html'));
+});
+
 app.get('/conquistas', (req, res) => {
   res.sendFile(path.join(publicPath, 'conquistas.html'));
 });
@@ -76,6 +81,7 @@ app.use("/api/streak", streakRoutes);
 app.use("/api/conquistas", conquistasRoutes);
 app.use("/api/perfil", perfilRoutes);
 app.use("/api/notificacoes", notificacoesRoutes);
+app.use("/api/tarefas", tarefasRoutes);
 
 iniciarScheduler();
 
