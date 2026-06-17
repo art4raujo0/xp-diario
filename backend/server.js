@@ -14,6 +14,7 @@ const conquistasRoutes = require("./src/routes/conquistas");
 const perfilRoutes = require("./src/routes/perfil");
 const notificacoesRoutes = require("./src/routes/notificacoes");
 const cronogramasRoutes = require("./src/routes/cronogramas");
+const tarefasRoutes = require("./src/routes/tarefas");
 const { iniciarScheduler } = require("./src/services/notificacoesService");
 
 
@@ -61,6 +62,10 @@ app.get('/cronogramas', (req, res) => {
   res.sendFile(path.join(publicPath, 'cronogramas.html'));
 });
 
+app.get('/tarefas', (req, res) => {
+  res.sendFile(path.join(publicPath, 'tarefas.html'));
+});
+
 app.get('/conquistas', (req, res) => {
   res.sendFile(path.join(publicPath, 'conquistas.html'));
 });
@@ -82,6 +87,7 @@ app.use("/api/conquistas", conquistasRoutes);
 app.use("/api/perfil", perfilRoutes);
 app.use("/api/notificacoes", notificacoesRoutes);
 app.use("/api/cronogramas", cronogramasRoutes);
+app.use("/api/tarefas", tarefasRoutes);
 
 iniciarScheduler();
 
