@@ -27,6 +27,7 @@ function criarTransporte() {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
     },
+    family: 4, // Render free tier não suporta IPv6 de saída
     connectionTimeout: 15000,
     greetingTimeout: 15000,
     socketTimeout: 30000,
