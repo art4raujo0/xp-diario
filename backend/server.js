@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
+  res.sendFile(path.join(publicPath, 'login.html'));
 });
 
 app.get('/favicon.ico', (req, res) => {
@@ -88,6 +88,10 @@ app.get('/relatorio', (req, res) => {
 
 app.get('/turmas', (req, res) => {
   res.sendFile(path.join(publicPath, 'turmas.html'));
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(publicPath, 'admin.html'));
 });
 
 

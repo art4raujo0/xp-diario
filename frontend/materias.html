@@ -111,6 +111,13 @@
   <script>
     const API_MATERIAS = '/api/materias';
 
+    function token() { return localStorage.getItem('xp_diario_token'); }
+    function cabecalhos(semContentType) {
+      const h = { 'Authorization': `Bearer ${token()}` };
+      if (!semContentType) h['Content-Type'] = 'application/json';
+      return h;
+    }
+
     function difBadgeClass(dif) {
       if (dif === 'facil')   return 'diff-facil';
       if (dif === 'media')   return 'diff-media';
@@ -149,7 +156,7 @@
 
     async function carregarMaterias() {
       try {
-        const res = await fetch(API_MATERIAS);
+        const res = await fetch(API_MATERIAS, { headers: cabecalhos(true) });
         const materias = await res.json();
         const lista = document.getElementById('lista');
 
@@ -205,7 +212,7 @@
         const payload = { di_disciplina: nome, di_dificuldade: dificuldade, di_descricao: descricao, di_cor: cor };
         const resposta = await fetch(id ? `${API_MATERIAS}/${id}` : API_MATERIAS, {
           method: id ? 'PUT' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: cabecalhos(),
           body: JSON.stringify(payload)
         });
 
@@ -234,7 +241,7 @@
 
     async function deletar(id) {
       if (!confirm('Deseja excluir esta matéria?')) return;
-      await fetch(`${API_MATERIAS}/${id}`, { method: 'DELETE' });
+      await fetch(`${API_MATERIAS}/${id}`, { method: 'DELETE', headers: cabecalhos(true) });
       await carregarMaterias();
     }
 

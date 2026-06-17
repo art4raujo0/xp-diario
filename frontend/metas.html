@@ -120,7 +120,7 @@
 
     async function carregarDisciplinas() {
       try {
-        const res = await fetch(API_DISC);
+        const res = await fetch(API_DISC, { headers: { 'Authorization': `Bearer ${token()}` } });
         const disciplinas = await res.json();
         const select = document.getElementById("disciplina");
         select.innerHTML = disciplinas.map(d => `<option value="${d.di_id}">${d.di_disciplina}</option>`).join('');

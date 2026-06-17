@@ -1,3 +1,20 @@
+// Interceptor global: qualquer 401 redireciona para /login
+(function() {
+  const _fetch = window.fetch;
+  window.fetch = function(url, options) {
+    return _fetch.apply(this, arguments).then(function(res) {
+      if (res.status === 401) {
+        const pub = ['/', '/login', '/cadastro'];
+        if (!pub.includes(window.location.pathname)) {
+          localStorage.removeItem('xp_diario_token');
+          window.location.href = '/login';
+        }
+      }
+      return res;
+    });
+  };
+})();
+
 function sair(e) {
   if (e) e.preventDefault();
   localStorage.removeItem('xp_diario_token');

@@ -144,7 +144,7 @@ function limparForm() {
 
 async function carregarMaterias() {
   try {
-    const res = await fetch(API_MATERIAS);
+    const res = await fetch(API_MATERIAS, { headers: { 'Authorization': `Bearer ${token()}` } });
     const materias = await res.json();
     const select = document.getElementById('materia');
 

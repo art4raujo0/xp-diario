@@ -876,3 +876,38 @@ body {
   color: var(--primary);
 }
 .tipo-btn:hover:not(.active) { background: #f1f5f9; border-color: #cbd5e1; }
+
+/* ============================================================
+   Context Banner (turma ativa)
+   ============================================================ */
+.ctx-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  background: linear-gradient(90deg, #ede9fe, #f5f3ff);
+  border-bottom: 1px solid #c4b5fd;
+  font-size: 0.83rem;
+  color: #5b21b6;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.ctx-banner strong { font-weight: 700; }
+
+.ctx-banner-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #7c3aed;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  transition: background 0.12s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ctx-banner-close:hover { background: #ddd6fe; }

@@ -191,7 +191,7 @@ function renderHistorico(historico) {
 
 async function carregarMaterias() {
   try {
-    const resposta = await fetch(API_MATERIAS);
+    const resposta = await fetch(API_MATERIAS, { headers: { 'Authorization': `Bearer ${token()}` } });
     const materias = await resposta.json();
     const select = document.getElementById("materia");
 

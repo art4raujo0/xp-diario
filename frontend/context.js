@@ -161,7 +161,29 @@ function selecionarContexto(tipo, turmaId, turmaNome) {
   localStorage.setItem(CTX_KEY, JSON.stringify({ tipo, turma_id: turmaId, turma_nome: turmaNome }));
   _renderizarOpcoes(_todasTurmas);
   renderizarContextoSidebar();
+  renderizarContextoBanner();
   fecharContexto();
+}
+
+function renderizarContextoBanner() {
+  const existente = document.getElementById('ctx-banner');
+  if (existente) existente.remove();
+
+  const ctx = getContexto();
+  if (ctx.tipo !== 'turma') return;
+
+  const banner = document.createElement('div');
+  banner.id = 'ctx-banner';
+  banner.className = 'ctx-banner';
+  banner.innerHTML = `
+    <i class="fas fa-users" style="flex-shrink:0;"></i>
+    <span>Contexto: <strong>${ctx.turma_nome}</strong></span>
+    <button class="ctx-banner-close" onclick="selecionarContexto('pessoal',null,'Minha Área')" title="Sair do contexto da turma">
+      <i class="fas fa-times"></i> Sair
+    </button>`;
+
+  const topbar = document.querySelector('.content .topbar');
+  if (topbar) topbar.after(banner);
 }
 
 function filtrarContextos(busca) {
@@ -171,4 +193,7 @@ function filtrarContextos(busca) {
   _renderizarOpcoes(filtradas);
 }
 
-document.addEventListener('DOMContentLoaded', renderizarContextoSidebar);
+document.addEventListener('DOMContentLoaded', () => {
+  renderizarContextoSidebar();
+  renderizarContextoBanner();
+});

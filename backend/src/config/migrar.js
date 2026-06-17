@@ -41,6 +41,9 @@ async function executarMigracoes() {
     `CREATE INDEX IF NOT EXISTS idx_turma_professor ON turma(tu_professor_id)`,
     `CREATE INDEX IF NOT EXISTS idx_ta_turma        ON turma_aluno(ta_turma_id)`,
     `CREATE INDEX IF NOT EXISTS idx_ta_aluno        ON turma_aluno(ta_aluno_id)`,
+
+    // Migração 007 — matérias por usuário
+    `ALTER TABLE disciplina ADD COLUMN IF NOT EXISTS di_usuario_id INTEGER REFERENCES usuarios(us_id)`,
   ];
 
   for (const stmt of statements) {

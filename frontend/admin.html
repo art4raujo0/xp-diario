@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XP Diário - Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="layout">
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar">
+      <a class="brand" href="/app">
+        <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div>
+          <div class="brand-name">XP Diário</div>
+          <div class="brand-sub">Estudo Inteligente</div>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
+        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
+        <a class="menu-link" href="/tarefas"><i class="fas fa-list-check"></i> Tarefas</a>
+        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
+        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronogramas</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
+        <a class="menu-link" href="/turmas"><i class="fas fa-users"></i> Turmas</a>
+        <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
+        <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
+        <a class="menu-link active" href="/admin"><i class="fas fa-crown"></i> Admin</a>
+      </nav>
+      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
+        <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
+        <div class="ctx-info">
+          <div class="ctx-nome" id="ctx-nome">Minha Área</div>
+          <div class="ctx-sub">Contexto atual</div>
+        </div>
+        <i class="fas fa-right-left ctx-switch-icon"></i>
+      </div>
+      <div class="sidebar-mascot">
+        <div class="sidebar-mascot-char">🧙</div>
+        <div class="sidebar-mascot-label">+XP a cada estudo!</div>
+      </div>
+      <div class="sidebar-footer">
+        <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <span class="topbar-brand">XP Diário</span>
+      </div>
+      <div class="page-header">
+        <div>
+          <h2>👑 Admin</h2>
+          <p class="page-subtitle">Gerenciamento de usuários e turmas do sistema</p>
+        </div>
+      </div>
+
+      <div id="acesso-negado" class="d-none">
+        <div class="card-panel p-5 text-center">
+          <div style="font-size:3rem;margin-bottom:16px;">🔒</div>
+          <h4 style="color:#1e293b;">Acesso Restrito</h4>
+          <p class="text-muted">Esta página é exclusiva para administradores.</p>
+          <a href="/app" class="btn btn-primary px-4 mt-2">Voltar ao Dashboard</a>
+        </div>
+      </div>
+
+      <div id="painel-admin">
+        <!-- Stats resumo -->
+        <div class="row g-3 mb-4" id="stats-admin">
+          <div class="col-6 col-md-3">
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Total Usuários</div>
+                <div class="stat-value" id="stat-usuarios">—</div>
+              </div>
+              <div class="stat-icon icon-blue"><i class="fas fa-users"></i></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Professores</div>
+                <div class="stat-value" id="stat-professores">—</div>
+              </div>
+              <div class="stat-icon icon-purple"><i class="fas fa-chalkboard-teacher"></i></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Alunos</div>
+                <div class="stat-value" id="stat-alunos">—</div>
+              </div>
+              <div class="stat-icon icon-green"><i class="fas fa-user-graduate"></i></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Turmas</div>
+                <div class="stat-value" id="stat-turmas">—</div>
+              </div>
+              <div class="stat-icon icon-orange"><i class="fas fa-school"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usuários -->
+        <div class="card-panel p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0" style="color:#1e293b;"><i class="fas fa-users me-2" style="color:#5b5ef4;"></i>Usuários</h6>
+            <button class="btn btn-outline-primary btn-sm px-3" onclick="carregarUsuarios()">
+              <i class="fas fa-rotate-right me-1"></i>Atualizar
+            </button>
+          </div>
+          <div id="tabela-usuarios">
+            <div class="text-center text-muted p-4"><i class="fas fa-spinner fa-spin me-2"></i>Carregando...</div>
+          </div>
+        </div>
+
+        <!-- Turmas -->
+        <div class="card-panel p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0" style="color:#1e293b;"><i class="fas fa-school me-2" style="color:#5b5ef4;"></i>Turmas</h6>
+            <button class="btn btn-outline-primary btn-sm px-3" onclick="carregarTurmas()">
+              <i class="fas fa-rotate-right me-1"></i>Atualizar
+            </button>
+          </div>
+          <div id="tabela-turmas">
+            <div class="text-center text-muted p-4"><i class="fas fa-spinner fa-spin me-2"></i>Carregando...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/utils.js"></script>
+  <script src="/context.js"></script>
+  <script>
+    const _tk = () => localStorage.getItem('xp_diario_token');
+    const _hd = () => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${_tk()}` });
+
+    function verificarAdmin() {
+      const t = _tk();
+      if (!t) { window.location.href = '/login'; return false; }
+      try {
+        const p = JSON.parse(atob(t.split('.')[1]));
+        if (p.tipo !== 'admin') {
+          document.getElementById('painel-admin').classList.add('d-none');
+          document.getElementById('acesso-negado').classList.remove('d-none');
+          return false;
+        }
+        return true;
+      } catch { window.location.href = '/login'; return false; }
+    }
+
+    function tipoLabel(tipo) {
+      const map = { admin: '👑 Admin', professor: '🎓 Professor', aluno: '⚔️ Aluno' };
+      return map[tipo] || tipo;
+    }
+
+    function tipoCor(tipo) {
+      if (tipo === 'admin')     return { bg: '#fef9c3', cor: '#a16207' };
+      if (tipo === 'professor') return { bg: '#ede9fe', cor: '#7c3aed' };
+      return { bg: '#f0fdf4', cor: '#16a34a' };
+    }
+
+    async function carregarUsuarios() {
+      document.getElementById('tabela-usuarios').innerHTML =
+        '<div class="text-center text-muted p-4"><i class="fas fa-spinner fa-spin me-2"></i>Carregando...</div>';
+      try {
+        const res = await fetch('/api/admin/usuarios', { headers: _hd() });
+        if (!res.ok) throw new Error();
+        const { usuarios } = await res.json();
+
+        document.getElementById('stat-usuarios').textContent = usuarios.length;
+        document.getElementById('stat-professores').textContent = usuarios.filter(u => u.us_tipo === 'professor').length;
+        document.getElementById('stat-alunos').textContent = usuarios.filter(u => u.us_tipo === 'aluno').length;
+
+        document.getElementById('tabela-usuarios').innerHTML = `
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Usuário</th>
+                  <th>Tipo</th>
+                  <th class="text-center">XP</th>
+                  <th class="text-center">Turmas</th>
+                  <th class="text-end">Alterar Tipo</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${usuarios.map(u => {
+                  const c = tipoCor(u.us_tipo);
+                  const inicial = (u.us_nome || '?')[0].toUpperCase();
+                  return `<tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="topbar-avatar" style="width:32px;height:32px;font-size:0.85rem;flex-shrink:0;">${inicial}</div>
+                        <div>
+                          <div class="fw-semibold" style="font-size:0.9rem;">${u.us_nome}</div>
+                          <div class="text-muted" style="font-size:0.78rem;">${u.us_email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span style="display:inline-flex;align-items:center;gap:5px;background:${c.bg};color:${c.cor};border-radius:99px;padding:3px 10px;font-size:0.78rem;font-weight:600;">
+                        ${tipoLabel(u.us_tipo)}
+                      </span>
+                    </td>
+                    <td class="text-center fw-semibold">${u.us_pontos_total}</td>
+                    <td class="text-center">${u.turmas_como_aluno + u.turmas_como_professor}</td>
+                    <td class="text-end">
+                      <select class="form-select form-select-sm d-inline-block" style="width:auto;"
+                        onchange="alterarTipo(${u.us_id}, this.value, this)">
+                        <option value="aluno"     ${u.us_tipo==='aluno'    ?'selected':''}>⚔️ Aluno</option>
+                        <option value="professor" ${u.us_tipo==='professor'?'selected':''}>🎓 Professor</option>
+                        <option value="admin"     ${u.us_tipo==='admin'   ?'selected':''}>👑 Admin</option>
+                      </select>
+                    </td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>`;
+      } catch {
+        document.getElementById('tabela-usuarios').innerHTML =
+          '<div class="text-danger p-3">Erro ao carregar usuários.</div>';
+      }
+    }
+
+    async function alterarTipo(userId, novoTipo, selectEl) {
+      selectEl.disabled = true;
+      try {
+        const res = await fetch(`/api/admin/usuarios/${userId}/tipo`, {
+          method: 'PUT',
+          headers: _hd(),
+          body: JSON.stringify({ tipo: novoTipo })
+        });
+        const d = await res.json();
+        if (!res.ok) { alert(d.erro || 'Erro ao alterar tipo.'); await carregarUsuarios(); return; }
+        await carregarUsuarios();
+      } catch {
+        alert('Erro ao alterar tipo do usuário.');
+        selectEl.disabled = false;
+      }
+    }
+
+    async function carregarTurmas() {
+      document.getElementById('tabela-turmas').innerHTML =
+        '<div class="text-center text-muted p-4"><i class="fas fa-spinner fa-spin me-2"></i>Carregando...</div>';
+      try {
+        const res = await fetch('/api/admin/turmas', { headers: _hd() });
+        if (!res.ok) throw new Error();
+        const { turmas } = await res.json();
+
+        document.getElementById('stat-turmas').textContent = turmas.length;
+
+        if (!turmas.length) {
+          document.getElementById('tabela-turmas').innerHTML =
+            '<div class="p-4 text-center text-muted">Nenhuma turma cadastrada.</div>';
+          return;
+        }
+
+        document.getElementById('tabela-turmas').innerHTML = `
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Código</th>
+                  <th>Professor</th>
+                  <th class="text-center">Alunos</th>
+                  <th class="text-center">Status</th>
+                  <th>Criada em</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${turmas.map(t => `<tr>
+                  <td class="fw-semibold">${t.tu_nome}</td>
+                  <td><code style="background:#f1f5f9;padding:2px 8px;border-radius:6px;">${t.tu_codigo}</code></td>
+                  <td class="text-muted">${t.professor_nome}</td>
+                  <td class="text-center">${t.total_alunos}</td>
+                  <td class="text-center">
+                    <span style="display:inline-flex;align-items:center;gap:4px;border-radius:99px;padding:3px 10px;font-size:0.75rem;font-weight:600;background:${t.tu_ativa?'#f0fdf4':'#f1f5f9'};color:${t.tu_ativa?'#16a34a':'#94a3b8'};">
+                      <i class="fas fa-circle" style="font-size:0.5rem;"></i>
+                      ${t.tu_ativa ? 'Ativa' : 'Inativa'}
+                    </span>
+                  </td>
+                  <td class="text-muted" style="font-size:0.85rem;">${new Date(t.tu_criada_em).toLocaleDateString('pt-BR')}</td>
+                </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>`;
+      } catch {
+        document.getElementById('tabela-turmas').innerHTML =
+          '<div class="text-danger p-3">Erro ao carregar turmas.</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!verificarAdmin()) return;
+      carregarUsuarios();
+      carregarTurmas();
+    });
+  </script>
+</body>
+</html>
