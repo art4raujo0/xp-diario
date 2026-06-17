@@ -16,14 +16,21 @@ const pool = require('../config/db');
 // Transporte Gmail SMTP
 // ---------------------------------------------------------------------------
 function criarTransporte() {
+  const port = Number(process.env.SMTP_PORT) || 587;
+  const secure = process.env.SMTP_SECURE === 'true'; // true para 465, false para 587
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT) || 587,
-    secure: process.env.SMTP_SECURE === 'true',
+    port,
+    secure,
+    requireTLS: !secure, // força STARTTLS no 587
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
-    }
+    },
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 30000,
+    tls: { rejectUnauthorized: true }
   });
 }
 
@@ -31,20 +38,29 @@ function criarTransporte() {
 // Hora local do usuário no fuso configurado (HH:mm)
 // ---------------------------------------------------------------------------
 function horaLocalUsuario(fusoHorario) {
+  // en-GB com hour12:false produz "HH:mm" confiável em todos os Node.js,
+  // inclusive meia-noite como "00:xx" (pt-BR pode retornar "24:xx" em alguns ambientes)
+  const fuso = fusoHorario || 'America/Sao_Paulo';
   try {
-    return new Intl.DateTimeFormat('pt-BR', {
-      timeZone: fusoHorario,
+    const partes = new Intl.DateTimeFormat('en-GB', {
+      timeZone: fuso,
       hour: '2-digit',
       minute: '2-digit',
       hour12: false
-    }).format(new Date());
+    }).formatToParts(new Date());
+    const h = partes.find(p => p.type === 'hour').value;
+    const m = partes.find(p => p.type === 'minute').value;
+    return `${h.padStart(2, '0')}:${m.padStart(2, '0')}`;
   } catch {
-    return new Intl.DateTimeFormat('pt-BR', {
+    const partes = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'America/Sao_Paulo',
       hour: '2-digit',
       minute: '2-digit',
       hour12: false
-    }).format(new Date());
+    }).formatToParts(new Date());
+    const h = partes.find(p => p.type === 'hour').value;
+    const m = partes.find(p => p.type === 'minute').value;
+    return `${h.padStart(2, '0')}:${m.padStart(2, '0')}`;
   }
 }
 
