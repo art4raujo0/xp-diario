@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XP Diário - Relatório de Desempenho</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .periodo-btn {
+      border: 1.5px solid #e2e8f0;
+      background: #fff;
+      color: #64748b;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .periodo-btn:hover { border-color: #463acb; color: #463acb; }
+    .periodo-btn.active { background: #463acb; border-color: #463acb; color: #fff; font-weight: 600; }
+
+    .disc-row-bar {
+      height: 8px;
+      border-radius: 99px;
+      background: #ede9fe;
+      overflow: hidden;
+    }
+    .disc-row-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: #463acb;
+      transition: width 0.4s ease;
+    }
+    .min-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #ede9fe; color: #7c3aed;
+      border-radius: 99px; padding: 3px 10px;
+      font-size: 0.78rem; font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar">
+      <a class="brand" href="/app">
+        <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div>
+          <div class="brand-name">XP Diário</div>
+          <div class="brand-sub">Estudo Inteligente</div>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
+        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
+        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
+        <a class="menu-link active" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
+        <a class="menu-link" href="/turmas"><i class="fas fa-users"></i> Turmas</a>
+        <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
+        <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
+      </nav>
+      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
+        <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
+        <div class="ctx-info">
+          <div class="ctx-nome" id="ctx-nome">Minha Área</div>
+          <div class="ctx-sub">Contexto atual</div>
+        </div>
+        <i class="fas fa-right-left ctx-switch-icon"></i>
+      </div>
+      <div class="sidebar-footer">
+        <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <span class="topbar-brand">XP Diário</span>
+      </div>
+      <div class="page-header">
+        <div>
+          <h2>Relatório de Desempenho</h2>
+          <p class="page-subtitle">Acompanhe sua evolução e tempo dedicado aos estudos</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap" id="btns-exportar" style="display:none!important;">
+          <button class="btn btn-outline-danger px-3" onclick="exportarPDF()" title="Exportar como PDF">
+            <i class="fas fa-file-pdf me-2"></i>PDF
+          </button>
+          <button class="btn btn-outline-primary px-3" onclick="exportarDOCX()" title="Exportar como Word">
+            <i class="fas fa-file-word me-2"></i>Word
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtro de período -->
+      <div class="card-panel p-3 mb-4">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <span class="text-muted fw-semibold" style="font-size:0.85rem; white-space:nowrap;">Período:</span>
+          <button class="periodo-btn" onclick="selecionarPeriodo('semana', this)">Esta semana</button>
+          <button class="periodo-btn active" onclick="selecionarPeriodo('mes', this)">Este mês</button>
+          <button class="periodo-btn" onclick="selecionarPeriodo('trimestre', this)">Últimos 3 meses</button>
+          <button class="periodo-btn" onclick="selecionarPeriodo('personalizado', this)">Personalizado</button>
+        </div>
+        <div id="filtro-personalizado" class="d-none mt-3">
+          <div class="row g-2 align-items-end">
+            <div class="col-auto">
+              <label class="form-label mb-1" style="font-size:0.8rem;">De</label>
+              <input type="date" id="data-inicio" class="form-control form-control-sm" style="width:auto;">
+            </div>
+            <div class="col-auto">
+              <label class="form-label mb-1" style="font-size:0.8rem;">Até</label>
+              <input type="date" id="data-fim" class="form-control form-control-sm" style="width:auto;">
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-primary btn-sm px-3" onclick="buscarRelatorio()">
+                <i class="fas fa-search me-1"></i>Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards de resumo -->
+      <div class="row g-3 mb-4" id="cards-resumo" style="display:none!important;">
+        <div class="col-6 col-md-4">
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Tempo Total</div>
+              <div class="stat-value" id="resumo-tempo">0 min</div>
+            </div>
+            <div class="stat-icon icon-blue"><i class="fas fa-clock"></i></div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Sessões</div>
+              <div class="stat-value" id="resumo-sessoes">0</div>
+            </div>
+            <div class="stat-icon icon-purple"><i class="fas fa-book-open"></i></div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Tarefas Concluídas</div>
+              <div class="stat-value" id="resumo-tarefas">0</div>
+            </div>
+            <div class="stat-icon icon-green"><i class="fas fa-check-circle"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultado -->
+      <div id="resultado" class="card-panel p-4">
+        <div class="p-4 text-center text-muted">
+          <i class="fas fa-spinner fa-spin me-2"></i>Carregando relatório...
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="/utils.js"></script>
+  <script src="/context.js"></script>
+  <script src="/relatorio.js"></script>
+</body>
+</html>

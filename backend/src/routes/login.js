@@ -85,16 +85,18 @@ router.post('/', async (req, res) => {
         );
 
         // 6. Sessão: Geração do token JWT com expiração configurada para 24h
+        const tipo = usuario.us_tipo || 'aluno';
         const token = jwt.sign(
-            { id: usuario.us_id, email: usuario.us_email },
-            process.env.JWT_SECRET || 'chave_super_secreta_padrao', 
+            { id: usuario.us_id, email: usuario.us_email, tipo },
+            process.env.JWT_SECRET || 'chave_super_secreta_padrao',
             { expiresIn: '24h' }
         );
 
-        // Retorna sucesso e o token gerado para o frontend
+        // Retorna sucesso, o token e o tipo do usuário para o frontend
         return res.json({
             mensagem: 'Login realizado com sucesso!',
-            token: token
+            token,
+            tipo
         });
 
     } catch (erro) {
