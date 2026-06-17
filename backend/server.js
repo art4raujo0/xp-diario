@@ -35,7 +35,7 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
+  res.sendFile(path.join(publicPath, 'login.html'));
 });
 
 app.get('/login', (req, res) => {

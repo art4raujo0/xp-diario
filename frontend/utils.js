@@ -80,3 +80,24 @@ function inicializarTopbar() {
 }
 
 document.addEventListener('DOMContentLoaded', inicializarTopbar);
+
+// Injeta link de Admin na sidebar para usuários com tipo admin
+function injetarLinkAdmin() {
+  try {
+    const token = localStorage.getItem('xp_diario_token');
+    if (!token) return;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (payload.tipo !== 'admin') return;
+
+    const nav = document.querySelector('.sidebar-nav');
+    if (!nav || nav.querySelector('[href="/admin"]')) return;
+
+    const link = document.createElement('a');
+    link.className = 'menu-link' + (window.location.pathname === '/admin' ? ' active' : '');
+    link.href = '/admin';
+    link.innerHTML = '<i class="fas fa-crown"></i> Admin';
+    nav.appendChild(link);
+  } catch {}
+}
+
+document.addEventListener('DOMContentLoaded', injetarLinkAdmin);

@@ -159,10 +159,11 @@ function _renderizarOpcoes(turmas) {
 
 function selecionarContexto(tipo, turmaId, turmaNome) {
   localStorage.setItem(CTX_KEY, JSON.stringify({ tipo, turma_id: turmaId, turma_nome: turmaNome }));
-  _renderizarOpcoes(_todasTurmas);
   renderizarContextoSidebar();
   renderizarContextoBanner();
   fecharContexto();
+  // Recarrega a página para que todos os dados reflitam o novo contexto
+  setTimeout(() => window.location.reload(), 280);
 }
 
 function renderizarContextoBanner() {
