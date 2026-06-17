@@ -66,6 +66,14 @@ function normalizarHorario(valor) {
   return `${match[1]}:${match[2]}`;
 }
 
+function dataHojeIso() {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+  const dia = String(hoje.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+}
+
 function validarCronograma(body) {
   const disciplinaId = Number(body.cr_disciplina);
   const duracaoMin = Number(body.cr_duracao_min);
@@ -78,6 +86,10 @@ function validarCronograma(body) {
 
   if (!data) {
     return { erro: "Data do cronograma inválida" };
+  }
+
+  if (data < dataHojeIso()) {
+    return { erro: "A data do cronograma deve ser hoje ou uma data futura" };
   }
 
   if (!horarioInicio) {
@@ -339,6 +351,7 @@ router.delete("/:id", autenticar, async (req, res) => {
 router._test = {
   normalizarData,
   normalizarHorario,
+  dataHojeIso,
   validarCronograma
 };
 

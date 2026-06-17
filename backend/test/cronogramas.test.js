@@ -11,6 +11,20 @@ function token() {
   return jwt.sign({ id: 7, email: "aluno@teste.com" }, "chave_super_secreta_padrao");
 }
 
+function dataIsoComDias(dias) {
+  const data = new Date();
+  data.setDate(data.getDate() + dias);
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const dia = String(data.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+}
+
+function dataBrComDias(dias) {
+  const [ano, mes, dia] = dataIsoComDias(dias).split("-");
+  return `${dia}/${mes}/${ano}`;
+}
+
 function carregarRotaComPool(pool) {
   delete require.cache[routePath];
   delete require.cache[dbPath];
@@ -56,6 +70,7 @@ async function request(route, { method = "GET", pathUrl = "/", body } = {}) {
 
 test("cria cronograma com dados validos", async () => {
   const queries = [];
+  const dataFutura = dataIsoComDias(7);
   const route = carregarRotaComPool({
     async query(sql, params) {
       queries.push({ sql, params });
@@ -75,7 +90,7 @@ test("cria cronograma com dados validos", async () => {
             cr_id: 11,
             cr_usuario_id: 7,
             cr_disciplina: 3,
-            cr_data: "2026-06-20",
+            cr_data: dataFutura,
             cr_horario_inicio: "08:30:00",
             cr_duracao_min: 60
           }]
@@ -90,7 +105,7 @@ test("cria cronograma com dados validos", async () => {
     method: "POST",
     body: {
       cr_disciplina: 3,
-      cr_data: "2026-06-20",
+      cr_data: dataFutura,
       cr_horario_inicio: "08:30",
       cr_duracao_min: 60
     }
@@ -105,6 +120,8 @@ test("cria cronograma com dados validos", async () => {
 
 test("aceita data no formato brasileiro e persiste em formato ISO", async () => {
   const queries = [];
+  const dataFuturaIso = dataIsoComDias(8);
+  const dataFuturaBr = dataBrComDias(8);
   const route = carregarRotaComPool({
     async query(sql, params) {
       queries.push({ sql, params });
@@ -129,14 +146,14 @@ test("aceita data no formato brasileiro e persiste em formato ISO", async () => 
     method: "POST",
     body: {
       cr_disciplina: 3,
-      cr_data: "20/06/2026",
+      cr_data: dataFuturaBr,
       cr_horario_inicio: "08:30",
       cr_duracao_min: 60
     }
   });
 
   assert.equal(response.status, 201);
-  assert.equal(queries.at(-1).params[2], "2026-06-20");
+  assert.equal(queries.at(-1).params[2], dataFuturaIso);
 });
 
 test("lista cronogramas do usuario autenticado", async () => {
@@ -167,6 +184,7 @@ test("lista cronogramas do usuario autenticado", async () => {
 });
 
 test("impede duracao menor ou igual a zero", async () => {
+  const dataFutura = dataIsoComDias(7);
   const route = carregarRotaComPool({
     async query() {
       throw new Error("Banco nao deveria ser consultado");
@@ -177,7 +195,7 @@ test("impede duracao menor ou igual a zero", async () => {
     method: "POST",
     body: {
       cr_disciplina: 3,
-      cr_data: "2026-06-20",
+      cr_data: dataFutura,
       cr_horario_inicio: "08:30",
       cr_duracao_min: 0
     }
@@ -187,7 +205,29 @@ test("impede duracao menor ou igual a zero", async () => {
   assert.equal(response.body.erro, "Duração da sessão deve ser maior que zero");
 });
 
+test("impede cronograma com data passada", async () => {
+  const route = carregarRotaComPool({
+    async query() {
+      throw new Error("Banco nao deveria ser consultado");
+    }
+  });
+
+  const response = await request(route, {
+    method: "POST",
+    body: {
+      cr_disciplina: 3,
+      cr_data: dataIsoComDias(-1),
+      cr_horario_inicio: "08:30",
+      cr_duracao_min: 60
+    }
+  });
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.erro, "A data do cronograma deve ser hoje ou uma data futura");
+});
+
 test("impede cronograma duplicado por materia, data e horario", async () => {
+  const dataFutura = dataIsoComDias(7);
   const route = carregarRotaComPool({
     async query(sql) {
       if (sql.includes("FROM disciplina")) {
@@ -206,7 +246,7 @@ test("impede cronograma duplicado por materia, data e horario", async () => {
     method: "POST",
     body: {
       cr_disciplina: 3,
-      cr_data: "2026-06-20",
+      cr_data: dataFutura,
       cr_horario_inicio: "08:30",
       cr_duracao_min: 60
     }
@@ -217,6 +257,7 @@ test("impede cronograma duplicado por materia, data e horario", async () => {
 });
 
 test("atualiza cronograma existente", async () => {
+  const dataFutura = dataIsoComDias(9);
   const route = carregarRotaComPool({
     async query(sql, params) {
       if (sql.includes("FROM disciplina")) {
@@ -235,7 +276,7 @@ test("atualiza cronograma existente", async () => {
             cr_id: 11,
             cr_usuario_id: 7,
             cr_disciplina: 3,
-            cr_data: "2026-06-21",
+            cr_data: dataFutura,
             cr_horario_inicio: "09:00:00",
             cr_duracao_min: 90
           }]
@@ -251,7 +292,7 @@ test("atualiza cronograma existente", async () => {
     pathUrl: "/11",
     body: {
       cr_disciplina: 3,
-      cr_data: "2026-06-21",
+      cr_data: dataFutura,
       cr_horario_inicio: "09:00",
       cr_duracao_min: 90
     }

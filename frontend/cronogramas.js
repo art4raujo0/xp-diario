@@ -66,6 +66,14 @@ function converterDataParaIso(dataBr) {
   return `${match[3]}-${match[2]}-${match[1]}`;
 }
 
+function dataHojeIso() {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoje.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
 function inicializarCalendario() {
   if (!window.flatpickr) {
     return;
@@ -75,6 +83,7 @@ function inicializarCalendario() {
     allowInput: true,
     dateFormat: 'd/m/Y',
     locale: flatpickr.l10ns.pt,
+    minDate: 'today',
     disableMobile: true
   });
 
@@ -249,6 +258,11 @@ async function salvarCronograma() {
 
   if (!dataIso) {
     exibirMensagem('Informe uma data valida.', 'danger');
+    return;
+  }
+
+  if (dataIso < dataHojeIso()) {
+    exibirMensagem('Selecione a data de hoje ou uma data futura.', 'danger');
     return;
   }
 
