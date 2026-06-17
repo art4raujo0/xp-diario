@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Dark rounded background -->
+  <rect width="32" height="32" rx="6" fill="#1d1d2b"/>
+  <!-- Letter X in gold (4x4 pixel art, scale=3, start at x=1, y=10) -->
+  <!-- Row 0: col0 col3 -->
+  <rect x="1" y="10" width="3" height="3" fill="#f59e0b"/>
+  <rect x="10" y="10" width="3" height="3" fill="#f59e0b"/>
+  <!-- Row 1: col1 col2 -->
+  <rect x="4" y="13" width="6" height="3" fill="#f59e0b"/>
+  <!-- Row 2: col1 col2 -->
+  <rect x="4" y="16" width="6" height="3" fill="#f59e0b"/>
+  <!-- Row 3: col0 col3 -->
+  <rect x="1" y="19" width="3" height="3" fill="#f59e0b"/>
+  <rect x="10" y="19" width="3" height="3" fill="#f59e0b"/>
+  <!-- Letter P in purple (4x4 pixel art, scale=3, start at x=19, y=10) -->
+  <!-- Row 0: col0 col1 col2 -->
+  <rect x="19" y="10" width="9" height="3" fill="#685ed4"/>
+  <!-- Row 1: col0 col3 -->
+  <rect x="19" y="13" width="3" height="3" fill="#685ed4"/>
+  <rect x="28" y="13" width="3" height="3" fill="#685ed4"/>
+  <!-- Row 2: col0 col1 col2 -->
+  <rect x="19" y="16" width="9" height="3" fill="#685ed4"/>
+  <!-- Row 3: col0 only -->
+  <rect x="19" y="19" width="3" height="3" fill="#685ed4"/>
+  <!-- Pixel sparkles -->
+  <rect x="1" y="4" width="2" height="2" fill="#f59e0b" opacity="0.7"/>
+  <rect x="15" y="3" width="2" height="2" fill="#ffffff" opacity="0.6"/>
+  <rect x="29" y="4" width="2" height="2" fill="#685ed4" opacity="0.7"/>
+  <rect x="1" y="26" width="2" height="2" fill="#685ed4" opacity="0.5"/>
+  <rect x="29" y="26" width="2" height="2" fill="#f59e0b" opacity="0.5"/>
+  <rect x="15" y="27" width="2" height="2" fill="#ffffff" opacity="0.4"/>
+</svg>

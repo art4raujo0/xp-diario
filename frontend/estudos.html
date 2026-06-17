@@ -55,6 +55,10 @@
         </div>
         <i class="fas fa-right-left ctx-switch-icon"></i>
       </div>
+      <div class="sidebar-mascot">
+        <div class="sidebar-mascot-char">🧙</div>
+        <div class="sidebar-mascot-label">+XP a cada estudo!</div>
+      </div>
       <div class="sidebar-footer">
         <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
       </div>
@@ -65,10 +69,11 @@
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
         <span class="topbar-brand">XP Diário</span>
       </div>
+
       <div class="page-header">
         <div>
-          <h2>Registrar Estudo</h2>
-          <p class="page-subtitle">Registre suas sessões e acompanhe seu progresso</p>
+          <h2>⏱ Registrar Estudo</h2>
+          <p class="page-subtitle">Registre uma sessão de estudo</p>
         </div>
         <button class="btn btn-primary px-4" onclick="mostrarForm()">
           <i class="fas fa-plus me-2"></i>Nova Sessão
@@ -78,32 +83,45 @@
       <div id="mensagem" class="mb-3"></div>
 
       <div id="formEstudo" class="card-panel p-4 mb-4 d-none">
-        <h6 class="fw-bold mb-4" style="color:#1e293b;">Nova Sessão de Estudo</h6>
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <label class="form-label">Matéria <span class="text-danger">*</span></label>
+        <h6 class="fw-bold mb-4" style="color:#1e293b;">
+          <i class="fas fa-pen-to-square me-2" style="color:var(--primary);"></i>Nova Sessão de Estudo
+        </h6>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-book me-1 text-muted"></i>Matéria <span class="text-danger">*</span>
+            </label>
             <select id="materia" class="form-select">
               <option value="">Carregando...</option>
             </select>
           </div>
-          <div class="col-md-3 mb-3">
-            <label class="form-label">Tempo (min) <span class="text-danger">*</span></label>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-clock me-1 text-muted"></i>Tempo (min) <span class="text-danger">*</span>
+            </label>
             <input id="tempo" type="number" class="form-control" placeholder="Ex: 45" min="1">
           </div>
-          <div class="col-md-2 mb-3">
-            <label class="form-label">Tarefas concluídas</label>
+          <div class="col-md-2">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-list-check me-1 text-muted"></i>Tarefas concluídas
+            </label>
             <input id="tarefas" type="number" class="form-control" placeholder="0" min="0" value="0">
           </div>
-          <div class="col-md-3 mb-3">
-            <label class="form-label">Data</label>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-calendar me-1 text-muted"></i>Data
+            </label>
             <input id="data" type="date" class="form-control">
           </div>
-          <div class="col-12 mb-3">
-            <label class="form-label">Descrição <span class="text-muted fw-normal" style="font-size:0.8rem;">(opcional)</span></label>
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-align-left me-1 text-muted"></i>Descrição
+              <span class="text-muted fw-normal" style="font-size:0.8rem;"> (opcional)</span>
+            </label>
             <textarea id="descricao" class="form-control" rows="2" placeholder="Ex: Revisão do capítulo 3..."></textarea>
           </div>
         </div>
-        <div class="d-flex gap-2 align-items-center">
+        <div class="d-flex gap-2 align-items-center mt-3">
           <button class="btn btn-success px-4" onclick="salvarRegistro()">
             <i class="fas fa-floppy-disk me-2"></i>Salvar Sessão
           </button>
@@ -123,7 +141,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/utils.js"></script>
   <script src="/context.js"></script>
-  <script src="estudos.js"></script>
+  <script src="/estudos.js"></script>
 </body>
 </html>
-

@@ -1,8 +1,9 @@
 ﻿const express = require("express");
 const pool = require("../config/db");
+const { autenticar } = require("../middlewares/auth");
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", autenticar, async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM disciplina ORDER BY di_id ASC");
     res.json(result.rows);
@@ -14,7 +15,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", autenticar, async (req, res) => {
   try {
     const { di_disciplina, di_dificuldade, di_descricao, di_cor } = req.body;
     const nome = (di_disciplina || "").trim();
@@ -52,7 +53,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", autenticar, async (req, res) => {
   try {
     const { id } = req.params;
     const { di_disciplina, di_dificuldade, di_descricao, di_cor } = req.body;
@@ -87,7 +88,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", autenticar, async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query("DELETE FROM disciplina WHERE di_id = $1 RETURNING *", [id]);

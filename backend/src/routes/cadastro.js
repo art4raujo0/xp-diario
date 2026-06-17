@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
 
     const usuario = novoUsuario.rows[0];
     const token = jwt.sign(
-      { id: usuario.us_id, email: usuario.us_email, tipo: usuario.us_tipo },
+      { id: usuario.us_id, email: usuario.us_email, nome: usuario.us_nome || '', tipo: usuario.us_tipo },
       process.env.JWT_SECRET || 'chave_super_secreta_padrao',
       { expiresIn: '24h' }
     );

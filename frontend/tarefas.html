@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Diario - Tarefas</title>
+  <title>XP Diário - Tarefas</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -66,19 +66,34 @@
       <a class="brand" href="/app">
         <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
         <div>
-          <div class="brand-name">XP Diario</div>
+          <div class="brand-name">XP Diário</div>
           <div class="brand-sub">Estudo Inteligente</div>
         </div>
       </a>
       <nav class="sidebar-nav">
         <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
         <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
-        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Materias</a>
+        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
         <a class="menu-link active" href="/tarefas"><i class="fas fa-list-check"></i> Tarefas</a>
         <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
+        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronogramas</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
+        <a class="menu-link" href="/turmas"><i class="fas fa-users"></i> Turmas</a>
         <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
+      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
+        <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
+        <div class="ctx-info">
+          <div class="ctx-nome" id="ctx-nome">Minha Área</div>
+          <div class="ctx-sub">Contexto atual</div>
+        </div>
+        <i class="fas fa-right-left ctx-switch-icon"></i>
+      </div>
+      <div class="sidebar-mascot">
+        <div class="sidebar-mascot-char">🧙</div>
+        <div class="sidebar-mascot-label">+XP a cada estudo!</div>
+      </div>
       <div class="sidebar-footer">
         <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
       </div>
@@ -87,12 +102,13 @@
     <main class="content">
       <div class="topbar">
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <span class="topbar-brand">XP Diario</span>
+        <span class="topbar-brand">XP Diário</span>
       </div>
+
       <div class="page-header">
         <div>
-          <h2>Tarefas</h2>
-          <p class="page-subtitle">Organize pendencias, prazos e conclusoes por materia</p>
+          <h2>✅ Tarefas</h2>
+          <p class="page-subtitle">Organize pendências e prazos</p>
         </div>
         <button class="btn btn-primary px-4" onclick="mostrarForm()">
           <i class="fas fa-plus me-2"></i>Nova Tarefa
@@ -106,30 +122,30 @@
         <input type="hidden" id="tarefaId">
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label class="form-label">Titulo <span class="text-danger">*</span></label>
-            <input id="titulo" class="form-control" maxlength="160" placeholder="Ex: Resolver lista de algebra">
+            <label class="form-label">Título <span class="text-danger">*</span></label>
+            <input id="titulo" class="form-control" maxlength="160" placeholder="Ex: Resolver lista de álgebra">
           </div>
           <div class="col-md-3 mb-3">
             <label class="form-label">Prazo</label>
             <input id="prazo" type="date" class="form-control">
           </div>
           <div class="col-md-3 mb-3">
-            <label class="form-label">Materia associada</label>
+            <label class="form-label">Matéria associada</label>
             <select id="materia" class="form-select">
-              <option value="">Sem materia especifica</option>
+              <option value="">Sem matéria específica</option>
             </select>
           </div>
           <div class="col-12 mb-3">
-            <label class="form-label">Descricao <span class="text-muted fw-normal" style="font-size:0.8rem;">(opcional)</span></label>
-            <textarea id="descricao" class="form-control" rows="3" maxlength="500" placeholder="Detalhes, entregaveis ou observacoes"></textarea>
+            <label class="form-label">Descrição <span class="text-muted fw-normal" style="font-size:0.8rem;">(opcional)</span></label>
+            <textarea id="descricao" class="form-control" rows="3" maxlength="500" placeholder="Detalhes, entregáveis ou observações"></textarea>
           </div>
         </div>
-        <div class="d-flex gap-2 align-items-center">
+        <div class="d-flex gap-2 align-items-center flex-wrap">
           <button id="btnSalvarTarefa" class="btn btn-success px-4" onclick="salvarTarefa()">
             <i class="fas fa-floppy-disk me-2"></i>Salvar Tarefa
           </button>
           <button class="btn btn-light px-4" onclick="cancelar()">Cancelar</button>
-          <span class="text-muted ms-1" style="font-size:0.8rem;"><span class="text-danger">*</span> obrigatorio</span>
+          <span class="text-muted ms-1" style="font-size:0.8rem;"><span class="text-danger">*</span> obrigatório</span>
         </div>
       </div>
 
@@ -145,8 +161,8 @@
         </div>
         <div class="col-lg-4">
           <div class="card-panel p-4" id="historicoTarefas">
-            <h6 class="fw-bold mb-3" style="color:#1e293b;">Historico recente</h6>
-            <div class="text-muted small">Carregando historico...</div>
+            <h6 class="fw-bold mb-3" style="color:#1e293b;">Histórico recente</h6>
+            <div class="text-muted small">Carregando histórico...</div>
           </div>
         </div>
       </div>
@@ -155,6 +171,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/utils.js"></script>
+  <script src="/context.js"></script>
   <script src="/tarefas.js"></script>
 </body>
 </html>

@@ -1,17 +1,35 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Verificação de Autenticação
     const token = localStorage.getItem('xp_diario_token');
-    
-    if (!token) {
-        window.location.href = '/login';
-        return;
-    }
+    if (!token) { window.location.href = '/login'; return; }
 
-    // Executa as chamadas em paralelo para carregar o Dashboard
+    popularHeroBanner(token);
     carregarStreak(token);
     carregarProgresso(token);
     carregarConfigNotificacoes(token);
+
+    // Mascote motivacional — aparece após 2s
+    setTimeout(() => {
+        const bubble = document.getElementById('mascot-bubble');
+        if (bubble) bubble.style.display = 'flex';
+    }, 2000);
 });
+
+function popularHeroBanner(token) {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const nome = (payload.nome || payload.email || '').split(' ')[0];
+        if (nome) {
+            const saudacao = document.getElementById('hero-saudacao');
+            const titulo = document.getElementById('hero-titulo');
+            if (saudacao) saudacao.textContent = `Olá, ${nome}! 👋`;
+            const hora = new Date().getHours();
+            const msg = hora < 12 ? 'Bom dia! Que tal começar estudando?' :
+                        hora < 18 ? 'Boa tarde! Hora de focar nos estudos.' :
+                                    'Boa noite! Uma sessão antes de dormir?';
+            if (titulo) titulo.textContent = msg;
+        }
+    } catch {}
+}
 
 // --- FUNÇÃO DO STREAK ---
 async function carregarStreak(token) {
@@ -32,13 +50,24 @@ async function carregarStreak(token) {
             const dados = await resposta.json();
             const dias = dados.streak || 0; 
             
-            streakValor.textContent = `${dias} ${dias === 1 ? 'dia' : 'dias'}`;
-            
-            // Regra de Negócio: Acender o fogo se houver sequência
+            const label = `${dias} ${dias === 1 ? 'dia' : 'dias'}`;
+            streakValor.textContent = label;
+
+            const heroStreak = document.getElementById('hero-streak-val');
+            if (heroStreak) heroStreak.textContent = label;
+
+            const mascotMsg = document.getElementById('mascot-msg');
+            if (mascotMsg) {
+                if (dias >= 7) mascotMsg.textContent = `${dias} dias seguidos! Incrível! 🔥`;
+                else if (dias >= 3) mascotMsg.textContent = `${dias} dias de sequência! Continue! ⚡`;
+                else mascotMsg.textContent = 'Comece sua sequência hoje! 💪';
+            }
+
+            // Acende o fogo se houver sequência
             if (dias > 0) {
                 streakIcon.classList.remove('text-muted');
-                streakIcon.classList.add('text-danger'); 
-                streakIconContainer.style.backgroundColor = '#ffebe6'; 
+                streakIcon.classList.add('text-danger');
+                streakIconContainer.style.backgroundColor = '#ffebe6';
             }
         } else {
             streakValor.textContent = 'Erro';

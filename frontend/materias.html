@@ -40,6 +40,10 @@
         </div>
         <i class="fas fa-right-left ctx-switch-icon"></i>
       </div>
+      <div class="sidebar-mascot">
+        <div class="sidebar-mascot-char">🧙</div>
+        <div class="sidebar-mascot-label">+XP a cada estudo!</div>
+      </div>
       <div class="sidebar-footer">
         <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
       </div>
@@ -50,10 +54,11 @@
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
         <span class="topbar-brand">XP Diário</span>
       </div>
+
       <div class="page-header">
         <div>
-          <h2>Matérias</h2>
-          <p class="page-subtitle">Gerencie suas matérias de estudo</p>
+          <h2>📚 Matérias</h2>
+          <p class="page-subtitle">Suas disciplinas de estudo</p>
         </div>
         <button class="btn btn-primary px-4" onclick="mostrarForm()">
           <i class="fas fa-plus me-2"></i>Nova Matéria
@@ -63,7 +68,7 @@
       <div id="mensagem" class="mb-3"></div>
 
       <div id="formMateria" class="card-panel p-4 mb-4 d-none">
-        <h6 class="fw-bold mb-4" style="color:#1e293b;">Dados da Matéria</h6>
+        <h6 class="fw-bold mb-4" style="color:var(--text-dark);">Dados da Matéria</h6>
         <input type="hidden" id="materiaId">
         <div class="row">
           <div class="col-md-6 mb-3">
@@ -237,4 +242,3 @@
   </script>
 </body>
 </html>
-

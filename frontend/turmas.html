@@ -24,7 +24,9 @@
         <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
         <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
         <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
+        <a class="menu-link" href="/tarefas"><i class="fas fa-list-check"></i> Tarefas</a>
         <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
+        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronogramas</a>
         <a class="menu-link" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
         <a class="menu-link active" href="/turmas"><i class="fas fa-users"></i> Turmas</a>
         <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
@@ -37,6 +39,10 @@
           <div class="ctx-sub">Contexto atual</div>
         </div>
         <i class="fas fa-right-left ctx-switch-icon"></i>
+      </div>
+      <div class="sidebar-mascot">
+        <div class="sidebar-mascot-char">🧙</div>
+        <div class="sidebar-mascot-label">+XP a cada estudo!</div>
       </div>
       <div class="sidebar-footer">
         <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
@@ -56,11 +62,11 @@
       <div id="view-professor" class="d-none">
         <div class="page-header">
           <div>
-            <h2>Turmas</h2>
+            <h2>🏫 Turmas</h2>
             <p class="page-subtitle">Crie e gerencie suas turmas de alunos</p>
           </div>
           <button class="btn btn-primary" onclick="toggleFormCriar()"
-            style="background:#463acb;border-color:#463acb;border-radius:10px;font-size:0.88rem;padding:9px 18px;">
+            style="border-radius:10px;font-size:0.88rem;padding:9px 18px;">
             <i class="fas fa-plus me-2"></i>Nova Turma
           </button>
         </div>
@@ -73,8 +79,8 @@
               <input type="text" id="input-nome-turma" class="form-control" placeholder="Nome da turma"
                 style="border-radius:10px;" onkeydown="if(event.key==='Enter')criarTurma()">
             </div>
-            <button id="btn-criar-turma" class="btn" onclick="criarTurma()"
-              style="background:#463acb;color:#fff;border-radius:10px;font-size:0.88rem;padding:9px 18px;border:none;white-space:nowrap;">
+            <button id="btn-criar-turma" class="btn btn-primary" onclick="criarTurma()"
+              style="border-radius:10px;font-size:0.88rem;padding:9px 18px;white-space:nowrap;">
               <i class="fas fa-check me-2"></i>Criar Turma
             </button>
             <button class="btn" onclick="toggleFormCriar()"
@@ -91,11 +97,11 @@
       <div id="view-aluno" class="d-none">
         <div class="page-header">
           <div>
-            <h2>Minhas Turmas</h2>
+            <h2>🏫 Minhas Turmas</h2>
             <p class="page-subtitle">Turmas em que você está matriculado</p>
           </div>
           <button class="btn btn-primary" onclick="toggleFormEntrar()"
-            style="background:#463acb;border-color:#463acb;border-radius:10px;font-size:0.88rem;padding:9px 18px;">
+            style="border-radius:10px;font-size:0.88rem;padding:9px 18px;">
             <i class="fas fa-sign-in-alt me-2"></i>Entrar em Turma
           </button>
         </div>
