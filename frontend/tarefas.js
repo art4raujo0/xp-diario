@@ -114,54 +114,36 @@ function renderListaTarefas(tarefas) {
   }
 
   lista.innerHTML = `
-    <div class="d-flex justify-content-between align-items-center px-2 pt-1 pb-3">
-      <span class="fw-semibold text-muted" style="font-size:0.85rem;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span style="font-size:0.85rem;color:#64748b;font-weight:500;">
         <i class="fas fa-list-check me-1"></i> ${tarefas.length} tarefa${tarefas.length !== 1 ? "s" : ""}
       </span>
     </div>
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0">
-        <thead>
-          <tr>
-            <th>Status</th>
-            <th>Titulo</th>
-            <th>Materia</th>
-            <th>Prazo</th>
-            <th>Atualizada</th>
-            <th class="text-end">Acoes</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${tarefas.map((tarefa) => `
-            <tr>
-              <td>
-                <span class="task-badge ${tarefa.ta_status}">
-                  <i class="fas ${tarefa.ta_status === "concluida" ? "fa-circle-check" : "fa-hourglass-half"}"></i>
-                  ${tarefa.ta_status}
-                </span>
-              </td>
-              <td>
-                <div class="fw-semibold">${tarefa.ta_titulo || "-"}</div>
-                <div class="text-muted small">${tarefa.ta_descricao || "Sem descricao"}</div>
-              </td>
-              <td class="text-muted">${tarefa.di_disciplina || "Nao vinculada"}</td>
-              <td class="text-muted">${formatarData(tarefa.ta_prazo)}</td>
-              <td class="text-muted small">${formatarDataHora(tarefa.ta_atualizado_em)}</td>
-              <td class="text-end">
-                <button class="btn-icon me-1" title="${tarefa.ta_status === "concluida" ? "Voltar para pendente" : "Marcar como concluida"}" onclick="alternarStatus(${tarefa.ta_id}, '${tarefa.ta_status}')">
-                  <i class="fas ${tarefa.ta_status === "concluida" ? "fa-rotate-left" : "fa-check"}"></i>
-                </button>
-                <button class="btn-icon me-1" title="Editar" onclick="editarTarefaPorId(${tarefa.ta_id})">
-                  <i class="fas fa-pen"></i>
-                </button>
-                <button class="btn-icon danger" title="Excluir" onclick="excluirTarefa(${tarefa.ta_id})">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
+    <div class="task-list">
+      ${tarefas.map((tarefa) => `
+        <div class="task-item">
+          <button class="task-check-btn ${tarefa.ta_status === "concluida" ? "checked" : ""}"
+            onclick="alternarStatus(${tarefa.ta_id}, '${tarefa.ta_status}')"
+            title="${tarefa.ta_status === "concluida" ? "Voltar para pendente" : "Marcar como concluida"}">
+            <i class="fas ${tarefa.ta_status === "concluida" ? "fa-circle-check" : "fa-circle"}"></i>
+          </button>
+          <div class="task-item-body">
+            <div class="task-titulo ${tarefa.ta_status === "concluida" ? "concluida" : ""}">${tarefa.ta_titulo || "—"}</div>
+            ${tarefa.ta_descricao ? `<div class="task-desc">${tarefa.ta_descricao}</div>` : ""}
+            <div class="task-meta-row">
+              ${tarefa.di_disciplina ? `<span class="task-meta-chip"><i class="fas fa-book"></i> ${tarefa.di_disciplina}</span>` : ""}
+              ${tarefa.ta_prazo ? `<span class="task-meta-chip"><i class="fas fa-calendar"></i> ${formatarData(tarefa.ta_prazo)}</span>` : ""}
+            </div>
+          </div>
+          <div class="task-item-actions">
+            <button class="btn-icon me-1" title="Editar" onclick="editarTarefaPorId(${tarefa.ta_id})">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button class="btn-icon danger" title="Excluir" onclick="excluirTarefa(${tarefa.ta_id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>`).join("")}
     </div>`;
 }
 

@@ -92,50 +92,36 @@ async function carregarHistorico() {
       return;
     }
 
+    const totalMin = historico.reduce((acc, a) => acc + (a.at_tempo_min || 0), 0);
     lista.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center px-2 pt-1 pb-3">
-        <span class="fw-semibold text-muted" style="font-size: 0.85rem;">
-          <i class="fas fa-history me-1"></i> ${historico.length} registro${historico.length !== 1 ? 's' : ''} encontrado${historico.length !== 1 ? 's' : ''}
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span style="font-size:0.85rem;color:#64748b;font-weight:500;">
+          <i class="fas fa-history me-1"></i> ${historico.length} sessão${historico.length !== 1 ? 'ões' : ''}
         </span>
-        <span class="xp-badge">
-          <i class="fas fa-bolt"></i>
-          ${historico.reduce((acc, a) => acc + (a.at_tempo_min || 0), 0)} min totais
-        </span>
+        <div class="d-flex gap-2">
+          <span class="xp-badge"><i class="fas fa-clock"></i> ${totalMin} min</span>
+          <span class="xp-badge"><i class="fas fa-bolt"></i> +${totalMin} XP</span>
+        </div>
       </div>
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>Matéria</th>
-              <th>Data</th>
-              <th>Tempo</th>
-              <th>Tarefas</th>
-              <th>Descrição</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${historico.map(a => `
-              <tr>
-                <td>
-                  <span class="d-flex align-items-center gap-2">
-                    <span class="status-dot"></span>
-                    <span class="fw-semibold">${a.di_disciplina || '-'}</span>
-                  </span>
-                </td>
-                <td class="text-muted small">${formatarData(a.at_data)}</td>
-                <td>
-                  <span class="xp-badge">
-                    <i class="fas fa-clock"></i> ${a.at_tempo_min} min
-                  </span>
-                </td>
-                <td class="text-muted">${a.at_tarefas_concluidas > 0 ? a.at_tarefas_concluidas : '<span class="text-muted">—</span>'}</td>
-                <td class="text-muted small" style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                  ${a.at_descricao || '<span class="text-muted">—</span>'}
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
+      <div class="session-list">
+        ${historico.map(a => `
+          <div class="session-item">
+            <div class="session-dot"></div>
+            <div class="session-body">
+              <div class="session-top">
+                <span class="session-materia">${a.di_disciplina || '—'}</span>
+                <span class="session-data">${formatarData(a.at_data)}</span>
+              </div>
+              <div class="session-chips">
+                <span class="session-chip time"><i class="fas fa-clock"></i> ${a.at_tempo_min} min</span>
+                <span class="session-chip xp"><i class="fas fa-bolt"></i> +${a.at_tempo_min} XP</span>
+                ${a.at_tarefas_concluidas > 0
+                  ? `<span class="session-chip tasks"><i class="fas fa-check"></i> ${a.at_tarefas_concluidas} tarefa${a.at_tarefas_concluidas !== 1 ? 's' : ''}</span>`
+                  : ''}
+              </div>
+              ${a.at_descricao ? `<div class="session-desc">${a.at_descricao}</div>` : ''}
+            </div>
+          </div>`).join('')}
       </div>`;
   } catch (err) {
     console.error('Erro ao carregar histórico:', err);

@@ -42,38 +42,44 @@ function renderizarListaProfessor(turmas) {
     return;
   }
 
-  lista.innerHTML = turmas.map(t => `
-    <div class="card-panel p-4 mb-3">
-      <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-        <div style="min-width:0;flex:1;">
-          <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-            <span class="fw-bold" style="color:#1e293b;font-size:1rem;">${t.tu_nome}</span>
-            <span class="badge rounded-pill" style="background:${t.tu_ativa ? '#dcfce7' : '#f1f5f9'};color:${t.tu_ativa ? '#16a34a' : '#94a3b8'};font-size:0.7rem;font-weight:600;">
-              ${t.tu_ativa ? 'Ativa' : 'Inativa'}
-            </span>
+  lista.innerHTML = `<div class="row g-3">` + turmas.map(t => {
+    const inicial = (t.tu_nome || '?')[0].toUpperCase();
+    const cores = ['#5b5ef4','#7c3aed','#2563eb','#0891b2','#059669','#d97706'];
+    const cor = cores[(t.tu_id || 0) % cores.length];
+    return `
+    <div class="col-md-6">
+      <div class="card-panel p-4" style="height:100%;transition:box-shadow 0.15s,transform 0.15s;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(91,94,244,0.12)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.boxShadow='';this.style.transform=''">
+        <div class="d-flex align-items-start gap-3">
+          <div style="width:48px;height:48px;border-radius:14px;background:${cor};display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff;flex-shrink:0;">
+            ${inicial}
           </div>
-          <div class="d-flex align-items-center gap-3 flex-wrap" style="font-size:0.82rem;color:#64748b;">
-            <span><i class="fas fa-users me-1"></i>${t.total_alunos || 0} aluno(s)</span>
-            <span class="d-flex align-items-center gap-1">
-              <i class="fas fa-key"></i>
-              <strong style="font-family:monospace;letter-spacing:2px;color:#463acb;">${t.tu_codigo || '——'}</strong>
-              <button class="btn btn-sm p-0 ms-1" title="Copiar código" onclick="copiarCodigo('${t.tu_codigo || ''}')"
-                style="color:#94a3b8;border:none;background:none;font-size:0.8rem;">
-                <i class="fas fa-copy"></i>
-              </button>
-            </span>
+          <div style="flex:1;min-width:0;">
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+              <span class="fw-bold" style="color:#1e293b;font-size:0.98rem;">${t.tu_nome}</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;border-radius:99px;padding:2px 9px;font-size:0.7rem;font-weight:600;background:${t.tu_ativa?'#f0fdf4':'#f1f5f9'};color:${t.tu_ativa?'#16a34a':'#94a3b8'};">
+                <i class="fas fa-circle" style="font-size:0.45rem;"></i>${t.tu_ativa ? 'Ativa' : 'Inativa'}
+              </span>
+            </div>
+            <div class="d-flex align-items-center gap-3 flex-wrap" style="font-size:0.81rem;color:#64748b;">
+              <span><i class="fas fa-users me-1"></i>${t.total_alunos || 0} aluno(s)</span>
+              <span style="display:flex;align-items:center;gap:5px;">
+                <i class="fas fa-key" style="color:#94a3b8;"></i>
+                <code style="background:#f1f5f9;padding:2px 8px;border-radius:6px;letter-spacing:2px;color:#463acb;font-size:0.8rem;">${t.tu_codigo || '——'}</code>
+                <button title="Copiar código" onclick="copiarCodigo('${t.tu_codigo||''}')"
+                  style="color:#94a3b8;border:none;background:none;font-size:0.78rem;cursor:pointer;padding:0;">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </span>
+            </div>
           </div>
-        </div>
-        <div class="d-flex gap-2 flex-shrink-0">
-          <button class="btn btn-sm" style="background:#f1f5f9;color:#1e293b;border:none;border-radius:8px;font-size:0.8rem;" onclick="abrirDetalhes(${t.tu_id})">
-            <i class="fas fa-eye me-1"></i>Alunos
-          </button>
-          <button class="btn btn-sm" style="background:#f1f5f9;color:#1e293b;border:none;border-radius:8px;font-size:0.8rem;" onclick="abrirEditar(${t.tu_id},${JSON.stringify(t.tu_nome)},${t.tu_ativa})">
-            <i class="fas fa-pencil me-1"></i>Editar
-          </button>
+          <div class="d-flex gap-2 flex-shrink-0">
+            <button class="btn-icon" title="Ver alunos" onclick="abrirDetalhes(${t.tu_id})"><i class="fas fa-eye"></i></button>
+            <button class="btn-icon" title="Editar" onclick="abrirEditar(${t.tu_id},${JSON.stringify(t.tu_nome)},${t.tu_ativa})"><i class="fas fa-pen"></i></button>
+          </div>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('') + `</div>`;
 }
 
 function toggleFormCriar() {
@@ -271,24 +277,33 @@ function renderizarListaAluno(turmas) {
     return;
   }
 
-  lista.innerHTML = turmas.map(t => `
-    <div class="card-panel p-4 mb-3">
-      <div class="d-flex align-items-center gap-3 flex-wrap">
-        <div style="width:44px;height:44px;border-radius:10px;background:#ede9fe;color:#7c3aed;font-weight:700;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          ${t.tu_nome.charAt(0).toUpperCase()}
-        </div>
-        <div style="flex:1;min-width:0;">
-          <div class="fw-bold" style="color:#1e293b;">${t.tu_nome}</div>
-          <div style="font-size:0.8rem;color:#64748b;">
-            ${t.professor_nome ? '<i class="fas fa-chalkboard-teacher me-1"></i>Prof. ' + t.professor_nome : ''}
-            ${t.ta_entrou_em ? ' · Entrou em ' + new Date(t.ta_entrou_em).toLocaleDateString('pt-BR') : ''}
+  const cores = ['#5b5ef4','#7c3aed','#2563eb','#0891b2','#059669','#d97706'];
+  lista.innerHTML = `<div class="row g-3">` + turmas.map(t => {
+    const inicial = (t.tu_nome || '?')[0].toUpperCase();
+    const cor = cores[(t.tu_id || 0) % cores.length];
+    return `
+    <div class="col-md-6">
+      <div class="card-panel p-4" style="height:100%;transition:box-shadow 0.15s,transform 0.15s;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(91,94,244,0.12)';this.style.transform='translateY(-2px)'" onmouseleave="this.style.boxShadow='';this.style.transform=''">
+        <div class="d-flex align-items-start gap-3">
+          <div style="width:48px;height:48px;border-radius:14px;background:${cor};display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff;flex-shrink:0;">
+            ${inicial}
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+              <span class="fw-bold" style="color:#1e293b;font-size:0.98rem;">${t.tu_nome}</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;border-radius:99px;padding:2px 9px;font-size:0.7rem;font-weight:600;background:${t.tu_ativa?'#f0fdf4':'#f1f5f9'};color:${t.tu_ativa?'#16a34a':'#94a3b8'};">
+                <i class="fas fa-circle" style="font-size:0.45rem;"></i>${t.tu_ativa ? 'Ativa' : 'Inativa'}
+              </span>
+            </div>
+            <div style="font-size:0.81rem;color:#64748b;">
+              ${t.professor_nome ? `<span><i class="fas fa-chalkboard-teacher me-1"></i>Prof. ${t.professor_nome}</span>` : ''}
+              ${t.ta_entrou_em ? `<span class="ms-2"><i class="fas fa-calendar me-1"></i>${new Date(t.ta_entrou_em).toLocaleDateString('pt-BR')}</span>` : ''}
+            </div>
           </div>
         </div>
-        <span class="badge rounded-pill flex-shrink-0" style="background:${t.tu_ativa ? '#dcfce7' : '#f1f5f9'};color:${t.tu_ativa ? '#16a34a' : '#94a3b8'};font-size:0.72rem;font-weight:600;">
-          ${t.tu_ativa ? 'Ativa' : 'Inativa'}
-        </span>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('') + `</div>`;
 }
 
 function toggleFormEntrar() {
