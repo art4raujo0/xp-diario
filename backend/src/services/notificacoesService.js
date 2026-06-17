@@ -96,7 +96,9 @@ async function enviarEmailNotificacao(nomeUsuario, emailUsuario) {
   const nome = nomeUsuario || 'estudante';
   const appUrl = process.env.APP_URL || 'http://localhost:3000';
 
-  await transporte.sendMail({
+  console.log(`[Notificações] Tentando enviar e-mail para ${emailUsuario} via ${process.env.SMTP_HOST}:${process.env.SMTP_PORT}...`);
+
+  const info = await transporte.sendMail({
     from: `"XP Diário" <${process.env.SMTP_USER}>`,
     to: emailUsuario,
     subject: '📚 Hora de estudar! Seu lembrete diário do XP Diário',
@@ -130,6 +132,8 @@ async function enviarEmailNotificacao(nomeUsuario, emailUsuario) {
       </div>
     `
   });
+
+  console.log(`[Notificações] E-mail aceito pelo servidor SMTP. messageId=${info.messageId} response="${info.response}"`);
 }
 
 // ---------------------------------------------------------------------------
@@ -151,6 +155,12 @@ async function verificarEEnviarNotificacoes() {
       WHERE nc.nc_ativo = TRUE
     `);
 
+    const total = result.rows.length;
+    if (total === 0) return; // sem usuários ativos, sem log
+
+    const agora = new Date().toISOString();
+    console.log(`[Notificações] Job rodando (${agora}) — ${total} usuário(s) com notificação ativa`);
+
     for (const config of result.rows) {
       try {
         const fusoHorario = config.nc_fuso_horario || 'America/Sao_Paulo';
@@ -158,26 +168,36 @@ async function verificarEEnviarNotificacoes() {
         const dataAtual = dataLocalUsuario(fusoHorario);
         const horarioConfigurado = config.nc_horario.slice(0, 5);
 
-        if (horaAtual !== horarioConfigurado) continue;
+        console.log(`[Notificações] Usuário ${config.nc_usuario_id} (${config.us_email}): agora=${horaAtual} configurado=${horarioConfigurado} fuso=${fusoHorario}`);
+
+        if (horaAtual !== horarioConfigurado) {
+          console.log(`[Notificações] Usuário ${config.nc_usuario_id}: horário ainda não chegou, pulando.`);
+          continue;
+        }
 
         if (config.nc_ultimo_envio) {
           const ultimoEnvio = config.nc_ultimo_envio instanceof Date
             ? config.nc_ultimo_envio.toISOString().split('T')[0]
             : String(config.nc_ultimo_envio).split('T')[0];
 
-          if (ultimoEnvio === dataAtual) continue;
+          if (ultimoEnvio === dataAtual) {
+            console.log(`[Notificações] Usuário ${config.nc_usuario_id}: já enviado hoje (${ultimoEnvio}), pulando.`);
+            continue;
+          }
         }
 
+        console.log(`[Notificações] Usuário ${config.nc_usuario_id}: horário bateu! Iniciando envio...`);
         await enviarEmailNotificacao(config.us_nome, config.us_email);
 
         await pool.query(
           `UPDATE notificacoes_config SET nc_ultimo_envio = $1 WHERE nc_id = $2`,
           [dataAtual, config.nc_id]
         );
+        console.log(`[Notificações] SUCESSO: e-mail enviado para ${config.us_email} em ${dataAtual} ${horaAtual}. DB atualizado.`);
 
-        console.log(`[Notificações] E-mail enviado para ${config.us_email} (${dataAtual} ${horaAtual})`);
       } catch (erroEnvio) {
-        console.error(`[Notificações] Erro ao enviar para usuário ${config.nc_usuario_id}:`, erroEnvio.message);
+        console.error(`[Notificações] ERRO ao enviar para ${config.us_email} (usuário ${config.nc_usuario_id}): ${erroEnvio.message}`);
+        console.error(`[Notificações] Detalhes do erro:`, erroEnvio.code || '', erroEnvio.command || '', erroEnvio.responseCode || '');
       }
     }
   } catch (error) {
@@ -186,10 +206,30 @@ async function verificarEEnviarNotificacoes() {
 }
 
 // ---------------------------------------------------------------------------
+// Keep-alive: pinga o próprio serviço a cada 10 min para não dormir no Render free tier
+// ---------------------------------------------------------------------------
+function iniciarKeepAlive() {
+  const appUrl = process.env.APP_URL;
+  if (!appUrl) return;
+
+  const url = `${appUrl.replace(/\/$/, '')}/health`;
+  cron.schedule('*/10 * * * *', () => {
+    const http = url.startsWith('https') ? require('https') : require('http');
+    http.get(url, (res) => {
+      console.log(`[Keep-alive] Ping ${url} → ${res.statusCode}`);
+    }).on('error', (err) => {
+      console.warn(`[Keep-alive] Falha no ping: ${err.message}`);
+    });
+  });
+  console.log(`[Keep-alive] Ping automático a cada 10 min em ${url}`);
+}
+
+// ---------------------------------------------------------------------------
 // Inicialização do scheduler
 // ---------------------------------------------------------------------------
 function iniciarScheduler() {
   cron.schedule('* * * * *', verificarEEnviarNotificacoes);
+  iniciarKeepAlive();
   console.log('[Notificações] Scheduler de lembretes diários iniciado.');
 }
 
