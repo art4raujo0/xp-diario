@@ -1231,22 +1231,20 @@ textarea.form-control {
   position: relative;
   overflow: hidden;
   padding: 54px;
-  background:
-    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.88), transparent 16%),
-    radial-gradient(circle at 82% 8%, rgba(255,255,255,0.62), transparent 14%),
-    linear-gradient(180deg, #d9dbff 0%, #e5ecff 48%, #eef4ff 100%);
+  background: url("/assets/login-bg.jpeg") bottom center / cover no-repeat;
 }
 
 .auth-art::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.96) 0 2px, transparent 2.5px),
-    radial-gradient(circle, rgba(250,204,21,0.82) 0 2px, transparent 2.5px),
-    radial-gradient(circle, rgba(255,255,255,0.7) 0 1px, transparent 1.5px);
-  background-size: 86px 70px, 128px 112px, 52px 44px;
-  opacity: 0.92;
+  background: linear-gradient(
+    180deg,
+    rgba(55, 45, 170, 0.82) 0%,
+    rgba(55, 45, 170, 0.60) 28%,
+    rgba(55, 45, 170, 0.18) 54%,
+    transparent 72%
+  );
 }
 
 .auth-art > * { position: relative; z-index: 2; }
@@ -1258,11 +1256,13 @@ textarea.form-control {
   line-height: 1.16;
   font-weight: 900;
   text-wrap: balance;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(23, 32, 58, 0.35);
 }
 
 .auth-copy {
   max-width: 500px;
-  color: #2d3860;
+  color: rgba(230, 235, 255, 0.92);
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.65;
@@ -1276,9 +1276,6 @@ textarea.form-control {
   height: 370px;
   overflow: hidden;
   border-radius: 28px 28px 0 0;
-  background-image: url("/pixel%20art/pixel%20art/Background%20tela%20de%20login.jpeg");
-  background-size: cover;
-  background-position: bottom center;
 }
 
 .auth-stage .pixel-student {
@@ -1331,6 +1328,11 @@ textarea.form-control {
 .auth-brand-name {
   font-size: 0.9rem;
   line-height: 1.5;
+  color: #ffffff;
+}
+
+.auth-art .brand-sub {
+  color: rgba(220, 225, 255, 0.85);
 }
 
 .auth-bubble-star {
