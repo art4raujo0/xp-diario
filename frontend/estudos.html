@@ -77,6 +77,8 @@
             <div class="subject-row"><span class="pixel-icon icon-purple"><i class="fas fa-hourglass-start"></i></span><strong>In&iacute;cio</strong><span id="sessao-inicio-detalhe">--:--</span></div>
             <div class="subject-row"><span class="pixel-icon icon-yellow"><i class="fas fa-hourglass-end"></i></span><strong>Dura&ccedil;&atilde;o</strong><span id="sessao-duracao-detalhe">00:00</span></div>
             <div class="subject-row"><span class="pixel-icon icon-green"><i class="fas fa-floppy-disk"></i></span><strong>Status</strong><span id="sessao-status-detalhe">N&atilde;o iniciada</span></div>
+            <div class="subject-row" id="row-descricao" style="display:none"><span class="pixel-icon icon-purple"><i class="fas fa-pencil"></i></span><strong>Descri&ccedil;&atilde;o</strong><span id="sessao-descricao-detalhe" class="text-muted small"></span></div>
+            <div class="subject-row" id="row-tarefas" style="display:none"><span class="pixel-icon icon-green"><i class="fas fa-list-check"></i></span><strong>Tarefas</strong><span id="sessao-tarefas-detalhe" class="fw-bold"></span></div>
           </article>
           <article class="game-card">
             <h3 class="card-title mb-3"><span class="pixel-icon icon-purple"><i class="fas fa-fire"></i></span> Hist&oacute;rico r&aacute;pido</h3>
@@ -112,6 +114,14 @@
             <select id="sessaoMateria" class="form-select">
               <option value="">Carregando...</option>
             </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="sessaoDescricao">O que voc&ecirc; vai estudar? <span class="text-muted fw-normal small">(opcional)</span></label>
+            <input type="text" id="sessaoDescricao" class="form-control" maxlength="255" placeholder="Ex: Cap&iacute;tulo 4 — &Aacute;lgebra linear">
+          </div>
+          <div class="mb-1">
+            <label class="form-label" for="sessaoTarefas">Tarefas conclu&iacute;das / planejadas <span class="text-muted fw-normal small">(opcional)</span></label>
+            <input type="number" id="sessaoTarefas" class="form-control" min="0" max="999" value="0">
           </div>
         </div>
         <div class="modal-footer">

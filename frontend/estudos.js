@@ -45,9 +45,9 @@ function disciplinaNomePorId(id) {
 
 function segundosDaSessao() {
   if (!sessaoAtual) return 0;
-  const base = Number(sessaoAtual.segundos_focados || 0);
-  if (sessaoAtual.status === 'iniciada' && sessaoAtual.ultimo_inicio_ms) {
-    return base + Math.max(0, Math.floor((Date.now() - sessaoAtual.ultimo_inicio_ms) / 1000));
+  const base = Number(sessaoAtual.segundos_base || 0);
+  if (sessaoAtual.status === 'iniciada' && sessaoAtual.anchor_ms) {
+    return base + Math.max(0, Math.floor((Date.now() - sessaoAtual.anchor_ms) / 1000));
   }
   return base;
 }
@@ -91,7 +91,7 @@ function atualizarPainelSessao() {
   const nomeDisciplina = disciplinaNomePorId(sessaoAtual.disciplina);
 
   display.textContent = formatarDuracaoSegundos(totalSegundos);
-  subtitulo.textContent = 'Sua sessao esta em andamento.';
+  subtitulo.textContent = sessaoAtual.descricao || 'Sua sessao esta em andamento.';
   badge.textContent = nomeDisciplina;
   status.innerHTML = '<i class="fas fa-circle"></i> Sessao em andamento';
   statusDetalhe.textContent = sessaoAtual.status === 'pausada' ? 'Pausada' : 'Gravando tempo';
@@ -104,9 +104,26 @@ function atualizarPainelSessao() {
   balao.textContent = 'Continue assim! Seu XP esta subindo.';
   btnAbrir.classList.add('d-none');
   btnParar.classList.remove('d-none');
+
+  const rowDesc = document.getElementById('row-descricao');
+  const rowTar = document.getElementById('row-tarefas');
+  if (rowDesc) {
+    rowDesc.style.display = sessaoAtual.descricao ? '' : 'none';
+    const el = document.getElementById('sessao-descricao-detalhe');
+    if (el) el.textContent = sessaoAtual.descricao || '';
+  }
+  if (rowTar) {
+    rowTar.style.display = sessaoAtual.tarefas > 0 ? '' : 'none';
+    const el = document.getElementById('sessao-tarefas-detalhe');
+    if (el) el.textContent = sessaoAtual.tarefas;
+  }
 }
 
 function abrirModalSessao() {
+  const desc = document.getElementById('sessaoDescricao');
+  const tar = document.getElementById('sessaoTarefas');
+  if (desc) desc.value = '';
+  if (tar) tar.value = '0';
   abrirGameModal('modalSessaoInicio');
 }
 
@@ -136,9 +153,16 @@ async function carregarSessaoAtiva() {
     }
 
     sessaoAtual = {
-      ...sessao,
-      ultimo_inicio_ms: sessao.ultimo_inicio ? new Date(sessao.ultimo_inicio).getTime() : null,
-      inicio_label: sessao.inicio ? new Date(sessao.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '--:--'
+      id: sessao.id,
+      status: sessao.status,
+      disciplina: sessao.disciplina,
+      descricao: sessao.descricao || null,
+      tarefas: Number(sessao.tarefas || 0),
+      inicio_label: sessao.inicio
+        ? new Date(sessao.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        : '--:--',
+      segundos_base: Number(sessao.segundos_correntes != null ? sessao.segundos_correntes : (sessao.segundos_focados || 0)),
+      anchor_ms: sessao.status === 'iniciada' ? Date.now() : null,
     };
     clearInterval(sessaoTimer);
     sessaoTimer = setInterval(atualizarPainelSessao, 1000);
@@ -156,19 +180,26 @@ async function iniciarSessao() {
     return;
   }
 
-  const res = await fetch(`${API_SESSOES}/iniciar`, {
-    method: 'POST',
-    headers: cabecalhos(),
-    body: JSON.stringify({ disciplina })
-  });
-  const dados = await res.json();
-  if (!res.ok) {
-    exibirMensagem(dados.erro || 'Erro ao iniciar a sessao.', 'danger');
-    return;
-  }
+  const descricao = (document.getElementById('sessaoDescricao')?.value || '').trim();
+  const tarefas = Math.max(0, Number(document.getElementById('sessaoTarefas')?.value || 0));
 
-  fecharGameModal('modalSessaoInicio');
-  await carregarSessaoAtiva();
+  try {
+    const res = await fetch(`${API_SESSOES}/iniciar`, {
+      method: 'POST',
+      headers: cabecalhos(),
+      body: JSON.stringify({ disciplina, descricao: descricao || null, tarefas })
+    });
+    const dados = await res.json();
+    if (!res.ok) {
+      exibirMensagem(dados.erro || 'Erro ao iniciar a sessao.', 'danger');
+      return;
+    }
+
+    fecharGameModal('modalSessaoInicio');
+    await carregarSessaoAtiva();
+  } catch (err) {
+    exibirMensagem('Nao foi possivel conectar ao servidor. Verifique sua conexao.', 'danger');
+  }
 }
 
 async function encerrarSessao() {
