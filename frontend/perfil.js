@@ -31,6 +31,10 @@ function iniciais(nome) {
   return (nome || '?').trim().split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
 }
 
+function apelido(nome) {
+  return (nome || 'Estudante').trim().split(' ')[0] || 'Estudante';
+}
+
 async function carregarPerfil() {
   try {
     const [resPerfil, resStreak, resConquistas] = await Promise.all([
@@ -59,15 +63,9 @@ async function carregarPerfil() {
       <div class="perfil-hero mb-4">
         <div class="perfil-avatar">${iniciais(perfil.us_nome)}</div>
         <div>
-          <div class="perfil-nome">${perfil.us_nome}</div>
+          <div class="perfil-nome">${apelido(perfil.us_nome)}</div>
           <div class="perfil-email">${perfil.us_email}</div>
-          <span class="rank-badge" style="background:${rank.bg};color:${rank.cor};">
-            <i class="fas ${rank.icone}"></i> ${rank.nome}
-          </span>
-        </div>
-        <div class="xp-box">
-          <div class="xp-valor">${pontos.toLocaleString('pt-BR')}</div>
-          <div class="xp-label"><i class="fas fa-bolt me-1"></i>XP Total</div>
+          <div class="perfil-email">Classe: <strong style="color:${rank.cor};">${rank.nome}</strong></div>
         </div>
       </div>
 
