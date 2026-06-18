@@ -18,6 +18,8 @@ const tarefasRoutes = require("./src/routes/tarefas");
 const relatorioRoutes = require("./src/routes/relatorio");
 const turmasRoutes = require("./src/routes/turmas");
 const adminRoutes = require("./src/routes/admin");
+const senhaRoutes = require("./src/routes/senha");
+const sessoesRoutes = require("./src/routes/sessoes");
 const { iniciarScheduler } = require("./src/services/notificacoesService");
 const { executarMigracoes } = require("./src/config/migrar");
 
@@ -29,6 +31,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static(publicPath));
+app.use('/fotos_ref', express.static(path.join(__dirname, '..', 'fotos_ref')));
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', ts: new Date().toISOString() });
@@ -60,6 +63,10 @@ app.get('/materias', (req, res) => {
 
 app.get('/cadastro', (req, res) => {
   res.sendFile(path.join(publicPath, 'cadastro.html'));
+});
+
+app.get('/resetar-senha', (req, res) => {
+  res.sendFile(path.join(publicPath, 'resetar-senha.html'));
 });
 
 app.get('/estudos', (req, res) => {
@@ -107,6 +114,8 @@ app.use("/api/tarefas", tarefasRoutes);
 app.use("/api/relatorio", relatorioRoutes);
 app.use("/api/turmas", turmasRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/senha", senhaRoutes);
+app.use("/api/sessoes", sessoesRoutes);
 
 executarMigracoes().then(() => iniciarScheduler());
 

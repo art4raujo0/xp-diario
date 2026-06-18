@@ -1,5 +1,14 @@
 const API_ATIVIDADES = '/api/atividades';
 const API_MATERIAS = '/api/materias';
+const API_SESSOES = '/api/sessoes';
+const DURACAO_PADRAO_SEG = 25 * 60;
+
+let segundosRestantes = DURACAO_PADRAO_SEG;
+let segundosFocados = 0;
+let timerInterval = null;
+let timerRodando = false;
+let inicioSessao = null;
+let sessaoBackendId = null;
 
 function token() {
   return localStorage.getItem('xp_diario_token');
@@ -53,9 +62,137 @@ function limparForm() {
   document.getElementById('descricao').value = '';
 }
 
+function atualizarTimerUI() {
+  const timer = document.getElementById('timer-time');
+  const xp = document.getElementById('session-xp');
+  const status = document.getElementById('session-status');
+  const btn = document.getElementById('btn-play-pause');
+  const minutos = Math.floor(segundosRestantes / 60);
+  const segundos = segundosRestantes % 60;
+
+  if (timer) timer.textContent = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+  if (xp) xp.textContent = `${Math.floor(segundosFocados / 60)} XP`;
+  if (status) status.innerHTML = timerRodando
+    ? '<i class="fas fa-circle"></i> Sessao em andamento'
+    : '<i class="fas fa-circle"></i> Sessao pausada';
+  if (btn) btn.innerHTML = timerRodando
+    ? '<i class="fas fa-pause me-2"></i>Pausar'
+    : '<i class="fas fa-play me-2"></i>Iniciar';
+}
+
+function iniciarLoopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    segundosFocados += 1;
+    segundosRestantes = Math.max(0, segundosRestantes - 1);
+    atualizarTimerUI();
+    if (segundosRestantes === 0) encerrarSessao();
+  }, 1000);
+}
+
+async function alternarTimer() {
+  if (timerRodando) {
+    try {
+      if (sessaoBackendId) {
+        const res = await fetch(`${API_SESSOES}/${sessaoBackendId}/pausar`, { method: 'PATCH', headers: cabecalhos() });
+        const dados = await res.json();
+        if (res.ok && dados.sessao) segundosFocados = Number(dados.sessao.segundos_focados || segundosFocados);
+      }
+    } catch (error) {
+      console.error('Erro ao pausar sessao no backend:', error);
+    } finally {
+      timerRodando = false;
+      clearInterval(timerInterval);
+      timerInterval = null;
+      atualizarTimerUI();
+    }
+    return;
+  }
+
+  try {
+    const materiaId = parseInt(document.getElementById('materia')?.value);
+    const url = sessaoBackendId ? `${API_SESSOES}/${sessaoBackendId}/retomar` : `${API_SESSOES}/iniciar`;
+    const res = await fetch(url, {
+      method: sessaoBackendId ? 'PATCH' : 'POST',
+      headers: cabecalhos(),
+      body: sessaoBackendId ? undefined : JSON.stringify({ disciplina: materiaId || null })
+    });
+    const dados = await res.json();
+    if (!res.ok) {
+      exibirMensagem(dados.erro || 'Erro ao controlar sessao.', 'danger');
+      return;
+    }
+    sessaoBackendId = dados.sessao?.id || sessaoBackendId;
+    segundosFocados = Number(dados.sessao?.segundos_focados || segundosFocados);
+    if (!inicioSessao) inicioSessao = new Date();
+    timerRodando = true;
+    iniciarLoopTimer();
+    atualizarTimerUI();
+  } catch (error) {
+    console.error('Erro ao iniciar/retomar sessao:', error);
+    exibirMensagem('Erro ao conectar com o servidor de sessoes.', 'danger');
+  }
+}
+
+async function encerrarSessao() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerRodando = false;
+
+  if (sessaoBackendId) {
+    try {
+      const res = await fetch(`${API_SESSOES}/${sessaoBackendId}/encerrar`, { method: 'PATCH', headers: cabecalhos() });
+      const dados = await res.json();
+      if (res.ok && dados.sessao) segundosFocados = Number(dados.sessao.segundos_focados || segundosFocados);
+    } catch (error) {
+      console.error('Erro ao encerrar sessao no backend:', error);
+    }
+  }
+  atualizarTimerUI();
+
+  const minutos = Math.max(1, Math.round(segundosFocados / 60));
+  const materiaId = parseInt(document.getElementById('materia')?.value);
+
+  if (!materiaId) {
+    mostrarForm();
+    document.getElementById('tempo').value = minutos;
+    exibirMensagem('Escolha uma materia para salvar a sessao encerrada.', 'info');
+    return;
+  }
+
+  document.getElementById('tempo').value = minutos;
+  document.getElementById('data').value = dataHoje();
+  document.getElementById('descricao').value = `Sessao de foco registrada pelo timer (${minutos} min).`;
+  await salvarRegistro();
+
+  segundosRestantes = DURACAO_PADRAO_SEG;
+  segundosFocados = 0;
+  inicioSessao = null;
+  sessaoBackendId = null;
+  atualizarTimerUI();
+}
+
+async function carregarSessaoAtiva() {
+  try {
+    const res = await fetch(`${API_SESSOES}/ativa`, { headers: cabecalhos() });
+    if (!res.ok) return;
+    const dados = await res.json();
+    const sessao = dados.sessao;
+    if (!sessao) return;
+    sessaoBackendId = sessao.id;
+    segundosFocados = Number(sessao.segundos_focados || 0);
+    segundosRestantes = Math.max(0, DURACAO_PADRAO_SEG - segundosFocados);
+    timerRodando = sessao.status === 'iniciada';
+    if (timerRodando) iniciarLoopTimer();
+    atualizarTimerUI();
+  } catch (error) {
+    console.error('Erro ao carregar sessao ativa:', error);
+  }
+}
+
 async function carregarMaterias() {
   try {
-    const res = await fetch(API_MATERIAS);
+    const res = await fetch(API_MATERIAS, { headers: cabecalhos() });
     const materias = await res.json();
     const select = document.getElementById('materia');
     if (!Array.isArray(materias) || materias.length === 0) {
@@ -225,6 +362,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = '/login';
     return;
   }
+  carregarUsuarioAtual();
   carregarMaterias();
   carregarHistorico();
+  carregarSessaoAtiva();
+  atualizarTimerUI();
 });

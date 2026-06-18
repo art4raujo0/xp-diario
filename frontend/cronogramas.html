@@ -31,7 +31,7 @@
 
     <main class="content">
       <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand fw-black">XP Diario</span></div>
-      <div class="app-topbar"><label class="search-pill"><i class="fas fa-magnifying-glass"></i><input placeholder="Buscar sessoes, disciplinas, horarios..."><span class="kbd">/</span></label><div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1">Lucas</div><small class="text-muted fw-bold">Nivel 12</small></div></div></div>
+      <div class="app-topbar"><label class="search-pill"><i class="fas fa-magnifying-glass"></i><input placeholder="Buscar sessoes, disciplinas, horarios..."><span class="kbd">/</span></label><div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1" data-user-name>Estudante</div><small class="text-muted fw-bold" data-user-level>Nivel 1</small></div></div></div>
       <div class="page-header">
         <div><h2>Cronograma de Estudos</h2><p class="page-subtitle">Organize sua semana como um mapa de fases.</p></div>
         <div class="d-flex gap-2 flex-wrap"><button class="btn btn-light border px-4 py-3"><i class="fas fa-arrows-up-down-left-right me-2"></i>Arrastar para reorganizar</button><button class="btn btn-primary px-4 py-3" onclick="mostrarForm()"><i class="fas fa-plus me-2"></i>Criar cronograma</button></div>
@@ -47,11 +47,9 @@
       </div>
 
       <div class="card-panel p-3 mb-4">
-        <div class="calendar-grid">
+        <div class="calendar-grid" id="grade-cronograma">
           <div class="calendar-head">Hora</div><div class="calendar-head">Seg</div><div class="calendar-head">Ter</div><div class="calendar-head">Qua</div><div class="calendar-head">Qui</div><div class="calendar-head">Sex</div><div class="calendar-head">Sab</div><div class="calendar-head">Dom</div>
-          <div class="time-cell">08:00</div><div class="calendar-cell"><div class="study-block" style="background:#3b82f6"><i class="fas fa-square-root-variable"></i> Matematica<br><small>60 min</small></div></div><div class="calendar-cell"></div><div class="calendar-cell"><div class="study-block" style="background:#22c55e"><i class="fas fa-book"></i> Portugues<br><small>45 min</small></div></div><div class="calendar-cell"></div><div class="calendar-cell"><div class="study-block" style="background:#6d5dfb"><i class="fas fa-code"></i> Programacao<br><small>90 min</small></div></div><div class="calendar-cell"></div><div class="calendar-cell"></div>
-          <div class="time-cell">10:00</div><div class="calendar-cell"></div><div class="calendar-cell"><div class="study-block" style="background:#facc15;color:#17203a"><i class="fas fa-landmark"></i> Historia<br><small>60 min</small></div></div><div class="calendar-cell"></div><div class="calendar-cell"><div class="study-block" style="background:#fb923c"><i class="fas fa-language"></i> Ingles<br><small>45 min</small></div></div><div class="calendar-cell"></div><div class="calendar-cell"></div><div class="calendar-cell"></div>
-          <div class="time-cell">14:00</div><div class="calendar-cell"></div><div class="calendar-cell"></div><div class="calendar-cell"></div><div class="calendar-cell"><div class="study-block" style="background:#ec4899"><i class="fas fa-star"></i> Revisao Geral<br><small>30 min</small></div></div><div class="calendar-cell"></div><div class="calendar-cell"><div class="study-block" style="background:#6d5dfb"><i class="fas fa-code"></i> Programacao<br><small>90 min</small></div></div><div class="calendar-cell"></div>
+          <div class="calendar-cell" style="grid-column:1/-1;text-align:center;color:#64748b;font-weight:800;">Carregando cronogramas do banco...</div>
         </div>
       </div>
 

@@ -66,8 +66,8 @@
         <div class="user-chip">
           <div class="avatar-sprite"></div>
           <div>
-            <div class="fw-black lh-1">Lucas</div>
-            <small class="text-muted fw-bold">Nivel 12</small>
+            <div class="fw-black lh-1" data-user-name>Estudante</div>
+            <small class="text-muted fw-bold" data-user-level>Nivel 1</small>
           </div>
           <i class="fas fa-chevron-down ms-auto text-muted"></i>
         </div>
@@ -79,7 +79,7 @@
             <div class="pixel-platform"></div>
             <div class="pixel-student hero-student"><span class="pixel-book"></span></div>
             <div class="hero-copy">
-              <h1>Bem-vindo, Lucas! ✨</h1>
+              <h1>Bem-vindo, <span data-user-first-name>Estudante</span>!</h1>
               <p>Continue assim e alcance novos niveis de conhecimento!</p>
               <div class="hero-stats">
                 <div class="hero-stat">
@@ -89,11 +89,11 @@
                 </div>
                 <div class="hero-stat">
                   <span>⭐ Seu nivel</span>
-                  <strong>Nivel 12</strong>
+                  <strong data-dashboard-level>Nivel 1</strong>
                   <div class="progress-track xp-bar mt-2">
-                    <div class="progress-fill" style="width:64%"></div>
+                    <div class="progress-fill" data-dashboard-xp-bar style="width:0%"></div>
                   </div>
-                  <small>640 / 1000 XP</small>
+                  <small data-dashboard-xp>0 / 100 XP</small>
                 </div>
               </div>
             </div>
@@ -175,11 +175,9 @@
                 <h3 class="card-title"><span class="pixel-icon icon-pink"><i class="fas fa-calendar-day"></i></span> Cronograma de Hoje</h3>
                 <a class="small-link" href="/cronogramas.html">Ver completo</a>
               </div>
-              <div class="schedule-row"><span class="schedule-time">08:00</span><strong>Matematica</strong><span>60 min</span></div>
-              <div class="schedule-row"><span class="schedule-time">10:00</span><strong>Portugues</strong><span>45 min</span></div>
-              <div class="schedule-row"><span class="schedule-time">14:00</span><strong>Historia</strong><span>60 min</span></div>
-              <div class="schedule-row"><span class="schedule-time">16:00</span><strong>Programacao</strong><span>90 min</span></div>
-              <div class="schedule-row"><span class="schedule-time">19:00</span><strong>Revisao Geral</strong><span>30 min</span></div>
+              <div id="dashboard-cronogramas">
+                <p class="text-muted fw-bold mb-0">Carregando cronograma...</p>
+              </div>
             </article>
           </div>
 
@@ -206,11 +204,9 @@
                 <h3 class="card-title"><span class="pixel-icon icon-green"><i class="fas fa-list-check"></i></span> Tarefas de Estudo</h3>
                 <a class="small-link" href="/tarefas">Ver todas</a>
               </div>
-              <div class="task-row"><i class="fas fa-square-check text-success fs-5"></i><strong>Resolver exercicios de Matematica</strong><span class="badge-soft badge-green">Concluida</span></div>
-              <div class="task-row"><i class="fas fa-square-check text-success fs-5"></i><strong>Leitura: Dom Casmurro</strong><span class="badge-soft badge-green">Concluida</span></div>
-              <div class="task-row"><i class="far fa-square fs-5 text-muted"></i><strong>Resumo: Revolucao Francesa</strong><span class="badge-soft badge-orange">Pendente</span></div>
-              <div class="task-row"><i class="far fa-square fs-5 text-muted"></i><strong>Praticar algoritmos em Python</strong><span class="badge-soft badge-orange">Pendente</span></div>
-              <div class="task-row"><i class="far fa-square fs-5 text-muted"></i><strong>Revisar conteudo de Portugues</strong><span class="badge-soft badge-orange">Pendente</span></div>
+              <div id="dashboard-tarefas">
+                <p class="text-muted fw-bold mb-0">Carregando tarefas...</p>
+              </div>
             </article>
           </div>
         </section>
@@ -222,10 +218,10 @@
               <a class="small-link" href="/metas">Ver todas</a>
             </div>
             <div class="d-flex align-items-center justify-content-between gap-3">
-              <div><div class="stat-value">3 / 4</div><strong>metas concluidas</strong></div>
+              <div><div class="stat-value" id="metas-hoje-total">0 / 0</div><strong>tempo planejado</strong></div>
               <div class="chest"></div>
             </div>
-            <div class="progress-track my-3"><div class="progress-fill fill-green" style="width:75%"></div></div>
+            <div class="progress-track my-3"><div class="progress-fill fill-green" id="metas-hoje-barra" style="width:0%"></div></div>
             <p class="mb-0 fw-bold text-muted">Falta pouco para a recompensa!</p>
           </article>
 
@@ -235,10 +231,10 @@
               <a class="small-link" href="/metas">Ver todas</a>
             </div>
             <div class="d-flex align-items-center justify-content-between gap-3">
-              <div><div class="stat-value">15 / 20</div><strong>metas concluidas</strong></div>
+              <div><div class="stat-value" id="metas-semana-total">0 / 0</div><strong>tempo planejado</strong></div>
               <div class="chest"></div>
             </div>
-            <div class="progress-track my-3"><div class="progress-fill fill-purple" style="width:75%"></div></div>
+            <div class="progress-track my-3"><div class="progress-fill fill-purple" id="metas-semana-barra" style="width:0%"></div></div>
             <p class="mb-0 fw-bold text-muted">5 metas restantes para o bau semanal</p>
           </article>
 
@@ -248,13 +244,13 @@
             </div>
             <div class="grid-2 mb-3">
               <div class="p-3 rounded-4" style="background:#fff8e1"><div class="fw-black text-muted">Moedas</div><div class="stat-value">1.250</div></div>
-              <div class="p-3 rounded-4" style="background:#eef2ff"><div class="fw-black text-muted">XP</div><div class="stat-value">640</div></div>
+              <div class="p-3 rounded-4" style="background:#eef2ff"><div class="fw-black text-muted">XP</div><div class="stat-value" data-user-xp>0</div></div>
             </div>
             <div class="d-flex align-items-center gap-3">
               <div class="flex-grow-1">
                 <strong>Proxima recompensa</strong>
                 <div class="text-muted fw-bold small">Faltam 360 XP</div>
-                <div class="progress-track mt-2"><div class="progress-fill fill-yellow" style="width:64%"></div></div>
+                <div class="progress-track mt-2"><div class="progress-fill fill-yellow" data-dashboard-xp-bar style="width:0%"></div></div>
               </div>
               <div class="chest"></div>
             </div>
@@ -265,12 +261,13 @@
               <h3 class="card-title"><span class="pixel-icon icon-orange"><i class="fas fa-trophy"></i></span> Conquistas Recentes</h3>
               <a class="small-link" href="/conquistas">Ver todas</a>
             </div>
-            <div class="achievement-list">
+            <div class="achievement-list" id="dashboard-conquistas">
               <div class="achievement-badge"><div class="badge-medal" style="background:#8b5cf6"><i class="fas fa-book"></i></div>Estudioso Iniciante</div>
               <div class="achievement-badge"><div class="badge-medal" style="background:#f97316"><i class="fas fa-fire"></i></div>Foco Total 7 dias</div>
               <div class="achievement-badge"><div class="badge-medal" style="background:#22c55e"><i class="fas fa-clock"></i></div>Mestre do Tempo</div>
               <div class="achievement-badge"><div class="badge-medal" style="background:#facc15"><i class="fas fa-trophy"></i></div>Meta Cumprida</div>
             </div>
+            <div id="dica-mestre"></div>
           </article>
 
           <article class="game-card">

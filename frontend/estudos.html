@@ -31,33 +31,32 @@
 
     <main class="content">
       <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand fw-black">XP Diario</span></div>
-      <div class="app-topbar"><button class="btn btn-light border"><i class="fas fa-arrow-left"></i></button><div class="flex-grow-1"><h2 class="mb-0 fw-black">Sessao de Estudo</h2><p class="page-subtitle">Concentre-se e conquiste seus objetivos!</p></div><div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1">Lucas</div><small class="text-muted fw-bold">Nivel 12</small></div></div></div>
+      <div class="app-topbar"><button class="btn btn-light border" onclick="history.back()"><i class="fas fa-arrow-left"></i></button><div class="flex-grow-1"><h2 class="mb-0 fw-black">Sessao de Estudo</h2><p class="page-subtitle">Concentre-se e conquiste seus objetivos!</p></div><div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1" data-user-name>Estudante</div><small class="text-muted fw-bold" data-user-level>Nivel 1</small></div></div></div>
       <div id="mensagem" class="mb-3"></div>
 
       <div class="dashboard-grid mb-4">
         <section>
           <div class="focus-panel">
-            <span class="badge-soft badge-green"><i class="fas fa-circle"></i> Sessao em andamento</span>
-            <div class="timer-ring"><div class="text-center"><div class="timer-time">24:37</div><div class="fs-5 fw-bold">Foque no que importa!</div><span class="badge-soft badge-purple mt-3">🎯 Foco Total</span></div></div>
+            <span class="badge-soft badge-green" id="session-status"><i class="fas fa-circle"></i> Pronto para focar</span>
+            <div class="timer-ring"><div class="text-center"><div class="timer-time" id="timer-time">25:00</div><div class="fs-5 fw-bold">Foque no que importa!</div><span class="badge-soft badge-purple mt-3">Foco Total</span></div></div>
             <div class="pixel-platform" style="width:100%;left:0"></div>
             <div class="pixel-student" style="position:absolute;right:110px;bottom:80px"><span class="pixel-book"></span></div>
             <div class="speech-bubble" style="position:absolute;left:70px;bottom:105px">Cada minuto conta! 💪</div>
           </div>
           <div class="card-panel p-4 mt-3 d-flex justify-content-center gap-3 flex-wrap">
-            <button class="btn btn-light border px-5 py-3"><i class="fas fa-pause me-2"></i>Pausar</button>
-            <button class="btn btn-primary px-5 py-3"><i class="fas fa-pause me-2"></i>Pausar</button>
-            <button class="btn btn-light border px-5 py-3 text-danger"><i class="fas fa-stop me-2"></i>Encerrar</button>
+            <button class="btn btn-primary px-5 py-3" id="btn-play-pause" onclick="alternarTimer()"><i class="fas fa-play me-2"></i>Iniciar</button>
+            <button class="btn btn-light border px-5 py-3 text-danger" onclick="encerrarSessao()"><i class="fas fa-stop me-2"></i>Encerrar</button>
           </div>
           <div class="grid-3 mt-3">
-            <div class="stat-card"><div><div class="stat-label">XP nesta sessao</div><div class="stat-value">120 XP</div><small class="text-success fw-bold">+20% bonus de foco</small></div><div class="stat-icon icon-yellow"><i class="fas fa-bolt"></i></div></div>
-            <div class="stat-card"><div><div class="stat-label">Foco atual</div><div class="stat-value">92%</div><small class="text-muted fw-bold">Excelente!</small></div><div class="stat-icon icon-green"><i class="fas fa-bullseye"></i></div></div>
-            <div class="stat-card"><div><div class="stat-label">Nivel</div><div class="stat-value">Nivel 12</div><div class="progress-track"><div class="progress-fill fill-blue" style="width:68%"></div></div></div><div class="stat-icon icon-blue"><i class="fas fa-star"></i></div></div>
+            <div class="stat-card"><div><div class="stat-label">XP nesta sessao</div><div class="stat-value" id="session-xp">0 XP</div><small class="text-success fw-bold">1 XP por minuto focado</small></div><div class="stat-icon icon-yellow"><i class="fas fa-bolt"></i></div></div>
+            <div class="stat-card"><div><div class="stat-label">Foco atual</div><div class="stat-value" id="session-focus">100%</div><small class="text-muted fw-bold">Timer ativo</small></div><div class="stat-icon icon-green"><i class="fas fa-bullseye"></i></div></div>
+            <div class="stat-card"><div><div class="stat-label">Nivel</div><div class="stat-value" data-user-level>Nivel 1</div><div class="progress-track"><div class="progress-fill fill-blue" style="width:68%"></div></div></div><div class="stat-icon icon-blue"><i class="fas fa-star"></i></div></div>
           </div>
         </section>
         <aside class="dashboard-side">
           <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-blue"><i class="fas fa-clipboard-list"></i></span> Detalhes da Sessao</h3><div class="subject-row"><span class="pixel-icon icon-blue"><i class="fas fa-book"></i></span><strong>Disciplina</strong><span>Matematica</span></div><div class="subject-row"><span class="pixel-icon icon-purple"><i class="fas fa-bullseye"></i></span><strong>Objetivo</strong><span>Funcoes do 1 grau</span></div><div class="subject-row"><span class="pixel-icon icon-yellow"><i class="fas fa-clock"></i></span><strong>Inicio</strong><span>Hoje, 14:32</span></div><div class="subject-row"><span class="pixel-icon icon-green"><i class="fas fa-gauge"></i></span><strong>Foco medio</strong><span>92%</span></div></article>
           <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-purple"><i class="fas fa-fire"></i></span> Combo de Foco</h3><div class="d-flex align-items-center gap-2 mb-3"><span class="badge-soft badge-purple">✓</span><div class="progress-track flex-grow-1"><div class="progress-fill fill-purple" style="width:86%"></div></div><span class="badge-soft badge-purple">XP</span></div><div class="stat-value">7 dias</div><small class="text-muted fw-bold">Melhor: 7 dias</small></article>
-          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-green"><i class="fas fa-floppy-disk"></i></span> Resumo da sessao</h3><p class="text-muted fw-bold">Estudei funcoes do 1 grau: definicao, graficos e exercicios de calculo de raizes.</p><button class="btn btn-primary w-100 py-3" onclick="mostrarForm()">Salvar sessao realizada <span class="ms-2">+120 XP</span></button></article>
+          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-green"><i class="fas fa-floppy-disk"></i></span> Resumo da sessao</h3><p class="text-muted fw-bold">Ao encerrar, a sessao e salva no backend como atividade real e soma XP ao perfil.</p><button class="btn btn-primary w-100 py-3" onclick="encerrarSessao()">Salvar sessao realizada</button></article>
         </aside>
       </div>
 

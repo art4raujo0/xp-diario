@@ -144,7 +144,7 @@ function limparForm() {
 
 async function carregarMaterias() {
   try {
-    const res = await fetch(API_MATERIAS);
+    const res = await fetch(API_MATERIAS, { headers: cabecalhos() });
     const materias = await res.json();
     const select = document.getElementById('materia');
 
@@ -369,6 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   carregarMaterias();
   carregarCronogramas();
+  carregarUsuarioAtual();
   inicializarCalendario();
   limparForm();
 });

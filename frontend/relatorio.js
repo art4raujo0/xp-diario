@@ -127,6 +127,7 @@ function renderizarRelatorio(dados) {
   document.getElementById('resumo-sessoes').textContent = resumo.total_sessoes;
   document.getElementById('resumo-tarefas').textContent = resumo.total_tarefas;
   document.getElementById('cards-resumo').style.removeProperty('display');
+  renderizarCardsLateraisRelatorio(resumo);
 
   const resultado = document.getElementById('resultado');
 
@@ -186,6 +187,35 @@ function renderizarRelatorio(dados) {
         <tbody>${linhas}</tbody>
       </table>
     </div>`;
+}
+
+async function renderizarCardsLateraisRelatorio(resumo) {
+  const metaCard = document.getElementById('relatorio-meta-card');
+  if (metaCard) {
+    const pct = Math.min(100, Math.round((Number(resumo.total_minutos || 0) / 600) * 100));
+    const valor = metaCard.querySelector('.stat-value');
+    const barra = metaCard.querySelector('.progress-fill');
+    if (valor) valor.textContent = `${pct}%`;
+    if (barra) barra.style.width = `${pct}%`;
+  }
+
+  const conquistasCard = document.querySelector('.dashboard-side .game-card:nth-child(2)');
+  if (!conquistasCard) return;
+
+  try {
+    const res = await fetch('/api/conquistas', { headers: cabecalhos() });
+    const dados = res.ok ? await res.json() : { conquistas: [] };
+    const conquistas = (dados.conquistas || []).filter(c => c.status === 'desbloqueada').slice(0, 3);
+    const conteudo = conquistas.length ? conquistas.map(c => `
+      <div class="history-item">
+        <div class="badge-medal" style="background:#6d5dfb;width:46px;height:46px"><i class="fas fa-trophy"></i></div>
+        <div><div class="history-title">${c.co_titulo || c.titulo || 'Conquista'}</div><div class="history-meta">${c.co_descricao || c.descricao || 'Desbloqueada pelo seu progresso'}</div></div>
+      </div>`).join('') : '<p class="text-muted fw-bold mb-0">Nenhuma conquista desbloqueada ainda.</p>';
+
+    conquistasCard.innerHTML = `<h3 class="card-title mb-3"><span class="pixel-icon icon-yellow"><i class="fas fa-star"></i></span> Conquistas recentes</h3>${conteudo}`;
+  } catch (erro) {
+    conquistasCard.innerHTML = '<h3 class="card-title mb-3"><span class="pixel-icon icon-yellow"><i class="fas fa-star"></i></span> Conquistas recentes</h3><p class="text-muted fw-bold mb-0">Nao foi possivel carregar conquistas.</p>';
+  }
 }
 
 function mostrarErro(mensagem) {
@@ -386,5 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = '/login';
     return;
   }
+  carregarUsuarioAtual();
   buscarRelatorio();
 });
