@@ -64,6 +64,10 @@ Registrar o que ja foi corrigido, o que veio da branch remota apenas no backend 
   - `frontend/tarefas.html`
   - `frontend/estudos.html`
   - `frontend/relatorio.html`
+- `Cronogramas` e `Tarefas` voltaram a carregar o seletor de contexto `Minha Area` no sidebar:
+  - `frontend/cronogramas.html`
+  - `frontend/tarefas.html`
+  - ambos agora incluem `ctx-switcher` e `context.js`
 - Dashboard principal sem nascer com valores fake mais visiveis:
   - `frontend/app.html`
 - Relatorios reestruturados para nao exibir cards laterais e blocos estaticos como estado inicial:
