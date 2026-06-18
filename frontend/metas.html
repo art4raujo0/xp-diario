@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Diário - Metas</title>
+  <title>XP Di&aacute;rio - Metas</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
@@ -13,219 +14,150 @@
   <div class="layout">
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <aside class="sidebar">
-      <a class="brand" href="/app">
-        <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div>
-          <div class="brand-name">XP Diário</div>
-          <div class="brand-sub">Estudo Inteligente</div>
-        </div>
-      </a>
+      <a class="brand" href="/app"><div class="brand-icon"></div><div><div class="brand-name">XP<br><span class="brand-purple">Di&aacute;rio</span></div><div class="brand-sub">Estudo em aventura</div></div></a>
       <nav class="sidebar-nav">
-        <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a class="menu-link" href="/app"><i class="fas fa-house"></i> Dashboard</a>
+        <a class="menu-link" href="/materias"><i class="fas fa-book-open"></i> Disciplinas</a>
+        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronograma</a>
+        <a class="menu-link" href="/tarefas"><i class="fas fa-clipboard-check"></i> Tarefas</a>
         <a class="menu-link active" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
-        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
-        <a class="menu-link" href="/tarefas"><i class="fas fa-list-check"></i> Tarefas</a>
-        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Sessoes</a>
-        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronogramas</a>
-        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
+        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Sess&otilde;es</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-column"></i> Relat&oacute;rios</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
-      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
-        <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
-        <div class="ctx-info">
-          <div class="ctx-nome" id="ctx-nome">Minha Área</div>
-          <div class="ctx-sub">Contexto atual</div>
-        </div>
-        <i class="fas fa-right-left ctx-switch-icon"></i>
-      </div>
-      <div class="sidebar-footer">
-        <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
-      </div>
+      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto"><div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div><div class="ctx-info"><div class="ctx-nome" id="ctx-nome">Minha &Aacute;rea</div><div class="ctx-sub">Contexto atual</div></div><i class="fas fa-right-left ctx-switch-icon"></i></div>
+      <div class="sidebar-footer"><a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a></div>
     </aside>
 
     <main class="content">
-      <div class="topbar">
-        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <span class="topbar-brand">XP Diário</span>
-      </div>
+      <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand">XP Di&aacute;rio</span></div>
       <div class="page-header">
-        <div>
-          <h2>Metas</h2>
-          <p class="page-subtitle">Defina e acompanhe suas metas de estudo</p>
-        </div>
-        <button class="btn btn-primary px-4" onclick="mostrarForm()">
-          <i class="fas fa-plus me-2"></i>Nova Meta
-        </button>
+        <div><h2>Metas</h2><p class="page-subtitle">Defina e acompanhe metas usando o seu progresso real.</p></div>
+        <button class="btn btn-primary px-4" onclick="mostrarForm()"><i class="fas fa-plus me-2"></i>Nova Meta</button>
       </div>
 
-      <div id="formMeta" class="card-panel p-4 mb-4 d-none">
-        <h6 class="fw-bold mb-4" style="color:#1e293b;">Configurar Meta</h6>
-        <input type="hidden" id="metaId">
-        <div class="row">
-          <div class="col-md-3 mb-3">
-            <label class="form-label">Tipo</label>
-            <select id="tipo" class="form-select">
-              <option value="diaria">Diária</option>
-              <option value="semanal">Semanal</option>
-              <option value="mensal">Mensal</option>
-            </select>
-          </div>
-          <div class="col-md-3 mb-3">
-            <label class="form-label">Tempo (minutos)</label>
-            <input id="tempo" type="number" class="form-control" placeholder="Ex: 60" min="1">
-          </div>
-          <div class="col-md-3 mb-3">
-            <label class="form-label">Disciplina</label>
-            <select id="disciplina" class="form-select"></select>
-          </div>
-          <div class="col-md-3 mb-3">
-            <label class="form-label">Data</label>
-            <input id="data" type="date" class="form-control">
-          </div>
-        </div>
-        <div class="d-flex gap-2">
-          <button class="btn btn-success px-4" onclick="salvarMeta()">
-            <i class="fas fa-floppy-disk me-2"></i>Salvar
-          </button>
-          <button class="btn btn-light px-4" onclick="cancelar()">Cancelar</button>
-        </div>
-      </div>
-
-      <div id="lista" class="card-panel p-3">
-        <div class="p-4 text-center text-muted">
-          <i class="fas fa-spinner fa-spin me-2"></i>Carregando metas...
-        </div>
-      </div>
+      <div id="mensagem" class="mb-3"></div>
+      <div id="lista" class="card-panel p-3"><div class="p-4 text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Carregando metas...</div></div>
     </main>
   </div>
 
+  <div class="modal fade" id="modalMeta" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content game-modal">
+        <div class="modal-header border-0">
+          <div><h3 class="card-title mb-1"><span class="pixel-icon icon-purple"><i class="fas fa-bullseye"></i></span> Meta de estudo</h3><p class="text-muted small mb-0">Escolha a disciplina, o tipo e o alvo em minutos.</p></div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-sidekick mb-3"><div class="pixel-slime"></div><div class="speech-bubble">Pequenas metas mantem o combo vivo.</div></div>
+          <input type="hidden" id="metaId">
+          <div class="row">
+            <div class="col-md-3 mb-3"><label class="form-label">Tipo</label><select id="tipo" class="form-select"><option value="diaria">Di&aacute;ria</option><option value="semanal">Semanal</option><option value="mensal">Mensal</option></select></div>
+            <div class="col-md-3 mb-3"><label class="form-label">Tempo (min)</label><input id="tempo" type="number" class="form-control" min="1" placeholder="60"></div>
+            <div class="col-md-3 mb-3"><label class="form-label">Disciplina</label><select id="disciplina" class="form-select"></select></div>
+            <div class="col-md-3 mb-3"><label class="form-label">Data</label><input id="data" type="text" class="form-control" placeholder="dd/mm/aaaa"></div>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-light px-4" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary px-4" onclick="salvarMeta()"><i class="fas fa-floppy-disk me-2"></i>Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
   <script src="/utils.js"></script>
   <script src="/context.js"></script>
   <script>
-    const API_METAS = "/api/metas";
-    const API_DISC  = "/api/materias";
+    const API_METAS = '/api/metas';
+    const API_DISC = '/api/materias';
 
     function token() { return localStorage.getItem('xp_diario_token'); }
-    function cabecalhos() {
-      return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}` };
-    }
+    function cabecalhos() { return { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` }; }
+    function exibirMensagem(texto, tipo) { const div = document.getElementById('mensagem'); div.className = `alert alert-${tipo}`; div.textContent = texto; }
+    function limparMensagem() { const div = document.getElementById('mensagem'); div.className = ''; div.textContent = ''; }
+    function mostrarForm() { limparMensagem(); limparForm(); abrirGameModal('modalMeta'); }
+    function cancelar() { limparForm(); fecharGameModal('modalMeta'); }
 
     async function carregarDisciplinas() {
-      try {
-        const res = await fetch(API_DISC, { headers: cabecalhos() });
-        const disciplinas = await res.json();
-        const select = document.getElementById("disciplina");
-        select.innerHTML = disciplinas.map(d => `<option value="${d.di_id}">${d.di_disciplina}</option>`).join('');
-      } catch (err) { console.error(err); }
+      const res = await fetch(API_DISC, { headers: cabecalhos() });
+      const disciplinas = await res.json();
+      const select = document.getElementById('disciplina');
+      select.innerHTML = `<option value="">Todas</option>${disciplinas.map((d) => `<option value="${d.di_id}">${d.di_disciplina}</option>`).join('')}`;
     }
 
     async function carregarMetas() {
       try {
         const res = await fetch(API_METAS, { headers: cabecalhos() });
         if (res.status === 401) { window.location.href = '/login'; return; }
-
         const metas = await res.json();
-        const lista = document.getElementById("lista");
-
+        const lista = document.getElementById('lista');
         if (!Array.isArray(metas) || metas.length === 0) {
-          lista.innerHTML = `
-            <div class="p-5 text-center text-muted">
-              <i class="fas fa-bullseye fs-2 mb-3 d-block" style="color:#d1c4e9;"></i>
-              <p class="mb-0">Nenhuma meta configurada. Crie sua primeira meta!</p>
-            </div>`;
+          lista.innerHTML = '<div class="p-5 text-center text-muted"><i class="fas fa-bullseye fs-2 mb-3 d-block" style="color:#d1c4e9;"></i><p class="mb-0">Nenhuma meta configurada ainda.</p></div>';
           return;
         }
 
-        const tipoCor     = { diaria: '#eff6ff', semanal: '#f0fdf4', mensal: '#fff7ed' };
+        const tipoCor = { diaria: '#eff6ff', semanal: '#f0fdf4', mensal: '#fff7ed' };
         const tipoTextCor = { diaria: '#3b82f6', semanal: '#16a34a', mensal: '#ea580c' };
-
-        lista.innerHTML = `
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead>
-                <tr>
-                  <th>Tipo</th>
-                  <th>Tempo</th>
-                  <th>Disciplina</th>
-                  <th>Data</th>
-                  <th class="text-end">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${metas.map(meta => `
-                  <tr>
-                    <td>
-                      <span class="badge rounded-pill" style="background:${tipoCor[meta.me_tipo]||'#f1f5f9'};color:${tipoTextCor[meta.me_tipo]||'#64748b'};padding:5px 12px;font-size:0.75rem;">
-                        ${meta.me_tipo}
-                      </span>
-                    </td>
-                    <td class="fw-semibold">${meta.me_tempo_min} min</td>
-                    <td class="text-muted">${meta.di_disciplina || "Todas"}</td>
-                    <td style="font-size:0.85rem;color:#94a3b8;">${formatarData(meta.me_data_inicio)}</td>
-                    <td class="text-end">
-                      <button class="btn-icon me-1" onclick='editar(${JSON.stringify(meta)})'><i class="fas fa-edit"></i></button>
-                      <button class="btn-icon danger" onclick="deletar(${meta.me_id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>`;
-      } catch (err) { console.error(err); }
+        lista.innerHTML = `<div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Tipo</th><th>Tempo</th><th>Disciplina</th><th>Data</th><th class="text-end">Acoes</th></tr></thead><tbody>${metas.map((meta) => `<tr><td><span class="badge rounded-pill" style="background:${tipoCor[meta.me_tipo] || '#f1f5f9'};color:${tipoTextCor[meta.me_tipo] || '#64748b'};padding:5px 12px;font-size:0.75rem;">${meta.me_tipo}</span></td><td class="fw-semibold">${meta.me_tempo_min} min</td><td class="text-muted">${meta.di_disciplina || 'Todas'}</td><td style="font-size:0.85rem;color:#94a3b8;">${formatarDataBr(meta.me_data_inicio)}</td><td class="text-end"><button class="btn-icon me-1" onclick='editar(${JSON.stringify(meta)})'><i class="fas fa-edit"></i></button><button class="btn-icon danger" onclick="deletar(${meta.me_id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody></table></div>`;
+      } catch (err) {
+        console.error(err);
+      }
     }
-
-    function formatarData(data) {
-      if (!data) return '—';
-      return new Date(data).toLocaleDateString('pt-BR');
-    }
-
-    function mostrarForm() { document.getElementById("formMeta").classList.remove("d-none"); }
-    function cancelar() { limparForm(); document.getElementById("formMeta").classList.add("d-none"); }
 
     async function salvarMeta() {
-      const id = document.getElementById("metaId").value;
+      const id = document.getElementById('metaId').value;
       const meta = {
-        me_tipo: document.getElementById("tipo").value,
-        me_tempo_min: parseInt(document.getElementById("tempo").value),
-        me_disciplina: parseInt(document.getElementById("disciplina").value),
-        me_data_inicio: document.getElementById("data").value
+        me_tipo: document.getElementById('tipo').value,
+        me_tempo_min: parseInt(document.getElementById('tempo').value, 10),
+        me_disciplina: document.getElementById('disciplina').value ? parseInt(document.getElementById('disciplina').value, 10) : null,
+        me_data_inicio: dataBrParaIso(document.getElementById('data').value)
       };
       const res = await fetch(id ? `${API_METAS}/${id}` : API_METAS, {
-        method: id ? "PUT" : "POST",
+        method: id ? 'PUT' : 'POST',
         headers: cabecalhos(),
         body: JSON.stringify(meta)
       });
       if (res.status === 401) { window.location.href = '/login'; return; }
-      cancelar(); carregarMetas();
+      cancelar();
+      exibirMensagem(id ? 'Meta atualizada.' : 'Meta criada.', 'success');
+      carregarMetas();
     }
 
     function editar(meta) {
-      mostrarForm();
-      document.getElementById("metaId").value = meta.me_id;
-      document.getElementById("tipo").value = meta.me_tipo;
-      document.getElementById("tempo").value = meta.me_tempo_min;
-      document.getElementById("disciplina").value = meta.me_disciplina;
-      document.getElementById("data").value = meta.me_data_inicio?.split("T")[0];
+      document.getElementById('metaId').value = meta.me_id;
+      document.getElementById('tipo').value = meta.me_tipo;
+      document.getElementById('tempo').value = meta.me_tempo_min;
+      document.getElementById('disciplina').value = meta.me_disciplina || '';
+      document.getElementById('data').value = formatarDataBr(meta.me_data_inicio);
+      abrirGameModal('modalMeta');
     }
 
     async function deletar(id) {
-      if (confirm("Deseja excluir essa meta?")) {
-        const res = await fetch(`${API_METAS}/${id}`, { method: "DELETE", headers: cabecalhos() });
-        if (res.status === 401) { window.location.href = '/login'; return; }
-        carregarMetas();
-      }
+      if (!confirm('Deseja excluir essa meta?')) return;
+      const res = await fetch(`${API_METAS}/${id}`, { method: 'DELETE', headers: cabecalhos() });
+      if (res.status === 401) { window.location.href = '/login'; return; }
+      carregarMetas();
     }
 
     function limparForm() {
-      document.getElementById("metaId").value = "";
-      document.getElementById("tipo").value = "diaria";
-      document.getElementById("tempo").value = "";
-      document.getElementById("data").value = "";
+      document.getElementById('metaId').value = '';
+      document.getElementById('tipo').value = 'diaria';
+      document.getElementById('tempo').value = '';
+      document.getElementById('disciplina').value = '';
+      document.getElementById('data').value = '';
     }
 
-    if (!token()) { window.location.href = '/login'; } else { carregarDisciplinas(); carregarMetas(); }
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!token()) { window.location.href = '/login'; return; }
+      await carregarUsuarioAtual();
+      inicializarCampoData('#data');
+      await carregarDisciplinas();
+      await carregarMetas();
+    });
   </script>
 </body>
 </html>
-

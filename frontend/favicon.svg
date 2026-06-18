@@ -1,7 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect x="2" y="2" width="60" height="60" rx="14" fill="#f8faff"/>
-  <path d="M13 38c10-7 21-7 31 0v12c-10-6-21-6-31 0z" fill="#6d5dfb" stroke="#17203a" stroke-width="3"/>
-  <path d="M24 22l9 9 16-16 4 4-17 17 9 9-7 7-9-9-10 10-8-8 10-10-9-9z" fill="#60a5fa" stroke="#17203a" stroke-width="3"/>
-  <path d="M19 34c6-3 13-3 20 0v10c-7-3-14-3-20 0z" fill="#ffffff"/>
-  <path d="M47 9l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#facc15"/>
+  <rect x="14" y="36" width="36" height="10" fill="#4f46e5" stroke="#17203a" stroke-width="2"/>
+  <rect x="18" y="30" width="28" height="8" fill="#6d5dfb" stroke="#17203a" stroke-width="2"/>
+  <path d="M21 28l11-7 11 7-11 5z" fill="#3b82f6" stroke="#17203a" stroke-width="2"/>
+  <path d="M26 19l6 5 6-5" fill="none" stroke="#facc15" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 48l16 5 16-5" fill="#312e81" stroke="#17203a" stroke-width="2"/>
+  <path d="M46 13l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" fill="#8be6b2"/>
+  <path d="M18 15l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5z" fill="#facc15"/>
 </svg>

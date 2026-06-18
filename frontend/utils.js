@@ -9,6 +9,57 @@ function toggleSidebar() {
   document.querySelector('.sidebar-overlay').classList.toggle('open');
 }
 
+function formatarDataBr(valor) {
+  if (!valor) return '';
+  const texto = String(valor).slice(0, 10);
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) return texto;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
+    const [ano, mes, dia] = texto.split('-');
+    return `${dia}/${mes}/${ano}`;
+  }
+  const data = new Date(valor);
+  if (Number.isNaN(data.getTime())) return '';
+  return data.toLocaleDateString('pt-BR');
+}
+
+function dataBrParaIso(valor) {
+  const texto = String(valor || '').trim();
+  if (!texto) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) return texto;
+  const match = texto.match(/^(\d{2})\/(\d{2})\/(\d{2,4})$/);
+  if (!match) return '';
+  const ano = match[3].length === 2 ? `20${match[3]}` : match[3];
+  return `${ano}-${match[2]}-${match[1]}`;
+}
+
+function inicializarCampoData(seletor, opcoes = {}) {
+  if (!window.flatpickr) return null;
+  const el = document.querySelector(seletor);
+  if (!el) return null;
+  return flatpickr(el, {
+    allowInput: true,
+    locale: flatpickr.l10ns.pt,
+    dateFormat: 'd/m/Y',
+    disableMobile: true,
+    ...opcoes
+  });
+}
+
+function abrirGameModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  const modal = bootstrap.Modal.getOrCreateInstance(el);
+  modal.show();
+  return modal;
+}
+
+function fecharGameModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const modal = bootstrap.Modal.getInstance(el);
+  if (modal) modal.hide();
+}
+
 function nivelPorXp(xp) {
   return Math.max(1, Math.floor(Number(xp || 0) / 100) + 1);
 }

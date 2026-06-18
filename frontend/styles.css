@@ -86,28 +86,30 @@ a { color: inherit; }
 .pixel-logo-icon::before {
   content: "";
   position: absolute;
-  width: 32px;
-  height: 9px;
-  left: 7px;
-  bottom: 13px;
-  background: #7c3aed;
+  inset: 12px 10px 10px;
+  border-radius: 10px 10px 14px 14px;
+  background:
+    linear-gradient(180deg, #b27cff 0 16%, transparent 16% 84%, #5b2ca0 84%),
+    linear-gradient(90deg, #5d3a27 0 24%, #8e5a3b 24% 76%, #5d3a27 76%);
   border: 3px solid #17203a;
-  transform: skewY(-16deg);
-  box-shadow: 4px 6px 0 #4f46e5;
+  box-shadow:
+    inset 0 0 0 3px rgba(255, 255, 255, 0.14),
+    inset 0 -8px 0 rgba(23, 32, 58, 0.2);
 }
 
 .brand-icon::after,
 .pixel-logo-icon::after {
   content: "";
   position: absolute;
-  width: 12px;
-  height: 42px;
-  left: 31px;
-  top: 2px;
-  background: linear-gradient(90deg, #dff7ff, #60a5fa 55%, #1d4ed8);
-  border: 3px solid #17203a;
-  transform: rotate(42deg);
-  box-shadow: -8px 24px 0 -3px #facc15;
+  width: 24px;
+  height: 24px;
+  left: 16px;
+  top: 4px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(222, 244, 255, 0.95) 0 18%, transparent 19%),
+    radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.8) 0 58%, transparent 59%);
+  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.65));
+  clip-path: polygon(50% 0, 62% 34%, 100% 50%, 62% 66%, 50% 100%, 38% 66%, 0 50%, 38% 34%);
 }
 
 .brand-name {
@@ -329,7 +331,7 @@ a { color: inherit; }
   width: 42px;
   height: 42px;
   border-radius: 0;
-  background: transparent url("/assets/boneco-ref-transparent.png") center bottom / contain no-repeat;
+  background: transparent url("/assets/boneco-ref.png") center bottom / contain no-repeat;
   border: 0;
   box-shadow: none;
   image-rendering: pixelated;
@@ -500,11 +502,12 @@ a { color: inherit; }
 }
 
 .pixel-student {
-  width: 86px;
-  height: 112px;
+  width: 112px;
+  height: 118px;
   position: relative;
   image-rendering: pixelated;
-  background: transparent url("/assets/boneco-ref-transparent.png") center bottom / contain no-repeat;
+  background: transparent url("/assets/boneco-ref.png") center bottom / contain no-repeat;
+  filter: drop-shadow(0 10px 12px rgba(23, 32, 58, 0.14));
 }
 
 .pixel-student::before {
@@ -550,10 +553,10 @@ a { color: inherit; }
 
 .pixel-book {
   position: absolute;
-  width: 42px;
-  height: 28px;
-  left: 44px;
-  top: 68px;
+  width: 36px;
+  height: 24px;
+  left: 58px;
+  top: 60px;
   background: linear-gradient(90deg, #7c3aed 0 48%, #a78bfa 49%);
   border: 3px solid #17203a;
   transform: rotate(-9deg);
@@ -615,8 +618,9 @@ a { color: inherit; }
   background:
     radial-gradient(circle at 33% 44%, #17203a 0 4px, transparent 4.5px),
     radial-gradient(circle at 66% 44%, #17203a 0 4px, transparent 4.5px),
-    radial-gradient(circle at 50% 66%, #17203a 0 8px, transparent 8.5px),
-    linear-gradient(#b8f7cf, #43d184);
+    radial-gradient(circle at 50% 70%, #17203a 0 7px, transparent 7.5px),
+    radial-gradient(circle at 50% 18%, rgba(255,255,255,0.85) 0 14%, transparent 15%),
+    linear-gradient(#c9ffe2, #62e3a1 55%, #37c97b);
   border: 4px solid #17203a;
   box-shadow: inset 0 -8px 0 rgba(23, 32, 58, 0.1), 0 10px 0 rgba(67, 209, 132, 0.24);
   animation: slimeFloat 3.4s ease-in-out infinite;
@@ -900,6 +904,52 @@ a { color: inherit; }
   border: 1px solid var(--border) !important;
   border-radius: 24px !important;
   box-shadow: 0 28px 70px rgba(23, 32, 58, 0.18) !important;
+}
+
+.game-modal .modal-content {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(139, 230, 178, 0.18), transparent 18%),
+    radial-gradient(circle at 90% 10%, rgba(109, 93, 251, 0.14), transparent 22%),
+    #ffffff;
+}
+
+.game-modal .modal-header {
+  border-bottom: 0;
+  padding: 22px 24px 0;
+}
+
+.game-modal .modal-body {
+  padding: 18px 24px 24px;
+}
+
+.game-modal .modal-footer {
+  border-top: 0;
+  padding: 0 24px 24px;
+}
+
+.game-modal .modal-sidekick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: #f7f5ff;
+  border: 1px solid #e9e1ff;
+}
+
+.game-modal .modal-sidekick .pixel-student {
+  width: 64px;
+  height: 70px;
+  flex-shrink: 0;
+}
+
+.game-modal .modal-sidekick .pixel-book {
+  width: 24px;
+  height: 16px;
+  left: 32px;
+  top: 32px;
 }
 
 .btn,

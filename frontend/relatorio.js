@@ -19,6 +19,10 @@ function dataHoje() {
   return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
 }
 
+function dataHojeBr() {
+  return formatarDataBr(dataHoje());
+}
+
 function calcularPeriodo(tipo) {
   const hoje = new Date();
   const ano = hoje.getFullYear();
@@ -62,8 +66,8 @@ function selecionarPeriodo(tipo, botao) {
   const filtroPersonalizado = document.getElementById('filtro-personalizado');
   if (tipo === 'personalizado') {
     filtroPersonalizado.classList.remove('d-none');
-    document.getElementById('data-inicio').value = dataHoje();
-    document.getElementById('data-fim').value = dataHoje();
+    document.getElementById('data-inicio').value = dataHojeBr();
+    document.getElementById('data-fim').value = dataHojeBr();
     return;
   }
 
@@ -75,8 +79,8 @@ async function buscarRelatorio() {
   let inicio, fim;
 
   if (periodoAtual === 'personalizado') {
-    inicio = document.getElementById('data-inicio').value;
-    fim = document.getElementById('data-fim').value;
+    inicio = dataBrParaIso(document.getElementById('data-inicio').value);
+    fim = dataBrParaIso(document.getElementById('data-fim').value);
     if (!inicio || !fim) {
       mostrarErro('Selecione as datas de início e fim.');
       return;
@@ -415,6 +419,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!token()) {
     window.location.href = '/login';
     return;
+  }
+  if (typeof inicializarCampoData === 'function') {
+    inicializarCampoData('#data-inicio');
+    inicializarCampoData('#data-fim');
   }
   carregarUsuarioAtual();
   buscarRelatorio();

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Diario - Sessao de Estudo</title>
+  <title>XP Diário - Sessões</title>
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -13,69 +13,114 @@
   <div class="layout">
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <aside class="sidebar">
-      <a class="brand" href="/app"><div class="brand-icon"></div><div><div class="brand-name">XP<br><span class="brand-purple">Diario</span></div><div class="brand-sub">Estudo em aventura</div></div></a>
+      <a class="brand" href="/app"><div class="brand-icon"></div><div><div class="brand-name">XP<br><span class="brand-purple">Diário</span></div><div class="brand-sub">Estudo em aventura</div></div></a>
       <nav class="sidebar-nav">
         <a class="menu-link" href="/app"><i class="fas fa-house"></i> Dashboard</a>
         <a class="menu-link" href="/materias"><i class="fas fa-book-open"></i> Disciplinas</a>
-        <a class="menu-link" href="/cronogramas.html"><i class="fas fa-calendar-days"></i> Cronograma</a>
+        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronograma</a>
         <a class="menu-link" href="/tarefas"><i class="fas fa-clipboard-check"></i> Tarefas</a>
         <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
-        <a class="menu-link active" href="/estudos"><i class="fas fa-clock"></i> Sessoes</a>
-        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-column"></i> Relatorios</a>
+        <a class="menu-link active" href="/estudos"><i class="fas fa-clock"></i> Sessões</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-column"></i> Relatórios</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
-      <div class="sidebar-quest"><div class="pixel-student quest-hero"><span class="pixel-book"></span></div><div class="quest-note">Foco agora, vitoria depois! Voce e imparavel!</div></div>
-      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto"><div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div><div class="ctx-info"><div class="ctx-nome" id="ctx-nome">Minha Area</div><div class="ctx-sub">Contexto atual</div></div><i class="fas fa-right-left ctx-switch-icon"></i></div>
+      <div class="sidebar-quest"><div class="pixel-student quest-hero"><span class="pixel-book"></span></div><div class="quest-note">Foco agora, vitória depois! Você é imparável!</div></div>
+      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto"><div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div><div class="ctx-info"><div class="ctx-nome" id="ctx-nome">Minha Área</div><div class="ctx-sub">Contexto atual</div></div><i class="fas fa-right-left ctx-switch-icon"></i></div>
       <div class="sidebar-footer"><a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-right-from-bracket"></i> Sair</a></div>
     </aside>
 
     <main class="content">
-      <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand fw-black">XP Diario</span></div>
-      <div class="app-topbar"><button class="btn btn-light border" onclick="history.back()"><i class="fas fa-arrow-left"></i></button><div class="flex-grow-1"><h2 class="mb-0 fw-black">Sessao de Estudo</h2><p class="page-subtitle">Concentre-se e conquiste seus objetivos!</p></div><div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1" data-user-name>Estudante</div><small class="text-muted fw-bold" data-user-level>Nivel 1</small></div></div></div>
+      <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand fw-black">XP Diário</span></div>
+      <div class="app-topbar">
+        <div class="flex-grow-1">
+          <h2 class="mb-0 fw-black">Sessão de Estudo</h2>
+          <p class="page-subtitle">Concentre-se e registre seu tempo automaticamente.</p>
+        </div>
+        <div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1" data-user-name>Estudante</div><small class="text-muted fw-bold" data-user-level>Nível 1</small></div></div>
+      </div>
+
       <div id="mensagem" class="mb-3"></div>
 
       <div class="dashboard-grid mb-4">
         <section>
           <div class="focus-panel">
-            <span class="badge-soft badge-green" id="session-status"><i class="fas fa-circle"></i> Pronto para focar</span>
-            <div class="timer-ring"><div class="text-center"><div class="timer-time" id="timer-time">25:00</div><div class="fs-5 fw-bold">Foque no que importa!</div><span class="badge-soft badge-purple mt-3">Foco Total</span></div></div>
+            <span class="badge-soft badge-green" id="sessao-status"><i class="fas fa-circle"></i> Pronto para iniciar</span>
+            <div class="timer-ring">
+              <div class="text-center">
+                <div class="timer-time" id="timer-display">00:00</div>
+                <div class="fs-5 fw-bold" id="timer-subtitle">Escolha uma disciplina e comece.</div>
+                <span class="badge-soft badge-purple mt-3" id="sessao-disciplina-badge">Nenhuma disciplina selecionada</span>
+              </div>
+            </div>
             <div class="pixel-platform" style="width:100%;left:0"></div>
             <div class="pixel-student" style="position:absolute;right:110px;bottom:80px"><span class="pixel-book"></span></div>
-            <div class="speech-bubble" style="position:absolute;left:70px;bottom:105px">Cada minuto conta! 💪</div>
+            <div class="speech-bubble" style="position:absolute;left:70px;bottom:105px" id="sessao-balao">Cada minuto conta!</div>
           </div>
           <div class="card-panel p-4 mt-3 d-flex justify-content-center gap-3 flex-wrap">
-            <button class="btn btn-primary px-5 py-3" id="btn-play-pause" onclick="alternarTimer()"><i class="fas fa-play me-2"></i>Iniciar</button>
-            <button class="btn btn-light border px-5 py-3 text-danger" onclick="encerrarSessao()"><i class="fas fa-stop me-2"></i>Encerrar</button>
+            <button class="btn btn-primary px-5 py-3" id="btn-abrir-sessao" onclick="abrirModalSessao()"><i class="fas fa-play me-2"></i>Iniciar Sessão de Estudo</button>
+            <button class="btn btn-light border px-5 py-3 d-none" id="btn-parar-sessao" onclick="encerrarSessao()"><i class="fas fa-stop me-2"></i>Stop</button>
           </div>
           <div class="grid-3 mt-3">
-            <div class="stat-card"><div><div class="stat-label">XP nesta sessao</div><div class="stat-value" id="session-xp">0 XP</div><small class="text-success fw-bold">1 XP por minuto focado</small></div><div class="stat-icon icon-yellow"><i class="fas fa-bolt"></i></div></div>
-            <div class="stat-card"><div><div class="stat-label">Foco atual</div><div class="stat-value" id="session-focus">100%</div><small class="text-muted fw-bold">Timer ativo</small></div><div class="stat-icon icon-green"><i class="fas fa-bullseye"></i></div></div>
-            <div class="stat-card"><div><div class="stat-label">Nivel</div><div class="stat-value" data-user-level>Nivel 1</div><div class="progress-track"><div class="progress-fill fill-blue" style="width:68%"></div></div></div><div class="stat-icon icon-blue"><i class="fas fa-star"></i></div></div>
+            <div class="stat-card"><div><div class="stat-label">XP nesta sessão</div><div class="stat-value" id="sessao-xp">0 XP</div><small class="text-success fw-bold">Calculado ao finalizar</small></div><div class="stat-icon icon-yellow"><i class="fas fa-bolt"></i></div></div>
+            <div class="stat-card"><div><div class="stat-label">Foco atual</div><div class="stat-value" id="sessao-foco">100%</div><small class="text-muted fw-bold">Sessão em andamento</small></div><div class="stat-icon icon-green"><i class="fas fa-bullseye"></i></div></div>
+            <div class="stat-card"><div><div class="stat-label">Tempo salvo</div><div class="stat-value" id="sessao-minutos">0 min</div><small class="text-muted fw-bold">Arredondado para baixo</small></div><div class="stat-icon icon-blue"><i class="fas fa-clock"></i></div></div>
           </div>
         </section>
         <aside class="dashboard-side">
-          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-blue"><i class="fas fa-clipboard-list"></i></span> Detalhes da Sessao</h3><div class="subject-row"><span class="pixel-icon icon-blue"><i class="fas fa-book"></i></span><strong>Disciplina</strong><span>Matematica</span></div><div class="subject-row"><span class="pixel-icon icon-purple"><i class="fas fa-bullseye"></i></span><strong>Objetivo</strong><span>Funcoes do 1 grau</span></div><div class="subject-row"><span class="pixel-icon icon-yellow"><i class="fas fa-clock"></i></span><strong>Inicio</strong><span>Hoje, 14:32</span></div><div class="subject-row"><span class="pixel-icon icon-green"><i class="fas fa-gauge"></i></span><strong>Foco medio</strong><span>92%</span></div></article>
-          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-purple"><i class="fas fa-fire"></i></span> Combo de Foco</h3><div class="d-flex align-items-center gap-2 mb-3"><span class="badge-soft badge-purple">✓</span><div class="progress-track flex-grow-1"><div class="progress-fill fill-purple" style="width:86%"></div></div><span class="badge-soft badge-purple">XP</span></div><div class="stat-value">7 dias</div><small class="text-muted fw-bold">Melhor: 7 dias</small></article>
-          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-green"><i class="fas fa-floppy-disk"></i></span> Resumo da sessao</h3><p class="text-muted fw-bold">Ao encerrar, a sessao e salva no backend como atividade real e soma XP ao perfil.</p><button class="btn btn-primary w-100 py-3" onclick="encerrarSessao()">Salvar sessao realizada</button></article>
+          <article class="game-card">
+            <h3 class="card-title mb-3"><span class="pixel-icon icon-blue"><i class="fas fa-clipboard-list"></i></span> Detalhes da Sessão</h3>
+            <div class="subject-row"><span class="pixel-icon icon-blue"><i class="fas fa-book"></i></span><strong>Disciplina</strong><span id="sessao-disciplina-detalhe">Aguardando início</span></div>
+            <div class="subject-row"><span class="pixel-icon icon-purple"><i class="fas fa-hourglass-start"></i></span><strong>Início</strong><span id="sessao-inicio-detalhe">--:--</span></div>
+            <div class="subject-row"><span class="pixel-icon icon-yellow"><i class="fas fa-hourglass-end"></i></span><strong>Duração</strong><span id="sessao-duracao-detalhe">00:00</span></div>
+            <div class="subject-row"><span class="pixel-icon icon-green"><i class="fas fa-floppy-disk"></i></span><strong>Status</strong><span id="sessao-status-detalhe">Não iniciada</span></div>
+          </article>
+          <article class="game-card">
+            <h3 class="card-title mb-3"><span class="pixel-icon icon-purple"><i class="fas fa-fire"></i></span> Histórico rápido</h3>
+            <p class="text-muted fw-bold mb-0">Quando você clicar em <strong>Stop</strong>, a sessão é salva no banco e aparece no registro abaixo.</p>
+          </article>
         </aside>
       </div>
 
-      <div id="formEstudo" class="card-panel p-4 mb-4 d-none">
-        <h3 class="card-title mb-4"><span class="pixel-icon icon-purple"><i class="fas fa-floppy-disk"></i></span> Nova Sessao de Estudo</h3>
-        <div class="row">
-          <div class="col-md-4 mb-3"><label class="form-label">Materia</label><select id="materia" class="form-select"><option value="">Carregando...</option></select></div>
-          <div class="col-md-3 mb-3"><label class="form-label">Tempo (min)</label><input id="tempo" type="number" class="form-control" placeholder="Ex: 45" min="1"></div>
-          <div class="col-md-2 mb-3"><label class="form-label">Tarefas concluidas</label><input id="tarefas" type="number" class="form-control" placeholder="0" min="0" value="0"></div>
-          <div class="col-md-3 mb-3"><label class="form-label">Data</label><input id="data" type="date" class="form-control"></div>
-          <div class="col-12 mb-3"><label class="form-label">Descricao</label><textarea id="descricao" class="form-control" rows="2" placeholder="Ex: Revisao do capitulo 3..."></textarea></div>
-        </div>
-        <div class="d-flex gap-2 align-items-center"><button class="btn btn-success px-4" onclick="salvarRegistro()"><i class="fas fa-floppy-disk me-2"></i>Salvar Registro</button><button class="btn btn-light px-4" onclick="cancelar()">Cancelar</button></div>
+      <div id="lista" class="card-panel p-3">
+        <div class="p-4 text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Carregando histórico...</div>
       </div>
-
-      <div id="lista" class="card-panel p-3"><div class="p-4 text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Carregando historico...</div></div>
-      <div class="slime-corner"><div class="speech-bubble">Foco e poder! Voce esta evoluindo!</div><div class="pixel-slime"></div></div>
+      <div class="slime-corner"><div class="speech-bubble">Foco é poder! Você está evoluindo!</div><div class="pixel-slime"></div></div>
     </main>
   </div>
+
+  <div class="modal fade game-modal" id="modalSessaoInicio" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <h5 class="modal-title fw-black mb-1">Iniciar Sessão de Estudo</h5>
+            <p class="text-muted fw-bold small mb-0">Escolha a disciplina e comece o cronômetro.</p>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-sidekick">
+            <div class="pixel-student"><span class="pixel-book"></span></div>
+            <div>
+              <strong>Seu foco vai render XP.</strong>
+              <div class="text-muted fw-bold small">O tempo salvo no banco será em minutos inteiros.</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="sessaoMateria">Disciplina</label>
+            <select id="sessaoMateria" class="form-select">
+              <option value="">Carregando...</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btn-start-sessao" onclick="iniciarSessao()"><i class="fas fa-play me-2"></i>Start</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/utils.js"></script>
   <script src="/context.js"></script>
