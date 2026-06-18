@@ -3,127 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Diário - Registrar Estudo</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>XP Diario - Sessao de Estudo</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
-  <style>
-    .xp-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: #ede9fe; color: #7c3aed;
-      border-radius: 99px; padding: 4px 12px;
-      font-size: 0.8rem; font-weight: 700;
-    }
-    .conquista-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: #fff8e1; color: #f59e0b;
-      border: 1px solid #fde68a; border-radius: 99px;
-      padding: 4px 12px; font-size: 0.8rem; font-weight: 700;
-    }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #463acb; display: inline-block; margin-right: 6px; }
-  </style>
 </head>
 <body>
   <div class="layout">
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <aside class="sidebar">
-      <a class="brand" href="/app">
-        <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div>
-          <div class="brand-name">XP Diário</div>
-          <div class="brand-sub">Estudo Inteligente</div>
-        </div>
-      </a>
+      <a class="brand" href="/app"><div class="brand-icon"></div><div><div class="brand-name">XP<br><span class="brand-purple">Diario</span></div><div class="brand-sub">Estudo em aventura</div></div></a>
       <nav class="sidebar-nav">
-        <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a class="menu-link" href="/app"><i class="fas fa-house"></i> Dashboard</a>
+        <a class="menu-link" href="/materias"><i class="fas fa-book-open"></i> Disciplinas</a>
+        <a class="menu-link" href="/cronogramas.html"><i class="fas fa-calendar-days"></i> Cronograma</a>
+        <a class="menu-link" href="/tarefas"><i class="fas fa-clipboard-check"></i> Tarefas</a>
         <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
-        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
-        <a class="menu-link" href="/tarefas"><i class="fas fa-list-check"></i> Tarefas</a>
-        <a class="menu-link active" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
-        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronogramas</a>
-        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
-        <a class="menu-link" href="/turmas"><i class="fas fa-users"></i> Turmas</a>
-        <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
+        <a class="menu-link active" href="/estudos"><i class="fas fa-clock"></i> Sessoes</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-column"></i> Relatorios</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
-      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
-        <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
-        <div class="ctx-info">
-          <div class="ctx-nome" id="ctx-nome">Minha Área</div>
-          <div class="ctx-sub">Contexto atual</div>
-        </div>
-        <i class="fas fa-right-left ctx-switch-icon"></i>
-      </div>
-      <div class="sidebar-footer">
-        <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
-      </div>
+      <div class="sidebar-quest"><div class="pixel-student quest-hero"><span class="pixel-book"></span></div><div class="quest-note">Foco agora, vitoria depois! Voce e imparavel!</div></div>
+      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto"><div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div><div class="ctx-info"><div class="ctx-nome" id="ctx-nome">Minha Area</div><div class="ctx-sub">Contexto atual</div></div><i class="fas fa-right-left ctx-switch-icon"></i></div>
+      <div class="sidebar-footer"><a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-right-from-bracket"></i> Sair</a></div>
     </aside>
 
     <main class="content">
-      <div class="topbar">
-        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <span class="topbar-brand">XP Diário</span>
-      </div>
-      <div class="page-header">
-        <div>
-          <h2>Registrar Estudo</h2>
-          <p class="page-subtitle">Registre suas sessões e acompanhe seu progresso</p>
-        </div>
-        <button class="btn btn-primary px-4" onclick="mostrarForm()">
-          <i class="fas fa-plus me-2"></i>Nova Sessão
-        </button>
-      </div>
-
+      <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand fw-black">XP Diario</span></div>
+      <div class="app-topbar"><button class="btn btn-light border"><i class="fas fa-arrow-left"></i></button><div class="flex-grow-1"><h2 class="mb-0 fw-black">Sessao de Estudo</h2><p class="page-subtitle">Concentre-se e conquiste seus objetivos!</p></div><div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1">Lucas</div><small class="text-muted fw-bold">Nivel 12</small></div></div></div>
       <div id="mensagem" class="mb-3"></div>
 
-      <div id="formEstudo" class="card-panel p-4 mb-4 d-none">
-        <h6 class="fw-bold mb-4" style="color:#1e293b;">Nova Sessão de Estudo</h6>
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <label class="form-label">Matéria <span class="text-danger">*</span></label>
-            <select id="materia" class="form-select">
-              <option value="">Carregando...</option>
-            </select>
+      <div class="dashboard-grid mb-4">
+        <section>
+          <div class="focus-panel">
+            <span class="badge-soft badge-green"><i class="fas fa-circle"></i> Sessao em andamento</span>
+            <div class="timer-ring"><div class="text-center"><div class="timer-time">24:37</div><div class="fs-5 fw-bold">Foque no que importa!</div><span class="badge-soft badge-purple mt-3">🎯 Foco Total</span></div></div>
+            <div class="pixel-platform" style="width:100%;left:0"></div>
+            <div class="pixel-student" style="position:absolute;right:110px;bottom:80px"><span class="pixel-book"></span></div>
+            <div class="speech-bubble" style="position:absolute;left:70px;bottom:105px">Cada minuto conta! 💪</div>
           </div>
-          <div class="col-md-3 mb-3">
-            <label class="form-label">Tempo (min) <span class="text-danger">*</span></label>
-            <input id="tempo" type="number" class="form-control" placeholder="Ex: 45" min="1">
+          <div class="card-panel p-4 mt-3 d-flex justify-content-center gap-3 flex-wrap">
+            <button class="btn btn-light border px-5 py-3"><i class="fas fa-pause me-2"></i>Pausar</button>
+            <button class="btn btn-primary px-5 py-3"><i class="fas fa-pause me-2"></i>Pausar</button>
+            <button class="btn btn-light border px-5 py-3 text-danger"><i class="fas fa-stop me-2"></i>Encerrar</button>
           </div>
-          <div class="col-md-2 mb-3">
-            <label class="form-label">Tarefas concluídas</label>
-            <input id="tarefas" type="number" class="form-control" placeholder="0" min="0" value="0">
+          <div class="grid-3 mt-3">
+            <div class="stat-card"><div><div class="stat-label">XP nesta sessao</div><div class="stat-value">120 XP</div><small class="text-success fw-bold">+20% bonus de foco</small></div><div class="stat-icon icon-yellow"><i class="fas fa-bolt"></i></div></div>
+            <div class="stat-card"><div><div class="stat-label">Foco atual</div><div class="stat-value">92%</div><small class="text-muted fw-bold">Excelente!</small></div><div class="stat-icon icon-green"><i class="fas fa-bullseye"></i></div></div>
+            <div class="stat-card"><div><div class="stat-label">Nivel</div><div class="stat-value">Nivel 12</div><div class="progress-track"><div class="progress-fill fill-blue" style="width:68%"></div></div></div><div class="stat-icon icon-blue"><i class="fas fa-star"></i></div></div>
           </div>
-          <div class="col-md-3 mb-3">
-            <label class="form-label">Data</label>
-            <input id="data" type="date" class="form-control">
-          </div>
-          <div class="col-12 mb-3">
-            <label class="form-label">Descrição <span class="text-muted fw-normal" style="font-size:0.8rem;">(opcional)</span></label>
-            <textarea id="descricao" class="form-control" rows="2" placeholder="Ex: Revisão do capítulo 3..."></textarea>
-          </div>
-        </div>
-        <div class="d-flex gap-2 align-items-center">
-          <button class="btn btn-success px-4" onclick="salvarRegistro()">
-            <i class="fas fa-floppy-disk me-2"></i>Salvar Sessão
-          </button>
-          <button class="btn btn-light px-4" onclick="cancelar()">Cancelar</button>
-          <span class="text-muted ms-1" style="font-size:0.8rem;"><span class="text-danger">*</span> obrigatórios</span>
-        </div>
+        </section>
+        <aside class="dashboard-side">
+          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-blue"><i class="fas fa-clipboard-list"></i></span> Detalhes da Sessao</h3><div class="subject-row"><span class="pixel-icon icon-blue"><i class="fas fa-book"></i></span><strong>Disciplina</strong><span>Matematica</span></div><div class="subject-row"><span class="pixel-icon icon-purple"><i class="fas fa-bullseye"></i></span><strong>Objetivo</strong><span>Funcoes do 1 grau</span></div><div class="subject-row"><span class="pixel-icon icon-yellow"><i class="fas fa-clock"></i></span><strong>Inicio</strong><span>Hoje, 14:32</span></div><div class="subject-row"><span class="pixel-icon icon-green"><i class="fas fa-gauge"></i></span><strong>Foco medio</strong><span>92%</span></div></article>
+          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-purple"><i class="fas fa-fire"></i></span> Combo de Foco</h3><div class="d-flex align-items-center gap-2 mb-3"><span class="badge-soft badge-purple">✓</span><div class="progress-track flex-grow-1"><div class="progress-fill fill-purple" style="width:86%"></div></div><span class="badge-soft badge-purple">XP</span></div><div class="stat-value">7 dias</div><small class="text-muted fw-bold">Melhor: 7 dias</small></article>
+          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-green"><i class="fas fa-floppy-disk"></i></span> Resumo da sessao</h3><p class="text-muted fw-bold">Estudei funcoes do 1 grau: definicao, graficos e exercicios de calculo de raizes.</p><button class="btn btn-primary w-100 py-3" onclick="mostrarForm()">Salvar sessao realizada <span class="ms-2">+120 XP</span></button></article>
+        </aside>
       </div>
 
-      <div id="lista" class="card-panel p-3">
-        <div class="p-4 text-center text-muted">
-          <i class="fas fa-spinner fa-spin me-2"></i>Carregando histórico...
+      <div id="formEstudo" class="card-panel p-4 mb-4 d-none">
+        <h3 class="card-title mb-4"><span class="pixel-icon icon-purple"><i class="fas fa-floppy-disk"></i></span> Nova Sessao de Estudo</h3>
+        <div class="row">
+          <div class="col-md-4 mb-3"><label class="form-label">Materia</label><select id="materia" class="form-select"><option value="">Carregando...</option></select></div>
+          <div class="col-md-3 mb-3"><label class="form-label">Tempo (min)</label><input id="tempo" type="number" class="form-control" placeholder="Ex: 45" min="1"></div>
+          <div class="col-md-2 mb-3"><label class="form-label">Tarefas concluidas</label><input id="tarefas" type="number" class="form-control" placeholder="0" min="0" value="0"></div>
+          <div class="col-md-3 mb-3"><label class="form-label">Data</label><input id="data" type="date" class="form-control"></div>
+          <div class="col-12 mb-3"><label class="form-label">Descricao</label><textarea id="descricao" class="form-control" rows="2" placeholder="Ex: Revisao do capitulo 3..."></textarea></div>
         </div>
+        <div class="d-flex gap-2 align-items-center"><button class="btn btn-success px-4" onclick="salvarRegistro()"><i class="fas fa-floppy-disk me-2"></i>Salvar Registro</button><button class="btn btn-light px-4" onclick="cancelar()">Cancelar</button></div>
       </div>
+
+      <div id="lista" class="card-panel p-3"><div class="p-4 text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Carregando historico...</div></div>
+      <div class="slime-corner"><div class="speech-bubble">Foco e poder! Voce esta evoluindo!</div><div class="pixel-slime"></div></div>
     </main>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/utils.js"></script>
   <script src="/context.js"></script>
-  <script src="estudos.js"></script>
+  <script src="/estudos.js"></script>
 </body>
 </html>
-

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Diario - Tarefas</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>XP Diario - Tarefas e Metas</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
@@ -64,21 +64,26 @@
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <aside class="sidebar">
       <a class="brand" href="/app">
-        <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="brand-icon"></div>
         <div>
-          <div class="brand-name">XP Diario</div>
-          <div class="brand-sub">Estudo Inteligente</div>
+          <div class="brand-name">XP<br><span class="brand-purple">Diario</span></div>
+          <div class="brand-sub">Estudo em aventura</div>
         </div>
       </a>
       <nav class="sidebar-nav">
-        <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a class="menu-link" href="/app"><i class="fas fa-house"></i> Dashboard</a>
+        <a class="menu-link" href="/materias"><i class="fas fa-book-open"></i> Disciplinas</a>
+        <a class="menu-link" href="/cronogramas.html"><i class="fas fa-calendar-days"></i> Cronograma</a>
+        <a class="menu-link active" href="/tarefas"><i class="fas fa-clipboard-check"></i> Tarefas</a>
         <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
-        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Materias</a>
-        <a class="menu-link active" href="/tarefas"><i class="fas fa-list-check"></i> Tarefas</a>
-        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
-        <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
+        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Sessoes</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-column"></i> Relatorios</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
+      <div class="sidebar-quest">
+        <div class="pixel-student quest-hero"><span class="pixel-book"></span></div>
+        <div class="quest-note">Organizacao e o primeiro passo para a conquista!</div>
+      </div>
       <div class="sidebar-footer">
         <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
       </div>
@@ -91,11 +96,11 @@
       </div>
       <div class="page-header">
         <div>
-          <h2>Tarefas</h2>
-          <p class="page-subtitle">Organize pendencias, prazos e conclusoes por materia</p>
+          <h2>Tarefas e Metas</h2>
+          <p class="page-subtitle">Organize seus estudos, complete tarefas e alcance suas metas!</p>
         </div>
         <button class="btn btn-primary px-4" onclick="mostrarForm()">
-          <i class="fas fa-plus me-2"></i>Nova Tarefa
+          <i class="fas fa-plus me-2"></i>Nova tarefa
         </button>
       </div>
 
@@ -137,6 +142,12 @@
 
       <div class="row g-4">
         <div class="col-lg-8">
+          <div class="game-card mb-4">
+            <div class="card-title-row">
+              <h3 class="card-title"><span class="pixel-icon icon-green"><i class="fas fa-clipboard-check"></i></span> Tarefas de Estudo</h3>
+              <span class="badge-soft badge-purple">Filtrar: Todas</span>
+            </div>
+          </div>
           <div class="card-panel p-3" id="listaTarefas">
             <div class="p-4 text-center text-muted">
               <i class="fas fa-spinner fa-spin me-2"></i>Carregando tarefas...
@@ -144,12 +155,32 @@
           </div>
         </div>
         <div class="col-lg-4">
+          <div class="game-card mb-4">
+            <div class="card-title-row"><h3 class="card-title"><span class="pixel-icon icon-green"><i class="fas fa-bullseye"></i></span> Metas Diarias</h3><a class="small-link" href="/metas">Ver todas</a></div>
+            <div class="d-flex align-items-center justify-content-between"><div><strong>Estudar 2h por dia</strong><div class="stat-value">1h 30m</div></div><div class="chest"></div></div>
+            <div class="progress-track my-3"><div class="progress-fill fill-green" style="width:75%"></div></div>
+            <span class="badge-soft badge-purple">+ 50 XP</span>
+          </div>
+          <div class="game-card mb-4">
+            <div class="card-title-row"><h3 class="card-title"><span class="pixel-icon icon-purple"><i class="fas fa-calendar-check"></i></span> Metas Semanais</h3><a class="small-link" href="/metas">Ver todas</a></div>
+            <div class="mb-3"><strong>Concluir 5 tarefas na semana</strong><div class="stat-value">3 / 5</div><div class="progress-track"><div class="progress-fill fill-purple" style="width:60%"></div></div><div class="d-flex justify-content-between mt-2"><span class="badge-soft badge-purple">+ 150 XP</span><span class="badge-soft badge-orange">Organizado</span></div></div>
+            <div><strong>Revisar 3 disciplinas</strong><div class="stat-value">2 / 3</div><div class="progress-track"><div class="progress-fill fill-purple" style="width:66%"></div></div><div class="d-flex justify-content-between mt-2"><span class="badge-soft badge-purple">+ 120 XP</span><span class="badge-soft badge-blue">Estudioso</span></div></div>
+          </div>
           <div class="card-panel p-4" id="historicoTarefas">
             <h6 class="fw-bold mb-3" style="color:#1e293b;">Historico recente</h6>
             <div class="text-muted small">Carregando historico...</div>
           </div>
         </div>
       </div>
+      <div class="game-card mt-4">
+        <div class="card-title-row"><h3 class="card-title"><span class="pixel-icon icon-blue"><i class="fas fa-chart-simple"></i></span> Progresso Geral</h3><div class="pixel-student" style="transform:scale(.65);transform-origin:right center"></div></div>
+        <div class="grid-3">
+          <div><div class="stat-label">Tarefas concluidas</div><div class="stat-value">5 / 12</div><div class="progress-track"><div class="progress-fill fill-green" style="width:41%"></div></div></div>
+          <div><div class="stat-label">XP ganho esta semana</div><div class="stat-value">320 XP</div><div class="progress-track"><div class="progress-fill fill-purple" style="width:58%"></div></div></div>
+          <div><div class="stat-label">Sequencia atual</div><div class="stat-value">7 dias</div><div class="progress-track"><div class="progress-fill fill-yellow" style="width:70%"></div></div></div>
+        </div>
+      </div>
+      <div class="slime-corner"><div class="speech-bubble">Foco hoje, conquista amanha!</div><div class="pixel-slime"></div></div>
     </main>
   </div>
 

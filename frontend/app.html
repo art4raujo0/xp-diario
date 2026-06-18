@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Diário - Dashboard</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>XP Diario - Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
@@ -14,175 +14,364 @@
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <aside class="sidebar">
       <a class="brand" href="/app">
-        <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="brand-icon"></div>
         <div>
-          <div class="brand-name">XP Diário</div>
-          <div class="brand-sub">Estudo Inteligente</div>
+          <div class="brand-name">XP<br><span class="brand-purple">Diario</span></div>
+          <div class="brand-sub">Estudo em aventura</div>
         </div>
       </a>
       <nav class="sidebar-nav">
-        <a class="menu-link active" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a class="menu-link active" href="/app"><i class="fas fa-house"></i> Dashboard</a>
+        <a class="menu-link" href="/materias"><i class="fas fa-book-open"></i> Disciplinas</a>
+        <a class="menu-link" href="/cronogramas.html"><i class="fas fa-calendar-days"></i> Cronograma</a>
+        <a class="menu-link" href="/tarefas"><i class="fas fa-clipboard-check"></i> Tarefas</a>
         <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
-        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
-        <a class="menu-link" href="/tarefas"><i class="fas fa-list-check"></i> Tarefas</a>
-        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
-        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronogramas</a>
-        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
-        <a class="menu-link" href="/turmas"><i class="fas fa-users"></i> Turmas</a>
-        <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
+        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Sessoes</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-column"></i> Relatorios</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
+      <div class="sidebar-quest">
+        <div class="pixel-student quest-hero"><span class="pixel-book"></span></div>
+        <div class="quest-note">Cada estudo e um passo rumo ao seu melhor!</div>
+      </div>
       <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
         <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
         <div class="ctx-info">
-          <div class="ctx-nome" id="ctx-nome">Minha Área</div>
+          <div class="ctx-nome" id="ctx-nome">Minha Area</div>
           <div class="ctx-sub">Contexto atual</div>
         </div>
         <i class="fas fa-right-left ctx-switch-icon"></i>
       </div>
       <div class="sidebar-footer">
-        <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
+        <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-right-from-bracket"></i> Sair</a>
       </div>
     </aside>
 
     <main class="content">
       <div class="topbar">
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <span class="topbar-brand">XP Diário</span>
+        <span class="topbar-brand fw-black">XP Diario</span>
       </div>
-      <div class="page-header">
-        <div>
-          <h2>Dashboard</h2>
-          <p class="page-subtitle">Visão geral dos seus estudos</p>
-        </div>
-        <button id="btn-notificacoes" title="Configurar notificações" onclick="abrirModalNotificacoes()">
+
+      <div class="app-topbar">
+        <label class="search-pill">
+          <i class="fas fa-magnifying-glass"></i>
+          <input aria-label="Buscar" placeholder="Buscar conteudos, disciplinas, tarefas...">
+          <span class="kbd">/</span>
+        </label>
+        <button id="btn-notificacoes" title="Configurar notificacoes" onclick="abrirModalNotificacoes()">
           <i class="fas fa-bell"></i>
           <span id="badge-notif"></span>
         </button>
+        <div class="user-chip">
+          <div class="avatar-sprite"></div>
+          <div>
+            <div class="fw-black lh-1">Lucas</div>
+            <small class="text-muted fw-bold">Nivel 12</small>
+          </div>
+          <i class="fas fa-chevron-down ms-auto text-muted"></i>
+        </div>
       </div>
 
-      <!-- Modal de Notificações -->
-      <div class="modal fade" id="modalNotificacoes" tabindex="-1" aria-labelledby="modalNotifLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
-            <div class="modal-header border-0 pb-0">
-              <h5 class="modal-title fw-bold" id="modalNotifLabel">
-                <i class="fas fa-bell me-2" style="color: #463acb;"></i>Notificações de Lembrete
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      <div class="dashboard-grid">
+        <section class="dashboard-main">
+          <article class="hero-card">
+            <div class="pixel-platform"></div>
+            <div class="pixel-student hero-student"><span class="pixel-book"></span></div>
+            <div class="hero-copy">
+              <h1>Bem-vindo, Lucas! ✨</h1>
+              <p>Continue assim e alcance novos niveis de conhecimento!</p>
+              <div class="hero-stats">
+                <div class="hero-stat">
+                  <span>🔥 Streak de estudos</span>
+                  <strong id="streak-valor">23 dias</strong>
+                  <small>Melhor: 23 dias</small>
+                </div>
+                <div class="hero-stat">
+                  <span>⭐ Seu nivel</span>
+                  <strong>Nivel 12</strong>
+                  <div class="progress-track xp-bar mt-2">
+                    <div class="progress-fill" style="width:64%"></div>
+                  </div>
+                  <small>640 / 1000 XP</small>
+                </div>
+              </div>
             </div>
-            <div class="modal-body pt-3">
-              <p class="text-muted small mb-4">Receba lembretes diários no seu e-mail para não esquecer de estudar.</p>
-              <div class="d-flex align-items-center justify-content-between mb-4 p-3" style="background: #f8fafc; border-radius: 12px;">
+          </article>
+
+          <div class="row g-3">
+            <div class="col-6 col-lg-3">
+              <div class="stat-card">
                 <div>
-                  <div class="fw-semibold text-dark">Ativar lembretes</div>
-                  <div class="text-muted small">Você receberá 1 e-mail por dia no horário escolhido</div>
+                  <div class="stat-label">Sequencia</div>
+                  <div class="stat-value" id="streak-valor-card">23</div>
+                  <small class="text-muted fw-bold">dias em foco</small>
                 </div>
-                <div class="form-check form-switch mb-0">
-                  <input class="form-check-input" type="checkbox" role="switch" id="notif-ativo" style="width: 2.8em; height: 1.5em; cursor: pointer;">
-                </div>
+                <div class="stat-icon icon-orange" id="streak-icon-container"><i class="fas fa-fire" id="streak-icon"></i></div>
               </div>
-              <div class="mb-3">
-                <label for="notif-horario" class="form-label fw-semibold">Horário do lembrete</label>
-                <input type="time" class="form-control" id="notif-horario">
-                <div class="form-text">O sistema envia no máximo 1 notificação por dia neste horário.</div>
-              </div>
-              <div class="mb-1">
-                <label for="notif-fuso" class="form-label fw-semibold">Fuso horário</label>
-                <select class="form-select" id="notif-fuso">
-                  <option value="America/Sao_Paulo">Brasília (UTC-3)</option>
-                  <option value="America/Manaus">Manaus (UTC-4)</option>
-                  <option value="America/Belem">Belém / Fortaleza (UTC-3)</option>
-                  <option value="America/Noronha">Fernando de Noronha (UTC-2)</option>
-                  <option value="America/Rio_Branco">Acre (UTC-5)</option>
-                  <option value="America/New_York">New York (UTC-5/-4)</option>
-                  <option value="Europe/Lisbon">Lisboa (UTC+0/+1)</option>
-                  <option value="Europe/London">Londres (UTC+0/+1)</option>
-                  <option value="UTC">UTC</option>
-                </select>
-              </div>
-              <div id="notif-feedback" class="mt-3 d-none"></div>
             </div>
-            <div class="modal-footer border-0 pt-0">
-              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" id="btn-salvar-notif" onclick="salvarNotificacoes()">Salvar</button>
+            <div class="col-6 col-lg-3">
+              <div class="stat-card">
+                <div>
+                  <div class="stat-label">Tempo</div>
+                  <div class="stat-value" id="tempo-estudado">12h</div>
+                  <small class="text-muted fw-bold">esta semana</small>
+                </div>
+                <div class="stat-icon icon-blue"><i class="fas fa-clock"></i></div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-3">
+              <div class="stat-card">
+                <div>
+                  <div class="stat-label">Metas</div>
+                  <div class="stat-value" id="metas-atingidas">3/4</div>
+                  <small class="text-muted fw-bold">concluidas</small>
+                </div>
+                <div class="stat-icon icon-purple"><i class="fas fa-bullseye"></i></div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-3">
+              <div class="stat-card">
+                <div>
+                  <div class="stat-label">Tarefas</div>
+                  <div class="stat-value" id="tarefas-concluidas">2</div>
+                  <small class="text-muted fw-bold">finalizadas</small>
+                </div>
+                <div class="stat-icon icon-green"><i class="fas fa-circle-check"></i></div>
+              </div>
             </div>
           </div>
-        </div>
+
+          <div class="grid-2">
+            <article class="game-card">
+              <div class="card-title-row">
+                <h3 class="card-title"><span class="pixel-icon icon-blue"><i class="fas fa-book"></i></span> Progresso por Disciplina</h3>
+                <a class="small-link" href="/materias">Ver todas</a>
+              </div>
+              <div class="subject-row">
+                <span class="pixel-icon icon-blue"><i class="fas fa-square-root-variable"></i></span>
+                <div><strong>Matematica</strong><div class="progress-track mt-2"><div class="progress-fill fill-blue" style="width:75%"></div></div></div>
+                <div class="text-end"><strong>75%</strong><div class="subject-meta">XP 300</div></div>
+              </div>
+              <div class="subject-row">
+                <span class="pixel-icon icon-green"><i class="fas fa-book-open"></i></span>
+                <div><strong>Portugues</strong><div class="progress-track mt-2"><div class="progress-fill fill-green" style="width:60%"></div></div></div>
+                <div class="text-end"><strong>60%</strong><div class="subject-meta">XP 240</div></div>
+              </div>
+              <div class="subject-row">
+                <span class="pixel-icon icon-yellow"><i class="fas fa-landmark"></i></span>
+                <div><strong>Historia</strong><div class="progress-track mt-2"><div class="progress-fill fill-yellow" style="width:45%"></div></div></div>
+                <div class="text-end"><strong>45%</strong><div class="subject-meta">XP 180</div></div>
+              </div>
+              <div class="subject-row">
+                <span class="pixel-icon icon-purple"><i class="fas fa-laptop-code"></i></span>
+                <div><strong>Programacao</strong><div class="progress-track mt-2"><div class="progress-fill fill-purple" style="width:80%"></div></div></div>
+                <div class="text-end"><strong>80%</strong><div class="subject-meta">XP 320</div></div>
+              </div>
+            </article>
+
+            <article class="game-card">
+              <div class="card-title-row">
+                <h3 class="card-title"><span class="pixel-icon icon-pink"><i class="fas fa-calendar-day"></i></span> Cronograma de Hoje</h3>
+                <a class="small-link" href="/cronogramas.html">Ver completo</a>
+              </div>
+              <div class="schedule-row"><span class="schedule-time">08:00</span><strong>Matematica</strong><span>60 min</span></div>
+              <div class="schedule-row"><span class="schedule-time">10:00</span><strong>Portugues</strong><span>45 min</span></div>
+              <div class="schedule-row"><span class="schedule-time">14:00</span><strong>Historia</strong><span>60 min</span></div>
+              <div class="schedule-row"><span class="schedule-time">16:00</span><strong>Programacao</strong><span>90 min</span></div>
+              <div class="schedule-row"><span class="schedule-time">19:00</span><strong>Revisao Geral</strong><span>30 min</span></div>
+            </article>
+          </div>
+
+          <div class="grid-2">
+            <article class="game-card">
+              <div class="card-title-row">
+                <h3 class="card-title"><span class="pixel-icon icon-blue"><i class="fas fa-stopwatch"></i></span> Tempo de estudos esta semana</h3>
+              </div>
+              <div class="stat-value">12h 45m</div>
+              <div class="text-success fw-black mb-3">+2h 30m em relacao a semana passada</div>
+              <div class="bar-chart">
+                <div class="bar-col"><div class="bar" style="height:45%"></div><span>Seg</span></div>
+                <div class="bar-col"><div class="bar" style="height:68%"></div><span>Ter</span></div>
+                <div class="bar-col"><div class="bar" style="height:54%"></div><span>Qua</span></div>
+                <div class="bar-col"><div class="bar" style="height:82%"></div><span>Qui</span></div>
+                <div class="bar-col"><div class="bar" style="height:62%"></div><span>Sex</span></div>
+                <div class="bar-col"><div class="bar" style="height:38%"></div><span>Sab</span></div>
+                <div class="bar-col"><div class="bar" style="height:48%"></div><span>Dom</span></div>
+              </div>
+            </article>
+
+            <article class="game-card">
+              <div class="card-title-row">
+                <h3 class="card-title"><span class="pixel-icon icon-green"><i class="fas fa-list-check"></i></span> Tarefas de Estudo</h3>
+                <a class="small-link" href="/tarefas">Ver todas</a>
+              </div>
+              <div class="task-row"><i class="fas fa-square-check text-success fs-5"></i><strong>Resolver exercicios de Matematica</strong><span class="badge-soft badge-green">Concluida</span></div>
+              <div class="task-row"><i class="fas fa-square-check text-success fs-5"></i><strong>Leitura: Dom Casmurro</strong><span class="badge-soft badge-green">Concluida</span></div>
+              <div class="task-row"><i class="far fa-square fs-5 text-muted"></i><strong>Resumo: Revolucao Francesa</strong><span class="badge-soft badge-orange">Pendente</span></div>
+              <div class="task-row"><i class="far fa-square fs-5 text-muted"></i><strong>Praticar algoritmos em Python</strong><span class="badge-soft badge-orange">Pendente</span></div>
+              <div class="task-row"><i class="far fa-square fs-5 text-muted"></i><strong>Revisar conteudo de Portugues</strong><span class="badge-soft badge-orange">Pendente</span></div>
+            </article>
+          </div>
+        </section>
+
+        <aside class="dashboard-side">
+          <article class="game-card">
+            <div class="card-title-row">
+              <h3 class="card-title"><span class="pixel-icon icon-green"><i class="fas fa-bullseye"></i></span> Metas de Hoje</h3>
+              <a class="small-link" href="/metas">Ver todas</a>
+            </div>
+            <div class="d-flex align-items-center justify-content-between gap-3">
+              <div><div class="stat-value">3 / 4</div><strong>metas concluidas</strong></div>
+              <div class="chest"></div>
+            </div>
+            <div class="progress-track my-3"><div class="progress-fill fill-green" style="width:75%"></div></div>
+            <p class="mb-0 fw-bold text-muted">Falta pouco para a recompensa!</p>
+          </article>
+
+          <article class="game-card">
+            <div class="card-title-row">
+              <h3 class="card-title"><span class="pixel-icon icon-purple"><i class="fas fa-star"></i></span> Metas da Semana</h3>
+              <a class="small-link" href="/metas">Ver todas</a>
+            </div>
+            <div class="d-flex align-items-center justify-content-between gap-3">
+              <div><div class="stat-value">15 / 20</div><strong>metas concluidas</strong></div>
+              <div class="chest"></div>
+            </div>
+            <div class="progress-track my-3"><div class="progress-fill fill-purple" style="width:75%"></div></div>
+            <p class="mb-0 fw-bold text-muted">5 metas restantes para o bau semanal</p>
+          </article>
+
+          <article class="game-card">
+            <div class="card-title-row">
+              <h3 class="card-title"><span class="pixel-icon icon-yellow"><i class="fas fa-crown"></i></span> Seu Progresso</h3>
+            </div>
+            <div class="grid-2 mb-3">
+              <div class="p-3 rounded-4" style="background:#fff8e1"><div class="fw-black text-muted">Moedas</div><div class="stat-value">1.250</div></div>
+              <div class="p-3 rounded-4" style="background:#eef2ff"><div class="fw-black text-muted">XP</div><div class="stat-value">640</div></div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <div class="flex-grow-1">
+                <strong>Proxima recompensa</strong>
+                <div class="text-muted fw-bold small">Faltam 360 XP</div>
+                <div class="progress-track mt-2"><div class="progress-fill fill-yellow" style="width:64%"></div></div>
+              </div>
+              <div class="chest"></div>
+            </div>
+          </article>
+
+          <article class="game-card">
+            <div class="card-title-row">
+              <h3 class="card-title"><span class="pixel-icon icon-orange"><i class="fas fa-trophy"></i></span> Conquistas Recentes</h3>
+              <a class="small-link" href="/conquistas">Ver todas</a>
+            </div>
+            <div class="achievement-list">
+              <div class="achievement-badge"><div class="badge-medal" style="background:#8b5cf6"><i class="fas fa-book"></i></div>Estudioso Iniciante</div>
+              <div class="achievement-badge"><div class="badge-medal" style="background:#f97316"><i class="fas fa-fire"></i></div>Foco Total 7 dias</div>
+              <div class="achievement-badge"><div class="badge-medal" style="background:#22c55e"><i class="fas fa-clock"></i></div>Mestre do Tempo</div>
+              <div class="achievement-badge"><div class="badge-medal" style="background:#facc15"><i class="fas fa-trophy"></i></div>Meta Cumprida</div>
+            </div>
+          </article>
+
+          <article class="game-card">
+            <div class="card-title-row">
+              <h3 class="card-title"><span class="pixel-icon icon-purple"><i class="fas fa-chart-line"></i></span> Desempenho Resumido</h3>
+            </div>
+            <div class="d-flex align-items-end gap-3 mb-2">
+              <div class="stat-value">78%</div>
+              <div class="text-success fw-black mb-2">+8%</div>
+            </div>
+            <p class="fw-bold text-muted">Desempenho geral</p>
+            <div class="line-chart">
+              <svg viewBox="0 0 340 130" preserveAspectRatio="none">
+                <polyline points="0,82 55,80 110,62 165,61 220,38 275,70 340,39" fill="none" stroke="#6d5dfb" stroke-width="6" stroke-linecap="round"/>
+                <polyline points="0,130 0,82 55,80 110,62 165,61 220,38 275,70 340,39 340,130" fill="rgba(109,93,251,0.18)"/>
+              </svg>
+            </div>
+          </article>
+        </aside>
       </div>
 
-      <!-- Stat Cards -->
-      <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-          <div class="stat-card">
-            <div>
-              <div class="stat-label">Sequência</div>
-              <div class="stat-value" id="streak-valor">0 dias</div>
-            </div>
-            <div class="stat-icon icon-orange" id="streak-icon-container">
-              <i class="fas fa-fire" id="streak-icon"></i>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="stat-card">
-            <div>
-              <div class="stat-label">Tempo Estudado</div>
-              <div class="stat-value" id="tempo-estudado">0 min</div>
-            </div>
-            <div class="stat-icon icon-blue">
-              <i class="fas fa-clock"></i>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="stat-card">
-            <div>
-              <div class="stat-label">Metas</div>
-              <div class="stat-value" id="metas-atingidas">0/0</div>
-            </div>
-            <div class="stat-icon icon-purple">
-              <i class="fas fa-bullseye"></i>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="stat-card">
-            <div>
-              <div class="stat-label">Tarefas</div>
-              <div class="stat-value" id="tarefas-concluidas">0</div>
-            </div>
-            <div class="stat-icon icon-green">
-              <i class="fas fa-check-circle"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Progress Card -->
-      <div class="card-panel p-4">
+      <div class="card-panel p-4 mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-semibold m-0" style="color:#64748b; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px;">Progresso das Metas Ativas</h6>
-          <span id="progresso-percentual" class="badge rounded-pill" style="background:#ede9fe; color:#7c3aed; font-size:0.8rem; padding:5px 12px;">0%</span>
+          <h3 class="card-title mb-0"><span class="pixel-icon icon-purple"><i class="fas fa-flag-checkered"></i></span> Progresso das Metas Ativas</h3>
+          <span id="progresso-percentual" class="badge-soft badge-purple">0%</span>
         </div>
         <div id="progresso-com-dados">
-          <div class="progress mb-2" style="height: 8px;">
-            <div id="progresso-barra" class="progress-bar progress-bar-striped progress-bar-animated"
-                 role="progressbar" style="width: 0%;"></div>
+          <div class="progress-track mb-2">
+            <div id="progresso-barra" class="progress-fill fill-purple" role="progressbar" style="width: 0%;"></div>
           </div>
-          <p class="text-muted small mb-0 mt-2">Complete suas sessões de estudo para avançar no progresso das metas.</p>
+          <p class="text-muted fw-bold small mb-0 mt-2">Complete suas sessoes de estudo para avancar no progresso das metas.</p>
         </div>
         <div id="progresso-vazio" class="d-none text-center py-2">
           <p class="text-muted small mb-0" id="mensagem-vazio"></p>
         </div>
       </div>
+
+      <div class="slime-corner">
+        <div class="speech-bubble">Continue assim!<br>Voce e incrivel! 💚</div>
+        <div class="pixel-slime"></div>
+      </div>
     </main>
+  </div>
+
+  <div class="modal fade" id="modalNotificacoes" tabindex="-1" aria-labelledby="modalNotifLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-black" id="modalNotifLabel"><i class="fas fa-bell me-2 text-primary"></i>Notificacoes de Lembrete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <p class="text-muted fw-bold small mb-4">Receba lembretes diarios no seu e-mail para nao esquecer de estudar.</p>
+          <div class="d-flex align-items-center justify-content-between mb-4 p-3 rounded-4" style="background:#f8faff;">
+            <div>
+              <div class="fw-black text-dark">Ativar lembretes</div>
+              <div class="text-muted small fw-bold">Voce recebera 1 e-mail por dia no horario escolhido</div>
+            </div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" role="switch" id="notif-ativo">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="notif-horario" class="form-label">Horario do lembrete</label>
+            <input type="time" class="form-control" id="notif-horario">
+          </div>
+          <div class="mb-1">
+            <label for="notif-fuso" class="form-label">Fuso horario</label>
+            <select class="form-select" id="notif-fuso">
+              <option value="America/Sao_Paulo">Brasilia (UTC-3)</option>
+              <option value="America/Manaus">Manaus (UTC-4)</option>
+              <option value="America/Belem">Belem / Fortaleza (UTC-3)</option>
+              <option value="America/Noronha">Fernando de Noronha (UTC-2)</option>
+              <option value="America/Rio_Branco">Acre (UTC-5)</option>
+              <option value="America/New_York">New York (UTC-5/-4)</option>
+              <option value="Europe/Lisbon">Lisboa (UTC+0/+1)</option>
+              <option value="Europe/London">Londres (UTC+0/+1)</option>
+              <option value="UTC">UTC</option>
+            </select>
+          </div>
+          <div id="notif-feedback" class="mt-3 d-none"></div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btn-salvar-notif" onclick="salvarNotificacoes()">Salvar</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/utils.js"></script>
   <script src="/context.js"></script>
-  <script src="app.js"></script>
+  <script src="/app.js"></script>
+  <script>
+    const streakMirror = document.getElementById('streak-valor-card');
+    const heroStreak = document.getElementById('streak-valor');
+    const observer = new MutationObserver(() => {
+      if (streakMirror && heroStreak) streakMirror.textContent = heroStreak.textContent.replace(/\D+/g, '') || heroStreak.textContent;
+    });
+    if (heroStreak) observer.observe(heroStreak, { childList: true });
+  </script>
 </body>
 </html>
-

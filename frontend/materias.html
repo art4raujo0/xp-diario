@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Diário - Matérias</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>XP Diario - Disciplinas</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
@@ -13,228 +13,92 @@
   <div class="layout">
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <aside class="sidebar">
-      <a class="brand" href="/app">
-        <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div>
-          <div class="brand-name">XP Diário</div>
-          <div class="brand-sub">Estudo Inteligente</div>
-        </div>
-      </a>
+      <a class="brand" href="/app"><div class="brand-icon"></div><div><div class="brand-name">XP<br><span class="brand-purple">Diario</span></div><div class="brand-sub">Estudo em aventura</div></div></a>
       <nav class="sidebar-nav">
-        <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a class="menu-link" href="/app"><i class="fas fa-house"></i> Dashboard</a>
+        <a class="menu-link active" href="/materias"><i class="fas fa-book-open"></i> Disciplinas</a>
+        <a class="menu-link" href="/cronogramas.html"><i class="fas fa-calendar-days"></i> Cronograma</a>
+        <a class="menu-link" href="/tarefas"><i class="fas fa-clipboard-check"></i> Tarefas</a>
         <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
-        <a class="menu-link active" href="/materias"><i class="fas fa-book"></i> Matérias</a>
-        <a class="menu-link" href="/tarefas"><i class="fas fa-list-check"></i> Tarefas</a>
-        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Registrar Estudo</a>
-        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronogramas</a>
-        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
-        <a class="menu-link" href="/turmas"><i class="fas fa-users"></i> Turmas</a>
-        <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
+        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Sessoes</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-column"></i> Relatorios</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
-      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
-        <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
-        <div class="ctx-info">
-          <div class="ctx-nome" id="ctx-nome">Minha Área</div>
-          <div class="ctx-sub">Contexto atual</div>
-        </div>
-        <i class="fas fa-right-left ctx-switch-icon"></i>
-      </div>
-      <div class="sidebar-footer">
-        <a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-sign-out-alt"></i> Sair</a>
-      </div>
+      <div class="sidebar-quest"><div class="pixel-student quest-hero"><span class="pixel-book"></span></div><div class="quest-note">Cada disciplina vira uma nova fase!</div></div>
+      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto"><div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div><div class="ctx-info"><div class="ctx-nome" id="ctx-nome">Minha Area</div><div class="ctx-sub">Contexto atual</div></div><i class="fas fa-right-left ctx-switch-icon"></i></div>
+      <div class="sidebar-footer"><a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-right-from-bracket"></i> Sair</a></div>
     </aside>
 
     <main class="content">
-      <div class="topbar">
-        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <span class="topbar-brand">XP Diário</span>
+      <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand fw-black">XP Diario</span></div>
+      <div class="app-topbar">
+        <label class="search-pill"><i class="fas fa-magnifying-glass"></i><input placeholder="Buscar disciplinas, tarefas, metas..."><span class="kbd">/</span></label>
+        <div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1">Lucas</div><small class="text-muted fw-bold">Nivel 12</small></div><i class="fas fa-chevron-down ms-auto text-muted"></i></div>
       </div>
       <div class="page-header">
-        <div>
-          <h2>Matérias</h2>
-          <p class="page-subtitle">Gerencie suas matérias de estudo</p>
-        </div>
-        <button class="btn btn-primary px-4" onclick="mostrarForm()">
-          <i class="fas fa-plus me-2"></i>Nova Matéria
-        </button>
+        <div><h2>Disciplinas</h2><p class="page-subtitle">Acompanhe progresso, XP e sequencia por materia.</p></div>
+        <button class="btn btn-primary px-4 py-3" onclick="mostrarForm()"><i class="fas fa-plus me-2"></i>Nova disciplina</button>
       </div>
 
       <div id="mensagem" class="mb-3"></div>
-
       <div id="formMateria" class="card-panel p-4 mb-4 d-none">
-        <h6 class="fw-bold mb-4" style="color:#1e293b;">Dados da Matéria</h6>
+        <h3 class="card-title mb-4"><span class="pixel-icon icon-blue"><i class="fas fa-book"></i></span> Dados da Disciplina</h3>
         <input type="hidden" id="materiaId">
         <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Nome da matéria</label>
-            <input id="nome" class="form-control" maxlength="100" placeholder="Ex: Matemática">
-          </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Dificuldade</label>
-            <select id="dificuldade" class="form-select">
-              <option value="">Selecione</option>
-              <option value="facil">Fácil</option>
-              <option value="media">Média</option>
-              <option value="dificil">Difícil</option>
-            </select>
-          </div>
-          <div class="col-md-9 mb-3">
-            <label class="form-label">Descrição</label>
-            <textarea id="descricao" class="form-control" rows="2" maxlength="250"></textarea>
-          </div>
-          <div class="col-md-3 mb-3">
-            <label class="form-label">Cor</label>
-            <input id="cor" type="color" class="form-control form-control-color w-100" value="#463acb">
-          </div>
+          <div class="col-md-6 mb-3"><label class="form-label">Nome da disciplina</label><input id="nome" class="form-control" maxlength="100" placeholder="Ex: Matematica"></div>
+          <div class="col-md-6 mb-3"><label class="form-label">Dificuldade</label><select id="dificuldade" class="form-select"><option value="">Selecione</option><option value="facil">Facil</option><option value="media">Media</option><option value="dificil">Dificil</option></select></div>
+          <div class="col-md-9 mb-3"><label class="form-label">Descricao</label><textarea id="descricao" class="form-control" rows="2" maxlength="250"></textarea></div>
+          <div class="col-md-3 mb-3"><label class="form-label">Cor</label><input id="cor" type="color" class="form-control form-control-color w-100" value="#6D5DFB"></div>
         </div>
-        <div class="d-flex gap-2">
-          <button class="btn btn-success px-4" onclick="salvarMateria()">
-            <i class="fas fa-floppy-disk me-2"></i>Salvar
-          </button>
-          <button class="btn btn-light px-4" onclick="cancelar()">Cancelar</button>
-        </div>
+        <div class="d-flex gap-2"><button class="btn btn-success px-4" onclick="salvarMateria()"><i class="fas fa-floppy-disk me-2"></i>Salvar</button><button class="btn btn-light px-4" onclick="cancelar()">Cancelar</button></div>
       </div>
 
-      <div id="lista"></div>
+      <div class="dashboard-grid">
+        <section>
+          <div class="grid-3 mb-4">
+            <article class="disc-card"><div class="disc-card-header"><div class="disc-icon icon-blue"><i class="fas fa-square-root-variable"></i></div><span class="diff-badge diff-default">Logica</span></div><div class="disc-name">Matematica</div><div class="disc-desc">Funcoes, porcentagem e resolucao de problemas.</div><div class="d-flex justify-content-between fw-black"><span>75%</span><span>XP 300</span></div><div class="progress-track"><div class="progress-fill fill-blue" style="width:75%"></div></div><small class="text-muted fw-bold">Sequencia 12 dias · 18h totais</small><div class="d-flex gap-2 flex-wrap"><button class="btn btn-light border btn-sm">Editar</button><button class="btn btn-light border btn-sm">Ver progresso</button><button class="btn btn-primary btn-sm">+ Nova tarefa</button></div></article>
+            <article class="disc-card"><div class="disc-card-header"><div class="disc-icon icon-green"><i class="fas fa-book-open"></i></div><span class="diff-badge diff-facil">Linguagens</span></div><div class="disc-name">Portugues</div><div class="disc-desc">Leitura, escrita, interpretacao e literatura.</div><div class="d-flex justify-content-between fw-black"><span>60%</span><span>XP 240</span></div><div class="progress-track"><div class="progress-fill fill-green" style="width:60%"></div></div><small class="text-muted fw-bold">Sequencia 8 dias · 12h totais</small><div class="d-flex gap-2 flex-wrap"><button class="btn btn-light border btn-sm">Editar</button><button class="btn btn-light border btn-sm">Ver progresso</button><button class="btn btn-primary btn-sm">+ Nova tarefa</button></div></article>
+            <article class="disc-card"><div class="disc-card-header"><div class="disc-icon icon-yellow"><i class="fas fa-landmark"></i></div><span class="diff-badge diff-media">Humanidades</span></div><div class="disc-name">Historia</div><div class="disc-desc">Revisoes, linhas do tempo e resumos.</div><div class="d-flex justify-content-between fw-black"><span>45%</span><span>XP 180</span></div><div class="progress-track"><div class="progress-fill fill-yellow" style="width:45%"></div></div><small class="text-muted fw-bold">Sequencia 5 dias · 9h totais</small><div class="d-flex gap-2 flex-wrap"><button class="btn btn-light border btn-sm">Editar</button><button class="btn btn-light border btn-sm">Ver progresso</button><button class="btn btn-primary btn-sm">+ Nova tarefa</button></div></article>
+            <article class="disc-card"><div class="disc-card-header"><div class="disc-icon icon-purple"><i class="fas fa-laptop-code"></i></div><span class="diff-badge diff-default">Tecnologia</span></div><div class="disc-name">Programacao</div><div class="disc-desc">Algoritmos, Python, projetos e desafios.</div><div class="d-flex justify-content-between fw-black"><span>80%</span><span>XP 320</span></div><div class="progress-track"><div class="progress-fill fill-purple" style="width:80%"></div></div><small class="text-muted fw-bold">Sequencia 14 dias · 22h totais</small><div class="d-flex gap-2 flex-wrap"><button class="btn btn-light border btn-sm">Editar</button><button class="btn btn-light border btn-sm">Ver progresso</button><button class="btn btn-primary btn-sm">+ Nova tarefa</button></div></article>
+            <article class="disc-card"><div class="disc-card-header"><div class="disc-icon icon-pink"><i class="fas fa-language"></i></div><span class="diff-badge diff-media">Idiomas</span></div><div class="disc-name">Ingles</div><div class="disc-desc">Vocabulário, listening e conversacao.</div><div class="d-flex justify-content-between fw-black"><span>52%</span><span>XP 210</span></div><div class="progress-track"><div class="progress-fill fill-pink" style="width:52%"></div></div><small class="text-muted fw-bold">Sequencia 4 dias · 8h totais</small><div class="d-flex gap-2 flex-wrap"><button class="btn btn-light border btn-sm">Editar</button><button class="btn btn-light border btn-sm">Ver progresso</button><button class="btn btn-primary btn-sm">+ Nova tarefa</button></div></article>
+            <article class="disc-card"><div class="disc-card-header"><div class="disc-icon icon-green"><i class="fas fa-dna"></i></div><span class="diff-badge diff-facil">Ciencias</span></div><div class="disc-name">Biologia</div><div class="disc-desc">Mapas mentais e revisoes semanais.</div><div class="d-flex justify-content-between fw-black"><span>38%</span><span>XP 150</span></div><div class="progress-track"><div class="progress-fill fill-green" style="width:38%"></div></div><small class="text-muted fw-bold">Sequencia 3 dias · 6h totais</small><div class="d-flex gap-2 flex-wrap"><button class="btn btn-light border btn-sm">Editar</button><button class="btn btn-light border btn-sm">Ver progresso</button><button class="btn btn-primary btn-sm">+ Nova tarefa</button></div></article>
+          </div>
+          <div id="lista"></div>
+        </section>
+        <aside class="dashboard-side">
+          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-purple"><i class="fas fa-chart-pie"></i></span> Resumo por disciplina</h3><div class="timer-ring" style="width:210px;height:210px;margin:14px auto;background:radial-gradient(circle,#fff 0 55%,transparent 56%),conic-gradient(#6d5dfb 0 35%,#3b82f6 35% 62%,#22c55e 62% 82%,#facc15 82% 100%)"><strong class="stat-value">6</strong></div><p class="text-muted fw-bold text-center">disciplinas ativas no ciclo atual</p></article>
+          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-yellow"><i class="fas fa-bolt"></i></span> XP total em disciplinas</h3><div class="stat-value">1.400 XP</div><div class="progress-track mt-3"><div class="progress-fill fill-yellow" style="width:70%"></div></div></article>
+          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-orange"><i class="fas fa-trophy"></i></span> Conquistas de Disciplinas</h3><div class="achievement-list"><div class="achievement-badge"><div class="badge-medal" style="background:#3b82f6"><i class="fas fa-calculator"></i></div>Logica em Alta</div><div class="achievement-badge"><div class="badge-medal" style="background:#22c55e"><i class="fas fa-book"></i></div>Leitor Constante</div><div class="achievement-badge"><div class="badge-medal" style="background:#facc15"><i class="fas fa-star"></i></div>Fase Completa</div><div class="achievement-badge"><div class="badge-medal" style="background:#ec4899"><i class="fas fa-gem"></i></div>Combo de XP</div></div></article>
+        </aside>
+      </div>
+      <div class="slime-corner"><div class="speech-bubble">Uma materia por vez. XP sempre subindo!</div><div class="pixel-slime"></div></div>
     </main>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/utils.js"></script>
   <script src="/context.js"></script>
   <script>
     const API_MATERIAS = '/api/materias';
-
-    function difBadgeClass(dif) {
-      if (dif === 'facil')   return 'diff-facil';
-      if (dif === 'media')   return 'diff-media';
-      if (dif === 'dificil') return 'diff-dificil';
-      return 'diff-default';
-    }
-
-    function hexToRgba(hex, alpha) {
-      const r = parseInt(hex.slice(1,3),16);
-      const g = parseInt(hex.slice(3,5),16);
-      const b = parseInt(hex.slice(5,7),16);
-      return `rgba(${r},${g},${b},${alpha})`;
-    }
-
-    function exibirMensagem(texto, tipo) {
-      const div = document.getElementById('mensagem');
-      div.className = `alert alert-${tipo}`;
-      div.textContent = texto;
-    }
-
-    function limparMensagem() {
-      const div = document.getElementById('mensagem');
-      div.className = ''; div.textContent = '';
-    }
-
+    function difBadgeClass(dif) { if (dif === 'facil') return 'diff-facil'; if (dif === 'media') return 'diff-media'; if (dif === 'dificil') return 'diff-dificil'; return 'diff-default'; }
+    function hexToRgba(hex, alpha) { const r = parseInt(hex.slice(1,3),16); const g = parseInt(hex.slice(3,5),16); const b = parseInt(hex.slice(5,7),16); return `rgba(${r},${g},${b},${alpha})`; }
+    function exibirMensagem(texto, tipo) { const div = document.getElementById('mensagem'); div.className = `alert alert-${tipo}`; div.textContent = texto; }
+    function limparMensagem() { const div = document.getElementById('mensagem'); div.className = ''; div.textContent = ''; }
     function mostrarForm() { limparMensagem(); document.getElementById('formMateria').classList.remove('d-none'); }
     function cancelar() { limparForm(); document.getElementById('formMateria').classList.add('d-none'); }
-
-    function limparForm() {
-      document.getElementById('materiaId').value = '';
-      document.getElementById('nome').value = '';
-      document.getElementById('dificuldade').value = '';
-      document.getElementById('descricao').value = '';
-      document.getElementById('cor').value = '#463acb';
-    }
-
+    function limparForm() { document.getElementById('materiaId').value = ''; document.getElementById('nome').value = ''; document.getElementById('dificuldade').value = ''; document.getElementById('descricao').value = ''; document.getElementById('cor').value = '#6D5DFB'; }
     async function carregarMaterias() {
       try {
-        const res = await fetch(API_MATERIAS);
-        const materias = await res.json();
-        const lista = document.getElementById('lista');
-
-        if (!Array.isArray(materias) || materias.length === 0) {
-          lista.innerHTML = `
-            <div class="card-panel p-5 text-center text-muted">
-              <i class="fas fa-book fs-2 mb-3 d-block" style="color:#d1c4e9;"></i>
-              <p class="mb-0">Nenhuma matéria cadastrada ainda.</p>
-            </div>`;
-          return;
-        }
-
-        lista.innerHTML = `<div class="row g-3">
-          ${materias.map(m => {
-            const cor = m.di_cor || '#463acb';
-            return `
-              <div class="col-sm-6 col-md-4 col-lg-3">
-                <div class="disc-card">
-                  <div class="disc-card-header">
-                    <div class="disc-icon" style="background:${hexToRgba(cor,0.12)};color:${cor};">
-                      <i class="fas fa-book-open"></i>
-                    </div>
-                    <div class="disc-actions">
-                      <button class="btn-icon" title="Editar" onclick='editar(${JSON.stringify(m)})'><i class="fas fa-pen"></i></button>
-                      <button class="btn-icon danger" title="Excluir" onclick='deletar(${m.di_id})'><i class="fas fa-trash"></i></button>
-                    </div>
-                  </div>
-                  <div class="disc-name">${m.di_disciplina || ''}</div>
-                  <div class="disc-desc">${m.di_descricao || ''}</div>
-                  <span class="diff-badge ${difBadgeClass(m.di_dificuldade)}">${m.di_dificuldade || ''}</span>
-                  <div class="disc-bar" style="background:${cor};"></div>
-                </div>
-              </div>`;
-          }).join('')}
-        </div>`;
-      } catch (error) {
-        console.error(error);
-        exibirMensagem('Erro ao carregar matérias.', 'danger');
-      }
+        const res = await fetch(API_MATERIAS); const materias = await res.json(); const lista = document.getElementById('lista');
+        if (!Array.isArray(materias) || materias.length === 0) { lista.innerHTML = ''; return; }
+        lista.innerHTML = `<h3 class="card-title mb-3"><span class="pixel-icon icon-blue"><i class="fas fa-database"></i></span> Disciplinas cadastradas</h3><div class="row g-3">${materias.map(m => { const cor = m.di_cor || '#6D5DFB'; return `<div class="col-sm-6 col-md-4 col-lg-3"><div class="disc-card"><div class="disc-card-header"><div class="disc-icon" style="background:${hexToRgba(cor,0.12)};color:${cor};"><i class="fas fa-book-open"></i></div><div class="disc-actions"><button class="btn-icon" title="Editar" onclick='editar(${JSON.stringify(m)})'><i class="fas fa-pen"></i></button><button class="btn-icon danger" title="Excluir" onclick='deletar(${m.di_id})'><i class="fas fa-trash"></i></button></div></div><div class="disc-name">${m.di_disciplina || ''}</div><div class="disc-desc">${m.di_descricao || ''}</div><span class="diff-badge ${difBadgeClass(m.di_dificuldade)}">${m.di_dificuldade || 'sem tag'}</span><div class="disc-bar" style="background:${cor};"></div></div></div>`; }).join('')}</div>`;
+      } catch (error) { console.error(error); exibirMensagem('Erro ao carregar disciplinas.', 'danger'); }
     }
-
     async function salvarMateria() {
-      try {
-        limparMensagem();
-        const id = document.getElementById('materiaId').value;
-        const nome = document.getElementById('nome').value.trim();
-        const dificuldade = document.getElementById('dificuldade').value;
-        const descricao = document.getElementById('descricao').value.trim();
-        const cor = document.getElementById('cor').value;
-
-        if (!nome) { exibirMensagem('Nome da matéria é obrigatório.', 'danger'); return; }
-
-        const payload = { di_disciplina: nome, di_dificuldade: dificuldade, di_descricao: descricao, di_cor: cor };
-        const resposta = await fetch(id ? `${API_MATERIAS}/${id}` : API_MATERIAS, {
-          method: id ? 'PUT' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (!resposta.ok) {
-          const dados = await resposta.json();
-          exibirMensagem(dados.erro || 'Erro ao salvar matéria.', 'danger');
-          return;
-        }
-
-        exibirMensagem(id ? 'Matéria atualizada!' : 'Matéria cadastrada!', 'success');
-        cancelar();
-        await carregarMaterias();
-      } catch (error) {
-        exibirMensagem('Erro ao salvar matéria.', 'danger');
-      }
+      try { limparMensagem(); const id = document.getElementById('materiaId').value; const nome = document.getElementById('nome').value.trim(); const dificuldade = document.getElementById('dificuldade').value; const descricao = document.getElementById('descricao').value.trim(); const cor = document.getElementById('cor').value; if (!nome) { exibirMensagem('Nome da disciplina e obrigatorio.', 'danger'); return; } const payload = { di_disciplina: nome, di_dificuldade: dificuldade, di_descricao: descricao, di_cor: cor }; const resposta = await fetch(id ? `${API_MATERIAS}/${id}` : API_MATERIAS, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!resposta.ok) { const dados = await resposta.json(); exibirMensagem(dados.erro || 'Erro ao salvar disciplina.', 'danger'); return; } exibirMensagem(id ? 'Disciplina atualizada!' : 'Disciplina cadastrada!', 'success'); cancelar(); await carregarMaterias(); } catch (error) { exibirMensagem('Erro ao salvar disciplina.', 'danger'); }
     }
-
-    function editar(materia) {
-      mostrarForm();
-      document.getElementById('materiaId').value = materia.di_id;
-      document.getElementById('nome').value = materia.di_disciplina || '';
-      document.getElementById('dificuldade').value = materia.di_dificuldade || '';
-      document.getElementById('descricao').value = materia.di_descricao || '';
-      document.getElementById('cor').value = materia.di_cor || '#463acb';
-    }
-
-    async function deletar(id) {
-      if (!confirm('Deseja excluir esta matéria?')) return;
-      await fetch(`${API_MATERIAS}/${id}`, { method: 'DELETE' });
-      await carregarMaterias();
-    }
-
+    function editar(materia) { mostrarForm(); document.getElementById('materiaId').value = materia.di_id; document.getElementById('nome').value = materia.di_disciplina || ''; document.getElementById('dificuldade').value = materia.di_dificuldade || ''; document.getElementById('descricao').value = materia.di_descricao || ''; document.getElementById('cor').value = materia.di_cor || '#6D5DFB'; }
+    async function deletar(id) { if (!confirm('Deseja excluir esta disciplina?')) return; await fetch(`${API_MATERIAS}/${id}`, { method: 'DELETE' }); await carregarMaterias(); }
     carregarMaterias();
   </script>
 </body>
 </html>
-
