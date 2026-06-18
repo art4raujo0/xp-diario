@@ -1,6 +1,7 @@
 const API_TAREFAS = '/api/tarefas';
 const API_MATERIAS = '/api/materias';
 const API_METAS = '/api/metas';
+const API_ATIVIDADES = '/api/atividades';
 let tarefasCache = [];
 let historicoCache = [];
 
@@ -96,12 +97,45 @@ async function carregarMaterias() {
 }
 
 async function carregarMetasCards() {
-  const resposta = await fetch(API_METAS, { headers: cabecalhos() });
-  const metas = resposta.ok ? await resposta.json() : [];
+  const [respostaMetas, respostaAtividades] = await Promise.all([
+    fetch(API_METAS, { headers: cabecalhos() }),
+    fetch(API_ATIVIDADES, { headers: cabecalhos() })
+  ]);
+  const metas = respostaMetas.ok ? await respostaMetas.json() : [];
+  const atividades = respostaAtividades.ok ? ((await respostaAtividades.json()).historico || []) : [];
   const diarias = metas.filter((item) => item.me_tipo === 'diaria').slice(0, 2);
   const semanais = metas.filter((item) => item.me_tipo === 'semanal').slice(0, 2);
-  document.getElementById('metas-diarias-card').innerHTML = diarias.length ? diarias.map((item) => `<div class="mb-3"><strong>${item.di_disciplina || 'Meta geral'}</strong><div class="stat-value">${item.me_tempo_min} min</div><div class="progress-track"><div class="progress-fill fill-green" style="width:35%"></div></div></div>`).join('') : 'Nenhuma meta diaria cadastrada.';
-  document.getElementById('metas-semanais-card').innerHTML = semanais.length ? semanais.map((item) => `<div class="mb-3"><strong>${item.di_disciplina || 'Meta geral'}</strong><div class="stat-value">${item.me_tempo_min} min</div><div class="progress-track"><div class="progress-fill fill-purple" style="width:35%"></div></div></div>`).join('') : 'Nenhuma meta semanal cadastrada.';
+
+  const hoje = new Date().toISOString().slice(0, 10);
+  const chavesSemana = Array.from({ length: 7 }, (_, indice) => {
+    const data = new Date();
+    data.setDate(data.getDate() - indice);
+    return data.toISOString().slice(0, 10);
+  });
+
+  function progressoMeta(item, tipo) {
+    const totalEstudado = atividades.reduce((acc, atividade) => {
+      const dia = String(atividade.at_data || '').slice(0, 10);
+      const mesmaDisciplina = !item.me_disciplina || Number(atividade.at_disciplina) === Number(item.me_disciplina);
+      const periodoCompativel = tipo === 'diaria' ? dia === hoje : chavesSemana.includes(dia);
+      return acc + (mesmaDisciplina && periodoCompativel ? Number(atividade.at_tempo_min || 0) : 0);
+    }, 0);
+    return Math.min(100, item.me_tempo_min > 0 ? Math.floor((totalEstudado / item.me_tempo_min) * 100) : 0);
+  }
+
+  document.getElementById('metas-diarias-card').innerHTML = diarias.length
+    ? diarias.map((item) => {
+      const pct = progressoMeta(item, 'diaria');
+      return `<div class="mb-3"><strong>${item.di_disciplina || 'Meta geral'}</strong><div class="stat-value">${item.me_tempo_min} min</div><div class="progress-track"><div class="progress-fill fill-green" style="width:${pct}%"></div></div><div class="text-muted small mt-1">${pct}% concluido</div></div>`;
+    }).join('')
+    : 'Nenhuma meta diaria cadastrada.';
+
+  document.getElementById('metas-semanais-card').innerHTML = semanais.length
+    ? semanais.map((item) => {
+      const pct = progressoMeta(item, 'semanal');
+      return `<div class="mb-3"><strong>${item.di_disciplina || 'Meta geral'}</strong><div class="stat-value">${item.me_tempo_min} min</div><div class="progress-track"><div class="progress-fill fill-purple" style="width:${pct}%"></div></div><div class="text-muted small mt-1">${pct}% concluido</div></div>`;
+    }).join('')
+    : 'Nenhuma meta semanal cadastrada.';
 }
 
 async function carregarTarefas() {

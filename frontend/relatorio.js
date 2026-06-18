@@ -52,10 +52,17 @@ function calcularPeriodo(tipo) {
 }
 
 function formatarTempo(minutos) {
+  minutos = Number(minutos || 0);
   if (minutos < 60) return `${minutos} min`;
   const h = Math.floor(minutos / 60);
   const m = minutos % 60;
   return m > 0 ? `${h}h ${m}min` : `${h}h`;
+}
+
+function atualizarPeriodoLabel(inicio, fim) {
+  const el = document.getElementById('relatorio-periodo-label');
+  if (!el) return;
+  el.innerHTML = `<i class="fas fa-calendar"></i> ${formatarDataExibicao(inicio)} ate ${formatarDataExibicao(fim)}`;
 }
 
 function selecionarPeriodo(tipo, botao) {
@@ -125,11 +132,20 @@ function renderizarRelatorio(dados) {
   dadosRelatorio = dados;
   document.getElementById('btns-exportar').style.removeProperty('display');
   const { resumo, por_disciplina, periodo } = dados;
+  atualizarPeriodoLabel(periodo.inicio, periodo.fim);
 
   // Atualiza cards de resumo
   document.getElementById('resumo-tempo').textContent = formatarTempo(resumo.total_minutos);
   document.getElementById('resumo-sessoes').textContent = resumo.total_sessoes;
   document.getElementById('resumo-tarefas').textContent = resumo.total_tarefas;
+  const diasPeriodo = Math.max(1, Math.floor((new Date(periodo.fim) - new Date(periodo.inicio)) / 86400000) + 1);
+  document.getElementById('resumo-media').textContent = formatarTempo(Math.floor(Number(resumo.total_minutos || 0) / diasPeriodo));
+  const melhor = Array.isArray(por_disciplina) && por_disciplina.length ? por_disciplina[0] : null;
+  document.getElementById('resumo-melhor-disciplina').textContent = melhor?.nome || '-';
+  document.getElementById('resumo-melhor-disciplina-sub').textContent = melhor ? `${formatarTempo(melhor.minutos)} no periodo` : 'Sem sessoes registradas';
+  const metaPct = Math.min(100, Math.round((Number(resumo.total_minutos || 0) / 600) * 100));
+  document.getElementById('resumo-meta-periodo').textContent = `${metaPct}%`;
+  document.getElementById('resumo-meta-barra').style.width = `${metaPct}%`;
   document.getElementById('cards-resumo').style.removeProperty('display');
   renderizarCardsLateraisRelatorio(resumo);
 
@@ -203,7 +219,7 @@ async function renderizarCardsLateraisRelatorio(resumo) {
     if (barra) barra.style.width = `${pct}%`;
   }
 
-  const conquistasCard = document.querySelector('.dashboard-side .game-card:nth-child(2)');
+  const conquistasCard = document.getElementById('relatorio-conquistas-card');
   if (!conquistasCard) return;
 
   try {

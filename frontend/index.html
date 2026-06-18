@@ -15,21 +15,33 @@
       <a class="brand" href="/login">
         <div class="brand-icon"></div>
         <div>
-          <div class="brand-name">XP<br><span class="brand-purple">Diario</span></div>
+          <div class="brand-name auth-brand-name">XP<br><span class="brand-purple">Diário</span></div>
           <div class="brand-sub">Controle de Rotina de Estudos</div>
         </div>
       </a>
+
       <h1 class="auth-title">Transforme seus estudos em uma grande aventura!</h1>
-      <p class="auth-copy">Organize sua rotina, ganhe XP, mantenha seu streak e alcance novos niveis todos os dias.</p>
+      <p class="auth-copy">Organize sua rotina, ganhe XP, mantenha seu streak e alcance novos níveis todos os dias.</p>
+
       <div class="auth-stage">
-        <div class="pixel-student"><span class="pixel-book"></span></div>
+        <div class="auth-cloud auth-cloud-left"></div>
+        <div class="auth-cloud auth-cloud-right"></div>
+        <div class="auth-mountains"></div>
+        <div class="pixel-student auth-student"></div>
+        <div class="auth-books"></div>
+        <div class="auth-mug"></div>
         <div class="pixel-slime"></div>
       </div>
-      <div class="speech-bubble auth-bubble">Cada minuto de foco te deixa mais perto do seu objetivo! ✨</div>
+
+      <div class="speech-bubble auth-bubble">
+        <span class="auth-bubble-star">★</span>
+        Cada minuto de foco te deixa mais perto do seu objetivo!
+      </div>
+
       <div class="auth-score">
-        <div>🔥 <strong>23</strong><br><small>dias seguidos</small></div>
-        <div>⭐ <strong>640 XP</strong><br><small>para o proximo nivel</small></div>
-        <div>🧰 <strong>Recompensas</strong><br><small>te esperam!</small></div>
+        <div><span class="auth-score-icon"><i class="fa-solid fa-fire-flame-curved"></i></span> <strong>23</strong><br><small>dias seguidos</small></div>
+        <div><span class="auth-score-icon"><i class="fa-solid fa-star"></i></span> <strong>640 XP</strong><br><small>para o próximo nível</small></div>
+        <div><span class="auth-score-icon"><i class="fa-solid fa-gift"></i></span> <strong>Recompensas</strong><br><small>te esperam!</small></div>
       </div>
     </section>
 
@@ -39,11 +51,12 @@
           <a class="auth-tab active" href="/login"><i class="fas fa-right-to-bracket me-2"></i>Entrar</a>
           <a class="auth-tab" href="/cadastro"><i class="fas fa-user-plus me-2"></i>Criar conta</a>
         </div>
+
         <div class="d-flex align-items-center gap-3 mb-4">
           <span class="pixel-icon icon-purple"><i class="fas fa-heart"></i></span>
           <div>
             <h2 class="h3 fw-black mb-1">Bem-vindo de volta!</h2>
-            <p class="text-muted fw-bold mb-0">Faca login para continuar sua jornada.</p>
+            <p class="text-muted fw-bold mb-0">Faça login para continuar sua jornada.</p>
           </div>
         </div>
 
@@ -54,7 +67,7 @@
           </div>
           <div class="mb-2">
             <label for="senha" class="form-label">Senha</label>
-            <input type="password" class="form-control" id="senha" placeholder="••••••••" required>
+            <input type="password" class="form-control" id="senha" placeholder="********" required>
           </div>
           <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="form-check">
@@ -64,7 +77,7 @@
             <a href="/resetar-senha" class="small-link">Esqueci minha senha</a>
           </div>
           <button type="submit" class="btn btn-primary w-100 py-3"><i class="fas fa-wand-sparkles me-2"></i>Entrar</button>
-          <p class="small text-muted text-center fw-bold mt-4 mb-0">Nao tem uma conta? <a href="/cadastro" class="small-link">Criar conta</a></p>
+          <p class="small text-muted text-center fw-bold mt-4 mb-0">Não tem uma conta? <a href="/cadastro" class="small-link">Criar conta</a></p>
         </form>
 
         <div id="mensagem" class="mt-3 small text-center fw-bold"></div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Di&aacute;rio - Relat&oacute;rios</title>
+  <title>XP Diario - Relatorios</title>
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
   <div class="layout">
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <aside class="sidebar">
-      <a class="brand" href="/app"><div class="brand-icon"></div><div><div class="brand-name">XP<br><span class="brand-purple">Di&aacute;rio</span></div><div class="brand-sub">Estudo em aventura</div></div></a>
+      <a class="brand" href="/app"><div class="brand-icon"></div><div><div class="brand-name">XP<br><span class="brand-purple">Diario</span></div><div class="brand-sub">Estudo em aventura</div></div></a>
       <nav class="sidebar-nav">
         <a class="menu-link" href="/app"><i class="fas fa-house"></i> Dashboard</a>
         <a class="menu-link" href="/materias"><i class="fas fa-book-open"></i> Disciplinas</a>
@@ -25,15 +25,14 @@
         <a class="menu-link active" href="/relatorio"><i class="fas fa-chart-column"></i> Relat&oacute;rios</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
-      <div class="sidebar-quest"><div class="pixel-student quest-hero"><span class="pixel-book"></span></div><div class="quest-note">Cada dado conta uma vitoria no seu aprendizado!</div></div>
-      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto"><div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div><div class="ctx-info"><div class="ctx-nome" id="ctx-nome">Minha &Aacute;rea</div><div class="ctx-sub">Contexto atual</div></div><i class="fas fa-right-left ctx-switch-icon"></i></div>
+      <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto"><div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div><div class="ctx-info"><div class="ctx-nome" id="ctx-nome">Minha Area</div><div class="ctx-sub">Contexto atual</div></div><i class="fas fa-right-left ctx-switch-icon"></i></div>
       <div class="sidebar-footer"><a class="menu-link logout" href="#" onclick="sair(event)"><i class="fas fa-right-from-bracket"></i> Sair</a></div>
     </aside>
     <main class="content">
-      <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand fw-black">XP Di&aacute;rio</span></div>
+      <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand fw-black">XP Diario</span></div>
       <div class="app-topbar"><label class="search-pill"><i class="fas fa-magnifying-glass"></i><input placeholder="Buscar relatorios, disciplinas, sessoes..."><span class="kbd">/</span></label><div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1" data-user-name>Estudante</div><small class="text-muted fw-bold" data-user-level>Nivel 1</small></div></div></div>
       <div class="page-header">
-        <div><h2><i class="fas fa-chart-column me-2 text-primary"></i>Relat&oacute;rios e Desempenho</h2><p class="page-subtitle">Acompanhe sua jornada e veja seu progresso evoluir.</p></div>
+        <div><h2><i class="fas fa-chart-column me-2 text-primary"></i>Relatorios e Desempenho</h2><p class="page-subtitle">Acompanhe sua jornada e veja seu progresso evoluir.</p></div>
         <div class="d-flex gap-2 flex-wrap" id="btns-exportar" style="display:none!important;"><button class="btn btn-outline-danger px-3" onclick="exportarPDF()"><i class="fas fa-file-pdf me-2"></i>PDF</button><button class="btn btn-outline-primary px-3" onclick="exportarDOCX()"><i class="fas fa-file-word me-2"></i>Word</button></div>
       </div>
 
@@ -43,34 +42,28 @@
           <button class="periodo-btn active" onclick="selecionarPeriodo('mes', this)">Semana</button>
           <button class="periodo-btn" onclick="selecionarPeriodo('trimestre', this)">Mes</button>
           <button class="periodo-btn" onclick="selecionarPeriodo('personalizado', this)">Personalizado</button>
-          <span class="badge-soft badge-blue ms-auto"><i class="fas fa-calendar"></i> 26 Mai - 1 Jun, 2026</span>
+          <span class="badge-soft badge-blue ms-auto" id="relatorio-periodo-label"><i class="fas fa-calendar"></i> Carregando periodo</span>
         </div>
         <div id="filtro-personalizado" class="d-none mt-3"><div class="row g-2 align-items-end"><div class="col-auto"><label class="form-label mb-1">De</label><input type="text" id="data-inicio" class="form-control form-control-sm" placeholder="dd/mm/aaaa"></div><div class="col-auto"><label class="form-label mb-1">Ate</label><input type="text" id="data-fim" class="form-control form-control-sm" placeholder="dd/mm/aaaa"></div><div class="col-auto"><button class="btn btn-primary btn-sm px-3" onclick="buscarRelatorio()"><i class="fas fa-search me-1"></i>Buscar</button></div></div></div>
       </div>
 
       <div class="row g-3 mb-4" id="cards-resumo" style="display:none!important;">
-        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Total de horas</div><div class="stat-value" id="resumo-tempo">12h 45m</div><small class="text-success fw-bold">↑ 18% vs semana anterior</small></div><div class="stat-icon icon-blue"><i class="fas fa-clock"></i></div></div></div>
-        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Media diaria</div><div class="stat-value">1h 49m</div><small class="text-success fw-bold">↑ 15% vs semana anterior</small></div><div class="stat-icon icon-yellow"><i class="fas fa-star"></i></div></div></div>
-        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Melhor disciplina</div><div class="stat-value">Matematica</div><small class="text-success fw-bold">75% de progresso</small></div><div class="stat-icon icon-blue"><i class="fas fa-book"></i></div></div></div>
-        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Tarefas concluidas</div><div class="stat-value" id="resumo-tarefas">18 / 24</div><small class="text-success fw-bold">75% das tarefas</small></div><div class="stat-icon icon-green"><i class="fas fa-clipboard-check"></i></div></div></div>
-        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Meta semanal</div><div class="stat-value">78%</div><div class="progress-track"><div class="progress-fill fill-purple" style="width:78%"></div></div></div><div class="stat-icon icon-orange"><i class="fas fa-trophy"></i></div></div></div>
+        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Total de horas</div><div class="stat-value" id="resumo-tempo">0 min</div><small class="text-muted fw-bold">tempo acumulado no periodo</small></div><div class="stat-icon icon-blue"><i class="fas fa-clock"></i></div></div></div>
+        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Media diaria</div><div class="stat-value" id="resumo-media">0 min</div><small class="text-muted fw-bold">com base nos dias do periodo</small></div><div class="stat-icon icon-yellow"><i class="fas fa-star"></i></div></div></div>
+        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Melhor disciplina</div><div class="stat-value" id="resumo-melhor-disciplina">-</div><small class="text-muted fw-bold" id="resumo-melhor-disciplina-sub">Sem sessoes registradas</small></div><div class="stat-icon icon-blue"><i class="fas fa-book"></i></div></div></div>
+        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Tarefas concluidas</div><div class="stat-value" id="resumo-tarefas">0</div><small class="text-muted fw-bold">registradas nas atividades</small></div><div class="stat-icon icon-green"><i class="fas fa-clipboard-check"></i></div></div></div>
+        <div class="col-6 col-xl"><div class="stat-card"><div><div class="stat-label">Meta semanal</div><div class="stat-value" id="resumo-meta-periodo">0%</div><div class="progress-track"><div class="progress-fill fill-purple" id="resumo-meta-barra" style="width:0%"></div></div></div><div class="stat-icon icon-orange"><i class="fas fa-trophy"></i></div></div></div>
         <span id="resumo-sessoes" class="d-none">0</span>
-      </div>
-
-      <div class="grid-3 mb-4" id="relatorio-graficos-api" style="display:none">
-        <article class="game-card"><div class="card-title-row"><h3 class="card-title"><span class="pixel-icon icon-blue"><i class="fas fa-clock"></i></span> Tempo estudado por periodo</h3><a class="small-link">Ver detalhes</a></div><div class="bar-chart"><div class="bar-col"><div class="bar" style="height:45%;background:linear-gradient(#a78bfa,#6d5dfb)"></div><span>Seg</span></div><div class="bar-col"><div class="bar" style="height:70%;background:linear-gradient(#a78bfa,#6d5dfb)"></div><span>Ter</span></div><div class="bar-col"><div class="bar" style="height:55%;background:linear-gradient(#a78bfa,#6d5dfb)"></div><span>Qua</span></div><div class="bar-col"><div class="bar" style="height:82%;background:linear-gradient(#a78bfa,#6d5dfb)"></div><span>Qui</span></div><div class="bar-col"><div class="bar" style="height:42%;background:linear-gradient(#a78bfa,#6d5dfb)"></div><span>Sex</span></div><div class="bar-col"><div class="bar" style="height:38%;background:linear-gradient(#a78bfa,#6d5dfb)"></div><span>Sab</span></div><div class="bar-col"><div class="bar" style="height:24%;background:linear-gradient(#a78bfa,#6d5dfb)"></div><span>Dom</span></div></div></article>
-        <article class="game-card"><div class="card-title-row"><h3 class="card-title"><span class="pixel-icon icon-pink"><i class="fas fa-calendar"></i></span> Desempenho por disciplina</h3><a class="small-link">Ver detalhes</a></div><div class="subject-row"><span class="pixel-icon icon-blue"><i class="fas fa-square-root-variable"></i></span><div><strong>Matematica</strong><div class="progress-track"><div class="progress-fill fill-blue" style="width:75%"></div></div></div><span>75%</span></div><div class="subject-row"><span class="pixel-icon icon-green"><i class="fas fa-book"></i></span><div><strong>Portugues</strong><div class="progress-track"><div class="progress-fill fill-green" style="width:60%"></div></div></div><span>60%</span></div><div class="subject-row"><span class="pixel-icon icon-yellow"><i class="fas fa-landmark"></i></span><div><strong>Historia</strong><div class="progress-track"><div class="progress-fill fill-yellow" style="width:45%"></div></div></div><span>45%</span></div><div class="subject-row"><span class="pixel-icon icon-purple"><i class="fas fa-code"></i></span><div><strong>Programacao</strong><div class="progress-track"><div class="progress-fill fill-purple" style="width:80%"></div></div></div><span>80%</span></div></article>
-        <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-purple"><i class="fas fa-fire"></i></span> Comparativo semanal</h3><div class="heatmap"><span class="heat h1"></span><span class="heat h2"></span><span class="heat h3"></span><span class="heat h2"></span><span class="heat h4"></span><span class="heat h1"></span><span class="heat h2"></span><span class="heat h2"></span><span class="heat h4"></span><span class="heat h3"></span><span class="heat h1"></span><span class="heat h2"></span><span class="heat h4"></span><span class="heat h3"></span><span class="heat h1"></span><span class="heat h2"></span><span class="heat h3"></span><span class="heat h2"></span><span class="heat h1"></span><span class="heat h4"></span><span class="heat h2"></span><span class="heat h3"></span><span class="heat h1"></span><span class="heat h2"></span><span class="heat h4"></span><span class="heat h3"></span><span class="heat h2"></span><span class="heat h1"></span><span class="heat h2"></span><span class="heat h3"></span><span class="heat h4"></span><span class="heat h2"></span><span class="heat h1"></span><span class="heat h3"></span><span class="heat h2"></span></div><div class="d-flex justify-content-between mt-3 text-muted fw-bold"><span>Menos</span><span>Mais</span></div></article>
       </div>
 
       <div class="dashboard-grid">
         <section><div id="resultado" class="card-panel p-4"><div class="p-4 text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Carregando relatorio...</div></div></section>
         <aside class="dashboard-side">
-          <article class="game-card text-center" id="relatorio-meta-card"><div class="chest mx-auto mb-3"></div><h3 class="fw-black">Meta atingida</h3><div class="stat-value">0%</div><p class="text-muted fw-bold">do periodo selecionado</p><div class="progress-track"><div class="progress-fill fill-purple" style="width:0%"></div></div></article>
-          <article class="game-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-yellow"><i class="fas fa-star"></i></span> Conquistas recentes</h3><div class="history-item"><div class="badge-medal" style="background:#f97316;width:46px;height:46px"><i class="fas fa-fire"></i></div><div><div class="history-title">Foco Total</div><div class="history-meta">Estudou 7 dias seguidos · +150 XP</div></div></div><div class="history-item"><div class="badge-medal" style="background:#22c55e;width:46px;height:46px"><i class="fas fa-clock"></i></div><div><div class="history-title">Mestre do Tempo</div><div class="history-meta">10h de estudo em uma semana · +200 XP</div></div></div><div class="history-item"><div class="badge-medal" style="background:#6d5dfb;width:46px;height:46px"><i class="fas fa-star"></i></div><div><div class="history-title">Disciplina em Alta</div><div class="history-meta">75% de progresso · +120 XP</div></div></div></article>
+          <article class="game-card text-center" id="relatorio-meta-card"><div class="chest mx-auto mb-3"></div><h3 class="fw-black">Meta do periodo</h3><div class="stat-value">0%</div><p class="text-muted fw-bold">com base no tempo estudado</p><div class="progress-track"><div class="progress-fill fill-purple" style="width:0%"></div></div></article>
+          <article class="game-card" id="relatorio-conquistas-card"><h3 class="card-title mb-3"><span class="pixel-icon icon-yellow"><i class="fas fa-star"></i></span> Conquistas recentes</h3><p class="text-muted fw-bold mb-0">Carregando conquistas...</p></article>
         </aside>
       </div>
-      <div class="slime-corner"><div class="speech-bubble">Voce esta indo incrivel!</div><div class="pixel-slime"></div></div>
+      <div class="slime-corner"><div class="speech-bubble">Voce esta indo incrivel.</div><div class="pixel-slime"></div></div>
     </main>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

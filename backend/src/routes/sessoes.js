@@ -1,6 +1,7 @@
 const express = require('express');
 const pool = require('../config/db');
 const { autenticar } = require('../middlewares/auth');
+const { desbloquearConquistasElegiveis } = require('../services/conquistasService');
 
 const router = express.Router();
 
@@ -14,6 +15,65 @@ function mapSessao(row) {
     fim: row.se_fim,
     segundos_focados: Number(row.se_segundos_focados || 0),
     ultimo_inicio: row.se_ultimo_inicio
+  };
+}
+
+async function concluirSessaoERegistrarAtividade(sessaoId, usuarioId) {
+  const encerrada = await pool.query(
+    `UPDATE sessao_estudo
+     SET se_segundos_focados = se_segundos_focados +
+           CASE WHEN se_status = 'iniciada' THEN GREATEST(0, EXTRACT(EPOCH FROM (NOW() - se_ultimo_inicio))::int) ELSE 0 END,
+         se_status = 'encerrada',
+         se_fim = NOW(),
+         se_atualizado_em = NOW()
+     WHERE se_id = $1 AND se_usuario_id = $2 AND se_status IN ('iniciada', 'pausada')
+     RETURNING *`,
+    [sessaoId, usuarioId]
+  );
+
+  if (encerrada.rowCount === 0) {
+    return null;
+  }
+
+  const sessao = encerrada.rows[0];
+  const minutos = Math.floor(Number(sessao.se_segundos_focados || 0) / 60);
+  let atividade = null;
+  let totalPontos = null;
+  let conquistasDesbloqueadas = [];
+
+  if (minutos > 0 && Number.isInteger(Number(sessao.se_disciplina)) && Number(sessao.se_disciplina) > 0) {
+    const atividadeResult = await pool.query(
+      `INSERT INTO atividade
+       (at_disciplina, at_tempo_min, at_tarefas_concluidas, at_data, at_descricao, at_usuario_id)
+       VALUES ($1, $2, 0, CURRENT_DATE, $3, $4)
+       RETURNING *`,
+      [
+        sessao.se_disciplina,
+        minutos,
+        'Sessao registrada pelo timer',
+        usuarioId
+      ]
+    );
+    atividade = atividadeResult.rows[0];
+
+    const pontosResult = await pool.query(
+      `UPDATE usuarios
+       SET us_pontos_total = COALESCE(us_pontos_total, 0) + $1
+       WHERE us_id = $2
+       RETURNING us_pontos_total`,
+      [minutos, usuarioId]
+    );
+    totalPontos = Number(pontosResult.rows[0]?.us_pontos_total || 0);
+    const desbloqueio = await desbloquearConquistasElegiveis(usuarioId);
+    conquistasDesbloqueadas = desbloqueio.desbloqueadasAgora || [];
+  }
+
+  return {
+    sessao: mapSessao(sessao),
+    minutos,
+    atividade,
+    totalPontos,
+    conquistasDesbloqueadas
   };
 }
 
@@ -106,20 +166,9 @@ router.patch('/:id/retomar', autenticar, async (req, res) => {
 
 router.patch('/:id/encerrar', autenticar, async (req, res) => {
   try {
-    const result = await pool.query(
-      `UPDATE sessao_estudo
-       SET se_segundos_focados = se_segundos_focados +
-             CASE WHEN se_status = 'iniciada' THEN GREATEST(0, EXTRACT(EPOCH FROM (NOW() - se_ultimo_inicio))::int) ELSE 0 END,
-           se_status = 'encerrada',
-           se_fim = NOW(),
-           se_atualizado_em = NOW()
-       WHERE se_id = $1 AND se_usuario_id = $2 AND se_status IN ('iniciada', 'pausada')
-       RETURNING *`,
-      [req.params.id, req.usuario.id]
-    );
-
-    if (result.rowCount === 0) return res.status(404).json({ erro: 'Sessao ativa nao encontrada.' });
-    res.json({ sucesso: true, sessao: mapSessao(result.rows[0]) });
+    const resultado = await concluirSessaoERegistrarAtividade(req.params.id, req.usuario.id);
+    if (!resultado) return res.status(404).json({ erro: 'Sessao ativa nao encontrada.' });
+    res.json({ sucesso: true, ...resultado });
   } catch (error) {
     console.error('Erro ao encerrar sessao:', error);
     res.status(500).json({ erro: 'Erro ao encerrar sessao.' });

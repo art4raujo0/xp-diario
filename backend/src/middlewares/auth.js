@@ -16,6 +16,7 @@ function autenticar(req, res, next) {
 
     req.usuario = {
       id: Number(payload.id),
+      nome: payload.nome,
       email: payload.email,
       tipo: payload.tipo || 'aluno'
     };

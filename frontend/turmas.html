@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XP Diário - Turmas</title>
+  <title>XP Diario - Turmas</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -16,24 +16,24 @@
       <a class="brand" href="/app">
         <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
         <div>
-          <div class="brand-name">XP Diário</div>
+          <div class="brand-name">XP Diario</div>
           <div class="brand-sub">Estudo Inteligente</div>
         </div>
       </a>
       <nav class="sidebar-nav">
-        <a class="menu-link" href="/app"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a class="menu-link" href="/app"><i class="fas fa-house"></i> Dashboard</a>
+        <a class="menu-link" href="/materias"><i class="fas fa-book-open"></i> Disciplinas</a>
+        <a class="menu-link" href="/cronogramas"><i class="fas fa-calendar-days"></i> Cronograma</a>
+        <a class="menu-link" href="/tarefas"><i class="fas fa-clipboard-check"></i> Tarefas</a>
         <a class="menu-link" href="/metas"><i class="fas fa-bullseye"></i> Metas</a>
-        <a class="menu-link" href="/materias"><i class="fas fa-book"></i> Matérias</a>
-        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Sessoes</a>
-        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-bar"></i> Relatório</a>
-        <a class="menu-link active" href="/turmas"><i class="fas fa-users"></i> Turmas</a>
-        <a class="menu-link" href="/conquistas"><i class="fas fa-trophy"></i> Conquistas</a>
+        <a class="menu-link" href="/estudos"><i class="fas fa-clock"></i> Sess&otilde;es</a>
+        <a class="menu-link" href="/relatorio"><i class="fas fa-chart-column"></i> Relat&oacute;rios</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
       <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
         <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
         <div class="ctx-info">
-          <div class="ctx-nome" id="ctx-nome">Minha Área</div>
+          <div class="ctx-nome" id="ctx-nome">Minha Area</div>
           <div class="ctx-sub">Contexto atual</div>
         </div>
         <i class="fas fa-right-left ctx-switch-icon"></i>
@@ -46,13 +46,11 @@
     <main class="content">
       <div class="topbar">
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <span class="topbar-brand">XP Diário</span>
+        <span class="topbar-brand">XP Diario</span>
       </div>
 
-      <!-- Mensagem compartilhada -->
       <div id="mensagem" class="mb-3" style="display:none;"></div>
 
-      <!-- View: Professor / Admin -->
       <div id="view-professor" class="d-none">
         <div class="page-header">
           <div>
@@ -65,7 +63,6 @@
           </button>
         </div>
 
-        <!-- Formulário criar turma -->
         <div id="form-criar" class="card-panel p-4 mb-4 d-none">
           <h6 class="fw-bold mb-3" style="color:#1e293b;">Nova Turma</h6>
           <div class="d-flex gap-3 flex-wrap">
@@ -87,12 +84,11 @@
         <div id="lista-professor"></div>
       </div>
 
-      <!-- View: Aluno -->
       <div id="view-aluno" class="d-none">
         <div class="page-header">
           <div>
             <h2>Minhas Turmas</h2>
-            <p class="page-subtitle">Turmas em que você está matriculado</p>
+            <p class="page-subtitle">Turmas em que voce esta matriculado</p>
           </div>
           <button class="btn btn-primary" onclick="toggleFormEntrar()"
             style="background:#463acb;border-color:#463acb;border-radius:10px;font-size:0.88rem;padding:9px 18px;">
@@ -100,13 +96,12 @@
           </button>
         </div>
 
-        <!-- Formulário entrar na turma -->
         <div id="form-entrar" class="card-panel p-4 mb-4 d-none">
           <h6 class="fw-bold mb-2" style="color:#1e293b;">Entrar em uma Turma</h6>
-          <p class="text-muted small mb-3">Peça o código de 6 letras ao seu professor e informe abaixo.</p>
+          <p class="text-muted small mb-3">Peca o codigo de 6 letras ao seu professor e informe abaixo.</p>
           <div class="d-flex gap-3 flex-wrap">
             <div style="flex:1;min-width:200px;">
-              <input type="text" id="input-codigo" class="form-control" placeholder="Código (ex: AB3K9X)"
+              <input type="text" id="input-codigo" class="form-control" placeholder="Codigo (ex: AB3K9X)"
                 maxlength="6" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')entrarTurma()"
                 style="border-radius:10px;text-transform:uppercase;font-family:monospace;letter-spacing:3px;font-size:1.05rem;font-weight:700;text-align:center;">
             </div>
@@ -126,7 +121,6 @@
     </main>
   </div>
 
-  <!-- Modal: Alunos da Turma -->
   <div class="modal fade" id="modal-detalhes" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
@@ -139,7 +133,6 @@
     </div>
   </div>
 
-  <!-- Modal: Editar Turma -->
   <div class="modal fade" id="modal-editar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
@@ -155,7 +148,7 @@
           <div class="d-flex align-items-center gap-3 p-3 mb-1" style="background:#f8fafc;border-radius:10px;">
             <div style="flex:1;">
               <div class="fw-semibold small">Turma ativa</div>
-              <div class="text-muted" style="font-size:0.78rem;">Alunos só podem entrar em turmas ativas</div>
+              <div class="text-muted" style="font-size:0.78rem;">Alunos so podem entrar em turmas ativas</div>
             </div>
             <div class="form-check form-switch mb-0">
               <input class="form-check-input" type="checkbox" role="switch" id="edit-ativa"

@@ -75,6 +75,37 @@ router.post('/entrar', autenticar, async (req, res) => {
 });
 
 // ----------------------------------------------------------------
+// DELETE /api/turmas/:id - professor/admin exclui turma
+// ----------------------------------------------------------------
+router.delete('/:id', autenticar, exigirProfessor, async (req, res) => {
+  try {
+    const turmaId = parseInt(req.params.id);
+    const { id: usuarioId, tipo } = req.usuario;
+
+    if (!Number.isInteger(turmaId) || turmaId <= 0) {
+      return res.status(400).json({ erro: 'ID de turma invalido.' });
+    }
+
+    const turmaResult = await pool.query('SELECT * FROM turma WHERE tu_id = $1', [turmaId]);
+    if (turmaResult.rowCount === 0) {
+      return res.status(404).json({ erro: 'Turma nao encontrada.' });
+    }
+
+    const turma = turmaResult.rows[0];
+    if (tipo !== 'admin' && turma.tu_professor_id !== usuarioId) {
+      return res.status(403).json({ erro: 'Acesso negado.' });
+    }
+
+    await pool.query('DELETE FROM turma WHERE tu_id = $1', [turmaId]);
+
+    return res.json({ sucesso: true, mensagem: 'Turma excluida com sucesso.' });
+  } catch (err) {
+    console.error('Erro ao excluir turma:', err);
+    return res.status(500).json({ erro: 'Erro ao excluir turma.' });
+  }
+});
+
+// ----------------------------------------------------------------
 // POST /api/turmas — professor cria uma turma
 // ----------------------------------------------------------------
 router.post('/', autenticar, exigirProfessor, async (req, res) => {

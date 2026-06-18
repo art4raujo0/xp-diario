@@ -30,10 +30,6 @@
         <a class="menu-link" href="/relatorio"><i class="fas fa-chart-column"></i> Relat&oacute;rios</a>
         <a class="menu-link" href="/perfil"><i class="fas fa-user"></i> Perfil</a>
       </nav>
-      <div class="sidebar-quest">
-        <div class="pixel-student quest-hero"><span class="pixel-book"></span></div>
-        <div class="quest-note">Cada estudo e um passo rumo ao seu melhor!</div>
-      </div>
       <div class="ctx-switcher" onclick="abrirContexto()" title="Trocar contexto">
         <div class="ctx-icon" id="ctx-icon"><i class="fas fa-user"></i></div>
         <div class="ctx-info">
@@ -84,7 +80,7 @@
               <div class="hero-stats">
                 <div class="hero-stat">
                   <span>🔥 Streak de estudos</span>
-                  <strong id="streak-valor">23 dias</strong>
+                  <strong id="streak-valor">0 dias</strong>
                   <small id="streak-melhor">Melhor: 0 dias</small>
                 </div>
                 <div class="hero-stat">
@@ -104,7 +100,7 @@
               <div class="stat-card">
                 <div>
                   <div class="stat-label">Sequencia</div>
-                  <div class="stat-value" id="streak-valor-card">23</div>
+                  <div class="stat-value" id="streak-valor-card">0</div>
                   <small class="text-muted fw-bold">dias em foco</small>
                 </div>
                 <div class="stat-icon icon-orange" id="streak-icon-container"><i class="fas fa-fire" id="streak-icon"></i></div>
@@ -114,7 +110,7 @@
               <div class="stat-card">
                 <div>
                   <div class="stat-label">Tempo</div>
-                  <div class="stat-value" id="tempo-estudado">12h</div>
+                  <div class="stat-value" id="tempo-estudado">0 min</div>
                   <small class="text-muted fw-bold">esta semana</small>
                 </div>
                 <div class="stat-icon icon-blue"><i class="fas fa-clock"></i></div>
@@ -124,7 +120,7 @@
               <div class="stat-card">
                 <div>
                   <div class="stat-label">Metas</div>
-                  <div class="stat-value" id="metas-atingidas">3/4</div>
+                  <div class="stat-value" id="metas-atingidas">0/0</div>
                   <small class="text-muted fw-bold">concluidas</small>
                 </div>
                 <div class="stat-icon icon-purple"><i class="fas fa-bullseye"></i></div>
@@ -134,7 +130,7 @@
               <div class="stat-card">
                 <div>
                   <div class="stat-label">Tarefas</div>
-                  <div class="stat-value" id="tarefas-concluidas">2</div>
+                  <div class="stat-value" id="tarefas-concluidas">0</div>
                   <small class="text-muted fw-bold">finalizadas</small>
                 </div>
                 <div class="stat-icon icon-green"><i class="fas fa-circle-check"></i></div>
@@ -210,7 +206,7 @@
               <div class="chest"></div>
             </div>
             <div class="progress-track my-3"><div class="progress-fill fill-purple" id="metas-semana-barra" style="width:0%"></div></div>
-            <p class="mb-0 fw-bold text-muted">5 metas restantes para o bau semanal</p>
+            <p class="mb-0 fw-bold text-muted">Seu progresso semanal aparece aqui.</p>
           </article>
 
           <article class="game-card">
@@ -237,10 +233,7 @@
               <a class="small-link" href="/conquistas">Ver todas</a>
             </div>
             <div class="achievement-list" id="dashboard-conquistas">
-              <div class="achievement-badge"><div class="badge-medal" style="background:#8b5cf6"><i class="fas fa-book"></i></div>Estudioso Iniciante</div>
-              <div class="achievement-badge"><div class="badge-medal" style="background:#f97316"><i class="fas fa-fire"></i></div>Foco Total 7 dias</div>
-              <div class="achievement-badge"><div class="badge-medal" style="background:#22c55e"><i class="fas fa-clock"></i></div>Mestre do Tempo</div>
-              <div class="achievement-badge"><div class="badge-medal" style="background:#facc15"><i class="fas fa-trophy"></i></div>Meta Cumprida</div>
+              <p class="text-muted fw-bold mb-0">Carregando conquistas...</p>
             </div>
             <div id="dica-mestre"></div>
           </article>

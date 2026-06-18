@@ -86,8 +86,9 @@ router.post('/', async (req, res) => {
 
         // 6. Sessão: Geração do token JWT com expiração configurada para 24h
         const tipo = usuario.us_tipo || 'aluno';
+        const nome = usuario.us_nome || usuario.us_email;
         const token = jwt.sign(
-            { id: usuario.us_id, email: usuario.us_email, tipo },
+            { id: usuario.us_id, nome, email: usuario.us_email, tipo },
             process.env.JWT_SECRET || 'chave_super_secreta_padrao',
             { expiresIn: '24h' }
         );
@@ -96,7 +97,13 @@ router.post('/', async (req, res) => {
         return res.json({
             mensagem: 'Login realizado com sucesso!',
             token,
-            tipo
+            tipo,
+            usuario: {
+                id: usuario.us_id,
+                nome,
+                email: usuario.us_email,
+                tipo
+            }
         });
 
     } catch (erro) {
