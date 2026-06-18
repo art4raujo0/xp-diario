@@ -1,11 +1,35 @@
 %%{init: {'theme': 'neutral'}}%%
-flowchart LR
-    A[Usuario faz login] --> B{Token valido?}
-    B -- Nao --> C[Exibir erro]
-    B -- Sim --> D[Acessar app]
-    D --> E[Registrar atividade]
-    E --> F[Salvar atividade por usuario]
-    F --> G[Somar pontos no usuario]
-    F --> H[Avaliar conquistas]
-    G --> I[Perfil atualizado]
-    H --> J[Lista de conquistas atualizada]
+flowchart TD
+    START([Usuario acessa o sistema]) --> LOGIN[Tela de Login]
+    LOGIN --> CRED{Credenciais validas?}
+    CRED -- Nao --> ERRO[Exibir erro / incrementar tentativas]
+    ERRO --> BLOQ{Conta bloqueada?}
+    BLOQ -- Sim --> MSG_BLOQ[Exibir mensagem de bloqueio]
+    BLOQ -- Nao --> LOGIN
+    CRED -- Sim --> JWT[Gerar token JWT 24h]
+    JWT --> APP[Dashboard principal]
+
+    APP --> DISC[/Disciplinas/]
+    APP --> META[/Metas/]
+    APP --> TAR[/Tarefas/]
+    APP --> CRON[/Cronograma/]
+    APP --> SESS[/Sessao de Estudo/]
+    APP --> REL[/Relatorios/]
+    APP --> PERF[/Perfil/]
+    APP --> TURM[/Turmas/]
+    APP --> CONQ[/Conquistas/]
+
+    SESS --> MODAL[Modal: escolher disciplina]
+    MODAL --> INICIAR[POST /api/sessoes/iniciar]
+    INICIAR --> TIMER[Timer em andamento]
+    TIMER --> STOP[Stop]
+    STOP --> ENCERRAR[PATCH /api/sessoes/:id/encerrar]
+    ENCERRAR --> XP[Somar XP = minutos estudados]
+    XP --> UNLOCK[Avaliar conquistas elegiveis]
+    UNLOCK --> APP
+
+    FORGOT[Esqueci minha senha] --> EMAIL_FORM[Informar email]
+    EMAIL_FORM --> SEND[POST /api/senha/esqueci]
+    SEND --> LINK[Email com link de redefinicao]
+    LINK --> RESET[POST /api/senha/redefinir]
+    RESET --> LOGIN

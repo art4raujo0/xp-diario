@@ -7,7 +7,11 @@ erDiagram
         VARCHAR us_senha_hash
         INT us_tentativas_falhas
         TIMESTAMP us_bloqueado_ate
+        TIMESTAMP us_criado_em
         INT us_pontos_total
+        VARCHAR us_tipo
+        VARCHAR us_reset_token_hash
+        TIMESTAMP us_reset_expira_em
     }
 
     DISCIPLINA {
@@ -16,6 +20,8 @@ erDiagram
         VARCHAR di_dificuldade
         TEXT di_descricao
         VARCHAR di_cor
+        INT di_usuario_id FK
+        TIMESTAMP di_criado_em
     }
 
     META {
@@ -25,6 +31,7 @@ erDiagram
         DATE me_data_inicio
         INT me_disciplina FK
         INT me_usuario_id FK
+        TIMESTAMP me_criado_em
     }
 
     ATIVIDADE {
@@ -35,14 +42,17 @@ erDiagram
         INT at_tarefas_concluidas
         DATE at_data
         VARCHAR at_descricao
+        TIMESTAMP at_criado_em
     }
 
     CONQUISTA {
         INT co_id PK
         VARCHAR co_codigo
         VARCHAR co_titulo
+        VARCHAR co_descricao
         VARCHAR co_criterio_tipo
         INT co_criterio_valor
+        TIMESTAMP co_criado_em
     }
 
     USUARIO_CONQUISTA {
@@ -62,10 +72,88 @@ erDiagram
         TIMESTAMP nc_atualizado_em
     }
 
+    TAREFA {
+        INT ta_id PK
+        VARCHAR ta_titulo
+        TEXT ta_descricao
+        DATE ta_prazo
+        INT ta_disciplina_id FK
+        INT ta_usuario_id FK
+        VARCHAR ta_status
+        BOOLEAN ta_concluida
+        TIMESTAMP ta_concluida_em
+        TIMESTAMP ta_criado_em
+        TIMESTAMP ta_atualizado_em
+    }
+
+    TAREFA_HISTORICO {
+        INT th_id PK
+        INT th_tarefa_id FK
+        INT th_usuario_id FK
+        VARCHAR th_acao
+        VARCHAR th_titulo_snapshot
+        VARCHAR th_status_anterior
+        VARCHAR th_status_novo
+        VARCHAR th_descricao
+        TIMESTAMP th_criado_em
+    }
+
+    CRONOGRAMA_ESTUDO {
+        INT cr_id PK
+        INT cr_usuario_id FK
+        INT cr_disciplina FK
+        DATE cr_data
+        TIME cr_horario_inicio
+        INT cr_duracao_min
+        TIMESTAMP cr_criado_em
+        TIMESTAMP cr_atualizado_em
+    }
+
+    SESSAO_ESTUDO {
+        INT se_id PK
+        INT se_usuario_id FK
+        INT se_disciplina FK
+        VARCHAR se_status
+        TIMESTAMP se_inicio
+        TIMESTAMP se_fim
+        INT se_segundos_focados
+        TIMESTAMP se_ultimo_inicio
+        TIMESTAMP se_criado_em
+        TIMESTAMP se_atualizado_em
+    }
+
+    TURMA {
+        INT tu_id PK
+        VARCHAR tu_nome
+        VARCHAR tu_codigo
+        INT tu_professor_id FK
+        BOOLEAN tu_ativa
+        TIMESTAMPTZ tu_criada_em
+    }
+
+    TURMA_ALUNO {
+        INT ta_id PK
+        INT ta_turma_id FK
+        INT ta_aluno_id FK
+        TIMESTAMPTZ ta_entrou_em
+    }
+
+    USUARIOS ||--o{ DISCIPLINA : cadastra
     USUARIOS ||--o{ META : possui
     USUARIOS ||--o{ ATIVIDADE : registra
     USUARIOS ||--o{ USUARIO_CONQUISTA : desbloqueia
     USUARIOS ||--o| NOTIFICACOES_CONFIG : configura
+    USUARIOS ||--o{ TAREFA : gerencia
+    USUARIOS ||--o{ TAREFA_HISTORICO : gera
+    USUARIOS ||--o{ CRONOGRAMA_ESTUDO : agenda
+    USUARIOS ||--o{ SESSAO_ESTUDO : inicia
+    USUARIOS ||--o{ TURMA : cria
+    USUARIOS ||--o{ TURMA_ALUNO : participa
     CONQUISTA ||--o{ USUARIO_CONQUISTA : referencia
     DISCIPLINA ||--o{ META : organiza
     DISCIPLINA ||--o{ ATIVIDADE : recebe
+    DISCIPLINA ||--o{ TAREFA : classifica
+    DISCIPLINA ||--o{ CRONOGRAMA_ESTUDO : compoe
+    DISCIPLINA ||--o{ SESSAO_ESTUDO : foca
+    TAREFA ||--o{ TAREFA_HISTORICO : registra
+    TURMA ||--o{ TURMA_ALUNO : possui

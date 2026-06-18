@@ -44,15 +44,21 @@
         <section>
           <div class="focus-panel">
             <span class="badge-soft badge-green" id="sessao-status"><i class="fas fa-circle"></i> Pronto para iniciar</span>
-            <div class="timer-ring">
-              <div class="text-center">
-                <div class="timer-time" id="timer-display">00:00</div>
-                <div class="fs-5 fw-bold" id="timer-subtitle">Escolha uma disciplina e comece.</div>
-                <span class="badge-soft badge-purple mt-3" id="sessao-disciplina-badge">Nenhuma disciplina selecionada</span>
+            <div class="focus-timer-wrap">
+              <div class="timer-ring">
+                <div class="text-center">
+                  <div class="timer-time" id="timer-display">00:00</div>
+                  <div class="fs-5 fw-bold" id="timer-subtitle">Escolha uma disciplina e comece.</div>
+                  <span class="badge-soft badge-purple mt-3" id="sessao-disciplina-badge">Nenhuma disciplina selecionada</span>
+                </div>
               </div>
             </div>
-            <img src="/assets/boneco-ref-transparent.png" class="focus-student" alt="">
-            <div class="speech-bubble" style="position:absolute;left:70px;bottom:105px" id="sessao-balao">Cada minuto conta!</div>
+            <div class="focus-scene">
+              <img src="/assets/sessions-trees.png" class="focus-trees" alt="">
+              <img src="/assets/sessions-campfire.png" class="focus-campfire" alt="">
+              <img src="/assets/boneco-ref-transparent.png" class="focus-student" alt="">
+              <div class="speech-bubble focus-bubble" id="sessao-balao">Cada minuto conta!</div>
+            </div>
           </div>
           <div class="card-panel p-4 mt-3 d-flex justify-content-center gap-3 flex-wrap">
             <button class="btn btn-primary px-5 py-3" id="btn-abrir-sessao" onclick="abrirModalSessao()"><i class="fas fa-play me-2"></i>Iniciar Sess&atilde;o de Estudo</button>

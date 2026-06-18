@@ -1,0 +1,334 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagrama de Dados e Integração — XP Diário</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2ff; color: #1e1b4b; }
+  .cover { background: linear-gradient(135deg, #1e1b4b, #4338ca); color: #fff; padding: 60px 48px; }
+  .cover h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; }
+  .cover .sub { font-size: 1.1rem; opacity: 0.85; margin-top: 8px; }
+  .cover .meta { font-size: 0.85rem; opacity: 0.65; margin-top: 24px; }
+  .content { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
+  .section { background: #fff; border-radius: 16px; padding: 32px; margin-bottom: 32px; box-shadow: 0 2px 12px rgba(99,60,202,0.10); page-break-inside: avoid; }
+  .section h2 { font-size: 1.25rem; font-weight: 700; color: #4338ca; border-left: 4px solid #7c3aed; padding-left: 12px; margin-bottom: 20px; }
+  .section p { color: #4b5563; font-size: 0.95rem; margin-bottom: 16px; line-height: 1.6; }
+  .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 8px; }
+  th { background: #ede9fe; color: #5b21b6; text-align: left; padding: 8px 12px; font-weight: 700; }
+  td { padding: 7px 12px; border-bottom: 1px solid #f3f4f6; color: #374151; }
+  tr:last-child td { border-bottom: none; }
+  .tag { display: inline-block; font-size: 0.75rem; font-weight: 600; border-radius: 5px; padding: 2px 8px; }
+  .tag-get { background: #dcfce7; color: #166534; }
+  .tag-post { background: #fef9c3; color: #854d0e; }
+  .tag-put { background: #dbeafe; color: #1e40af; }
+  .tag-patch { background: #f3e8ff; color: #6b21a8; }
+  .tag-del { background: #fee2e2; color: #991b1b; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .card { background: #f5f3ff; border-radius: 10px; padding: 18px 20px; }
+  .card h3 { font-size: 0.95rem; font-weight: 700; color: #5b21b6; margin-bottom: 10px; }
+  .card ul { list-style: none; }
+  .card li { font-size: 0.88rem; color: #374151; padding: 3px 0; border-bottom: 1px solid #ede9fe; }
+  .card li:last-child { border-bottom: none; }
+  .url-box { background: #f5f3ff; border: 1.5px solid #a78bfa; border-radius: 8px; padding: 10px 16px; font-family: monospace; font-size: 0.9rem; color: #4c1d95; margin-top: 4px; }
+  @media print { body { background: #fff; } .section { box-shadow: none; border: 1px solid #e5e7eb; } .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="cover">
+  <h1>XP Diário — Diagrama de Dados e Integração</h1>
+  <div class="sub">Esquema do banco, endpoints da API e integrações externas</div>
+  <div class="meta">Data de referência: 2026-06-18 &nbsp;|&nbsp; Branch: feat/relayout &nbsp;|&nbsp; Produção: https://xp-diario.onrender.com</div>
+</div>
+<div class="content">
+
+<div class="section">
+  <h2>Diagrama Entidade-Relacionamento (13 tabelas)</h2>
+  <p>Todas as tabelas de domínio de dados referenciam <code>us_id</code> da tabela central <code>USUARIOS</code>. Campos prefixados com abreviação da tabela (ex.: <code>us_</code>, <code>di_</code>, <code>se_</code>).</p>
+  <div class="mermaid">
+erDiagram
+    USUARIOS {
+        int us_id PK
+        string us_nome
+        string us_email
+        string us_senha_hash
+        int us_pontos_total
+        string us_role
+        int us_tentativas_login
+        bool us_bloqueado
+    }
+    DISCIPLINA {
+        int di_id PK
+        int di_usuario_id FK
+        string di_disciplina
+        string di_cor
+        string di_dificuldade
+    }
+    META {
+        int me_id PK
+        int me_usuario_id FK
+        int me_disciplina_id FK
+        int me_tempo_semana_min
+    }
+    ATIVIDADE {
+        int at_id PK
+        int at_usuario_id FK
+        int at_disciplina FK
+        int at_tempo_min
+        date at_data
+        string at_descricao
+        int at_tarefas_concluidas
+    }
+    SESSAO_ESTUDO {
+        int se_id PK
+        int se_usuario_id FK
+        int se_disciplina FK
+        timestamp se_inicio
+        timestamp se_fim
+        string se_status
+        int se_segundos_focados
+        timestamp se_ultimo_inicio
+    }
+    CONQUISTA {
+        int co_id PK
+        string co_codigo
+        string co_titulo
+        string co_criterio_tipo
+        int co_criterio_valor
+    }
+    USUARIO_CONQUISTA {
+        int uc_id PK
+        int uc_usuario_id FK
+        int uc_conquista_id FK
+        timestamp uc_desbloqueado_em
+    }
+    NOTIFICACOES_CONFIG {
+        int nc_id PK
+        int nc_usuario_id FK
+        bool nc_ativo
+        time nc_hora_lembrete
+    }
+    TAREFA {
+        int ta_id PK
+        int ta_usuario_id FK
+        int ta_disciplina_id FK
+        string ta_titulo
+        date ta_prazo
+        string ta_status
+    }
+    TAREFA_HISTORICO {
+        int th_id PK
+        int th_tarefa_id FK
+        string th_status_anterior
+        string th_status_novo
+        timestamp th_alterado_em
+    }
+    CRONOGRAMA_ESTUDO {
+        int ce_id PK
+        int ce_usuario_id FK
+        int ce_disciplina_id FK
+        date ce_data
+        time ce_hora_inicio
+        int ce_duracao_min
+    }
+    TURMA {
+        int tu_id PK
+        int tu_professor_id FK
+        string tu_nome
+        string tu_codigo_acesso
+    }
+    TURMA_ALUNO {
+        int ta_id PK
+        int ta_turma_id FK
+        int ta_aluno_id FK
+        timestamp ta_ingresso_em
+    }
+
+    USUARIOS ||--o{ DISCIPLINA : "cria"
+    USUARIOS ||--o{ META : "define"
+    USUARIOS ||--o{ ATIVIDADE : "registra"
+    USUARIOS ||--o{ SESSAO_ESTUDO : "realiza"
+    USUARIOS ||--o{ USUARIO_CONQUISTA : "desbloqueia"
+    USUARIOS ||--o| NOTIFICACOES_CONFIG : "configura"
+    USUARIOS ||--o{ TAREFA : "possui"
+    USUARIOS ||--o{ CRONOGRAMA_ESTUDO : "agenda"
+    USUARIOS ||--o{ TURMA : "cria"
+    USUARIOS ||--o{ TURMA_ALUNO : "ingressa"
+    DISCIPLINA ||--o{ META : "referenciada"
+    DISCIPLINA ||--o{ ATIVIDADE : "referenciada"
+    DISCIPLINA ||--o{ SESSAO_ESTUDO : "referenciada"
+    DISCIPLINA ||--o{ TAREFA : "referenciada"
+    DISCIPLINA ||--o{ CRONOGRAMA_ESTUDO : "referenciada"
+    CONQUISTA ||--o{ USUARIO_CONQUISTA : "registra"
+    TAREFA ||--o{ TAREFA_HISTORICO : "auditada"
+    TURMA ||--o{ TURMA_ALUNO : "possui"
+  </div>
+</div>
+
+<div class="section">
+  <h2>API REST — 42 Endpoints (12 módulos)</h2>
+  <table>
+    <tr><th>Método</th><th>Endpoint</th><th>Módulo</th><th>Descrição</th></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/login</td><td>Auth</td><td>Autenticar, retorna JWT 24h</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/cadastro</td><td>Auth</td><td>Criar conta, retorna JWT</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/senha/esqueci</td><td>Senha</td><td>Enviar email de recuperação</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/senha/redefinir</td><td>Senha</td><td>Redefinir via token SHA-256</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/materias</td><td>Disciplinas</td><td>Listar disciplinas do usuário</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/materias</td><td>Disciplinas</td><td>Criar disciplina</td></tr>
+    <tr><td><span class="tag tag-put">PUT</span></td><td>/api/materias/:id</td><td>Disciplinas</td><td>Editar disciplina</td></tr>
+    <tr><td><span class="tag tag-del">DELETE</span></td><td>/api/materias/:id</td><td>Disciplinas</td><td>Excluir disciplina</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/metas</td><td>Metas</td><td>Listar metas do usuário</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/metas</td><td>Metas</td><td>Criar meta de tempo semanal</td></tr>
+    <tr><td><span class="tag tag-put">PUT</span></td><td>/api/metas/:id</td><td>Metas</td><td>Editar meta</td></tr>
+    <tr><td><span class="tag tag-del">DELETE</span></td><td>/api/metas/:id</td><td>Metas</td><td>Excluir meta</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/tarefas</td><td>Tarefas</td><td>Listar tarefas com histórico</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/tarefas</td><td>Tarefas</td><td>Criar tarefa</td></tr>
+    <tr><td><span class="tag tag-put">PUT</span></td><td>/api/tarefas/:id</td><td>Tarefas</td><td>Editar tarefa</td></tr>
+    <tr><td><span class="tag tag-patch">PATCH</span></td><td>/api/tarefas/:id/status</td><td>Tarefas</td><td>Alterar status</td></tr>
+    <tr><td><span class="tag tag-del">DELETE</span></td><td>/api/tarefas/:id</td><td>Tarefas</td><td>Excluir tarefa</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/cronogramas</td><td>Cronograma</td><td>Listar agendamentos</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/cronogramas</td><td>Cronograma</td><td>Criar agendamento</td></tr>
+    <tr><td><span class="tag tag-put">PUT</span></td><td>/api/cronogramas/:id</td><td>Cronograma</td><td>Editar agendamento</td></tr>
+    <tr><td><span class="tag tag-del">DELETE</span></td><td>/api/cronogramas/:id</td><td>Cronograma</td><td>Excluir agendamento</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/sessoes/ativa</td><td>Sessões</td><td>Buscar sessão ativa</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/sessoes/iniciar</td><td>Sessões</td><td>Iniciar sessão de estudo</td></tr>
+    <tr><td><span class="tag tag-patch">PATCH</span></td><td>/api/sessoes/:id/pausar</td><td>Sessões</td><td>Pausar timer</td></tr>
+    <tr><td><span class="tag tag-patch">PATCH</span></td><td>/api/sessoes/:id/retomar</td><td>Sessões</td><td>Retomar timer</td></tr>
+    <tr><td><span class="tag tag-patch">PATCH</span></td><td>/api/sessoes/:id/encerrar</td><td>Sessões</td><td>Encerrar e salvar atividade</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/atividades</td><td>Atividades</td><td>Histórico de estudos</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/atividades</td><td>Atividades</td><td>Registrar atividade manual</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/streak</td><td>Progresso</td><td>Streak atual e total</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/progresso</td><td>Progresso</td><td>Dados do dashboard</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/conquistas</td><td>Conquistas</td><td>Listar + avaliar conquistas</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/perfil</td><td>Perfil</td><td>Dados do perfil e pontuação</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/notificacoes</td><td>Notificações</td><td>Carregar configuração</td></tr>
+    <tr><td><span class="tag tag-put">PUT</span></td><td>/api/notificacoes</td><td>Notificações</td><td>Salvar configuração</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/turmas</td><td>Turmas</td><td>Listar turmas por role</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/turmas</td><td>Turmas</td><td>Criar turma</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/turmas/:id</td><td>Turmas</td><td>Detalhe da turma</td></tr>
+    <tr><td><span class="tag tag-put">PUT</span></td><td>/api/turmas/:id</td><td>Turmas</td><td>Editar turma</td></tr>
+    <tr><td><span class="tag tag-del">DELETE</span></td><td>/api/turmas/:id</td><td>Turmas</td><td>Excluir turma</td></tr>
+    <tr><td><span class="tag tag-post">POST</span></td><td>/api/turmas/entrar</td><td>Turmas</td><td>Entrar via código (aluno)</td></tr>
+    <tr><td><span class="tag tag-del">DELETE</span></td><td>/api/turmas/:id/alunos/:alunoId</td><td>Turmas</td><td>Remover aluno</td></tr>
+    <tr><td><span class="tag tag-get">GET</span></td><td>/api/relatorio</td><td>Relatório</td><td>Desempenho por período</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Fluxo de Dados — Sessão de Estudo (Integração Completa)</h2>
+  <div class="mermaid">
+sequenceDiagram
+    participant FE as Frontend estudos.js
+    participant BE as Backend sessoes.js
+    participant DB as Neon PostgreSQL
+    participant CS as ConquistasService
+
+    FE->>BE: GET /api/sessoes/ativa
+    BE->>DB: SELECT sessao_estudo WHERE status IN (iniciada,pausada)
+    DB-->>BE: sessão existente ou null
+    BE-->>FE: { sessao } ou { sessao: null }
+
+    FE->>BE: POST /api/sessoes/iniciar { disciplina }
+    BE->>DB: INSERT sessao_estudo (status=iniciada, ultimo_inicio=NOW())
+    DB-->>BE: nova sessão
+    BE-->>FE: { sessao: { id, status, inicio, ... } }
+    FE->>FE: setInterval 1s — atualiza display
+
+    FE->>BE: PATCH /api/sessoes/:id/encerrar
+    BE->>DB: SELECT EXTRACT(EPOCH FROM NOW()-ultimo_inicio) + segundos_focados
+    BE->>DB: UPDATE sessao_estudo SET status=encerrada, fim=NOW()
+    BE->>DB: INSERT atividade (se minutos > 0)
+    BE->>DB: UPDATE usuarios SET us_pontos_total += minutos
+    BE->>CS: avaliarConquistas(usuario_id)
+    CS->>DB: SELECT conquistas não desbloqueadas
+    CS->>DB: SELECT métricas do usuário
+    CS->>DB: INSERT usuario_conquista se elegível
+    CS-->>BE: conquistas desbloqueadas
+    BE-->>FE: { minutos, totalPontos, conquistasDesbloqueadas }
+    FE->>FE: Atualizar UI com XP e conquistas
+  </div>
+</div>
+
+<div class="section">
+  <h2>Integrações Externas</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Neon PostgreSQL 16</h3>
+      <ul>
+        <li>Provider: Neon serverless</li>
+        <li>Região: AWS sa-east-1 (São Paulo)</li>
+        <li>SSL: obrigatório (rejectUnauthorized: false)</li>
+        <li>Pool: pg.Pool com reconnect automático</li>
+        <li>Fallback: env LOCAL_DB_URL → DATABASE_URL</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Render (Deploy)</h3>
+      <ul>
+        <li>Plataforma: Render Web Service</li>
+        <li>URL: https://xp-diario.onrender.com</li>
+        <li>Build: node backend/server.js</li>
+        <li>Variáveis: DATABASE_URL, JWT_SECRET, SMTP_*</li>
+        <li>Deploy automático via push na main</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Nodemailer (Email)</h3>
+      <ul>
+        <li>Uso: recuperação de senha + notificações</li>
+        <li>Transport: SMTP com family: 4 (IPv4 forçado)</li>
+        <li>Porta: 587 (TLS)</li>
+        <li>Variáveis: SMTP_HOST, SMTP_USER, SMTP_PASS</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>JWT (Auth)</h3>
+      <ul>
+        <li>Expiração: 24 horas</li>
+        <li>Payload: us_id, us_nome, us_email, us_role</li>
+        <li>Middleware: verificarToken em rotas protegidas</li>
+        <li>Bloqueio: 5 tentativas falhas → us_bloqueado=true</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Bcrypt (Senhas)</h3>
+      <ul>
+        <li>Rounds: 10 (default)</li>
+        <li>Uso: hash no cadastro, compare no login</li>
+        <li>Reset: token SHA-256, expira 1h, uso único</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Express v5 (Backend)</h3>
+      <ul>
+        <li>Versão: 5.x (async error handling nativo)</li>
+        <li>Porta: 3000 (local) / Render (produção)</li>
+        <li>Static: /frontend servido direto</li>
+        <li>CORS: habilitado para desenvolvimento</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Regras de Negócio Principais</h2>
+  <table>
+    <tr><th>Regra</th><th>Detalhe</th></tr>
+    <tr><td>XP proporcional ao tempo</td><td>1 minuto de estudo = 1 ponto XP. Calculado ao encerrar sessão ou registrar atividade manual.</td></tr>
+    <tr><td>Sessão única ativa</td><td>Apenas 1 sessão com status iniciada/pausada por usuário. Nova sessão retorna a existente.</td></tr>
+    <tr><td>Atividade mínima</td><td>Sessões com menos de 1 minuto não geram registro em atividade nem somam XP.</td></tr>
+    <tr><td>Conquistas automáticas</td><td>Avaliadas pelo ConquistasService ao registrar atividade ou encerrar sessão. Critérios: tempo total, streak, metas concluídas.</td></tr>
+    <tr><td>Disciplinas isoladas</td><td>Cada disciplina pertence ao usuário que a criou (di_usuario_id). Sem compartilhamento entre usuários.</td></tr>
+    <tr><td>Turmas por role</td><td>Aluno entra via código. Professor cria e gerencia. Admin acessa tudo. Role no JWT.</td></tr>
+    <tr><td>Brute-force protection</td><td>5 tentativas falhas de login bloqueiam a conta (us_bloqueado=true). Desbloqueio manual por admin.</td></tr>
+    <tr><td>Auditoria de tarefas</td><td>Toda mudança de status gera registro em tarefa_historico com timestamp.</td></tr>
+  </table>
+</div>
+
+</div>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#ede9fe', primaryTextColor: '#1e1b4b', primaryBorderColor: '#7c3aed', lineColor: '#6d28d9', fontSize: '13px' } });</script>
+</body>
+</html>

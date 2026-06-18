@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagrama de Fluxo do Sistema — XP Diário</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2ff; color: #1e1b4b; }
+  .cover { background: linear-gradient(135deg, #3730a3, #6d28d9); color: #fff; padding: 60px 48px; }
+  .cover h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; }
+  .cover .sub { font-size: 1.1rem; opacity: 0.85; margin-top: 8px; }
+  .cover .meta { font-size: 0.85rem; opacity: 0.65; margin-top: 24px; }
+  .content { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
+  .section { background: #fff; border-radius: 16px; padding: 32px; margin-bottom: 32px; box-shadow: 0 2px 12px rgba(99,60,202,0.10); page-break-inside: avoid; }
+  .section h2 { font-size: 1.25rem; font-weight: 700; color: #4338ca; border-left: 4px solid #7c3aed; padding-left: 12px; margin-bottom: 20px; }
+  .section p { color: #4b5563; font-size: 0.95rem; margin-bottom: 16px; line-height: 1.6; }
+  .mermaid { display: flex; justify-content: center; overflow-x: auto; }
+  .badge { display: inline-block; background: #ede9fe; color: #5b21b6; font-size: 0.78rem; font-weight: 600; border-radius: 6px; padding: 3px 10px; margin: 2px; }
+  .url-box { background: #f5f3ff; border: 1.5px solid #a78bfa; border-radius: 8px; padding: 10px 16px; font-family: monospace; font-size: 0.9rem; color: #4c1d95; margin-top: 12px; }
+  @media print { body { background: #fff; } .section { box-shadow: none; border: 1px solid #e5e7eb; } }
+</style>
+</head>
+<body>
+<div class="cover">
+  <h1>XP Diário — Diagrama de Fluxo do Sistema</h1>
+  <div class="sub">Fluxos de navegação, autenticação e operações principais</div>
+  <div class="meta">Data de referência: 2026-06-18 &nbsp;|&nbsp; Branch: feat/relayout &nbsp;|&nbsp; Produção: https://xp-diario.onrender.com</div>
+</div>
+<div class="content">
+
+<div class="section">
+  <h2>Fluxo 1 — Autenticação e Acesso</h2>
+  <p>O usuário acessa o sistema via login com email e senha. Após 5 tentativas falhas a conta é bloqueada. Cadastro cria conta e retorna JWT automaticamente. Recuperação de senha usa token SHA-256 com expiração de 1 hora.</p>
+  <div class="mermaid">
+flowchart TD
+    A([Usuário acessa o sistema]) --> B[Tela de Login]
+    B --> C{Credenciais válidas?}
+    C -- Não --> D[Exibir erro / +1 tentativa]
+    D --> E{5+ tentativas?}
+    E -- Sim --> F[Conta bloqueada]
+    E -- Não --> B
+    C -- Sim --> G[Gerar JWT 24h]
+    G --> H[Dashboard /app]
+    B --> I[Não tenho conta]
+    I --> J[Tela de Cadastro]
+    J --> K[POST /api/cadastro]
+    K --> G
+    B --> L[Esqueci minha senha]
+    L --> M[POST /api/senha/esqueci]
+    M --> N[Email com token]
+    N --> O[Tela /resetar-senha]
+    O --> P[POST /api/senha/redefinir]
+    P --> B
+  </div>
+</div>
+
+<div class="section">
+  <h2>Fluxo 2 — Dashboard Principal</h2>
+  <p>Ao entrar no dashboard, o frontend faz 3 chamadas paralelas para montar a visão geral: progresso/XP, streak e cronograma do dia. Todos os dados vêm do banco Neon PostgreSQL via API.</p>
+  <div class="mermaid">
+flowchart TD
+    APP[Dashboard /app] --> A[GET /api/progresso]
+    APP --> B[GET /api/streak]
+    APP --> C[GET /api/cronogramas]
+    A --> D[XP total, nível, rank]
+    B --> E[Streak atual e histórico]
+    C --> F[Cronograma de hoje]
+    D & E & F --> G[Renderizar cards]
+    G --> H{Navegação}
+    H --> I[/materias]
+    H --> J[/metas]
+    H --> K[/tarefas]
+    H --> L[/cronogramas]
+    H --> M[/estudos]
+    H --> N[/relatorio]
+    H --> O[/perfil]
+    H --> P[/turmas]
+    H --> Q[/conquistas]
+  </div>
+</div>
+
+<div class="section">
+  <h2>Fluxo 3 — Sessão de Estudo (Timer ao Vivo)</h2>
+  <p>O usuário escolhe uma disciplina e inicia uma sessão. O timer conta em tempo real via <code>setInterval</code> no frontend. Ao encerrar, o backend calcula os segundos, converte em minutos, registra atividade, soma XP e avalia conquistas automaticamente.</p>
+  <div class="mermaid">
+flowchart TD
+    E[Tela Sessões /estudos] --> A[GET /api/sessoes/ativa]
+    A --> B{Sessão em andamento?}
+    B -- Sim --> C[Retomar timer do ponto salvo]
+    B -- Não --> D[Modal: escolher disciplina]
+    D --> F[POST /api/sessoes/iniciar]
+    F --> G[Timer setInterval 1s]
+    C --> G
+    G --> H{Ação do usuário}
+    H -- Pausar --> I[PATCH /api/sessoes/:id/pausar]
+    I --> J[Salva segundos_focados]
+    J --> K[Timer parado]
+    K --> L[PATCH /api/sessoes/:id/retomar]
+    L --> G
+    H -- Encerrar --> M[PATCH /api/sessoes/:id/encerrar]
+    M --> N[Calcular minutos = floor segundos/60]
+    N --> O{Minutos > 0?}
+    O -- Sim --> P[INSERT atividade]
+    O -- Não --> Q[Sem registro]
+    P --> R[UPDATE pontos += minutos]
+    R --> S[Avaliar conquistas]
+    S --> T[Retornar XP + conquistas desbloqueadas]
+    T --> E
+  </div>
+</div>
+
+<div class="section">
+  <h2>Fluxo 4 — Tarefas e Histórico</h2>
+  <p>CRUD completo de tarefas com status (pendente/concluída) e auditoria automática em <code>tarefa_historico</code>. A tela principal exibe os 3 itens mais recentes; o restante fica em modal.</p>
+  <div class="mermaid">
+flowchart LR
+    T[Tela Tarefas /tarefas] --> G[GET /api/tarefas]
+    G --> L[Listar top 3 + botão ver mais]
+    L --> M[Modal lista completa]
+    T --> C[POST /api/tarefas]
+    C --> N[Nova tarefa pendente]
+    T --> E[PUT /api/tarefas/:id]
+    E --> O[Editar dados]
+    T --> S[PATCH /api/tarefas/:id/status]
+    S --> P{Novo status}
+    P -- concluída --> Q[Registrar em tarefa_historico]
+    P -- pendente --> R[Reverter status]
+    T --> D[DELETE /api/tarefas/:id]
+  </div>
+</div>
+
+<div class="section">
+  <h2>Fluxo 5 — Cronograma e Metas</h2>
+  <p>O usuário agenda sessões de estudo por disciplina, data e horário. Metas definem tempo semanal por disciplina. Ambos alimentam o dashboard com dados reais do banco.</p>
+  <div class="mermaid">
+flowchart TD
+    CR[Tela Cronograma /cronogramas] --> GC[GET /api/cronogramas]
+    GC --> LE[Listar agendamentos]
+    CR --> PC[POST /api/cronogramas]
+    PC --> NA[Novo agendamento: disciplina + data + hora]
+    CR --> UC[PUT /api/cronogramas/:id]
+    CR --> DC[DELETE /api/cronogramas/:id]
+
+    ME[Tela Metas /metas] --> GM[GET /api/metas]
+    GM --> LM[Listar metas por disciplina]
+    ME --> PM[POST /api/metas]
+    PM --> NM[Meta: tempo_semana_min por disciplina]
+    ME --> UM[PUT /api/metas/:id]
+    ME --> DM[DELETE /api/metas/:id]
+  </div>
+</div>
+
+<div class="section">
+  <h2>Fluxo 6 — Turmas (Roles)</h2>
+  <p>Sistema de turmas com três roles: <strong>Aluno</strong> entra via código, <strong>Professor</strong> cria e gerencia, <strong>Admin</strong> acessa tudo. Cada turma tem código único de ingresso gerado automaticamente.</p>
+  <div class="mermaid">
+flowchart TD
+    TU[Tela Turmas /turmas] --> GT[GET /api/turmas]
+    GT --> R{Role do usuário}
+    R -- Aluno --> LA[Ver turmas em que está inscrito]
+    R -- Professor --> LP[Ver turmas que criou]
+    R -- Admin --> LT[Ver todas as turmas]
+
+    TU --> E[Entrar em turma]
+    E --> PE[POST /api/turmas/entrar com código]
+    PE --> OK[Aluno adicionado à turma]
+
+    TU --> C[Criar turma]
+    C --> PC[POST /api/turmas]
+    PC --> NT[Nova turma com código gerado]
+
+    TU --> D[Excluir turma]
+    D --> PD[DELETE /api/turmas/:id]
+
+    TU --> RA[Remover aluno]
+    RA --> PRA[DELETE /api/turmas/:id/alunos/:alunoId]
+  </div>
+</div>
+
+<div class="section">
+  <h2>Fluxo 7 — Relatórios de Desempenho</h2>
+  <p>O usuário seleciona um período (semana, mês, trimestre ou personalizado) e o sistema retorna o resumo do banco: tempo total, sessões, tarefas e desempenho por disciplina. Exportação para PDF e Word disponível.</p>
+  <div class="mermaid">
+flowchart LR
+    RE[Tela Relatórios /relatorio] --> P[Selecionar período]
+    P --> S[Semana atual]
+    P --> M[Mês atual]
+    P --> T[Trimestre]
+    P --> C[Personalizado]
+    S & M & T & C --> API[GET /api/relatorio?inicio=&fim=]
+    API --> D[Resumo: minutos, sessões, tarefas]
+    API --> B[Por disciplina: minutos + cor]
+    D & B --> UI[Renderizar tabela + gráfico]
+    UI --> EX[Exportar]
+    EX --> PDF[Salvar como PDF]
+    EX --> DOC[Salvar como Word]
+  </div>
+</div>
+
+<div class="section">
+  <h2>Fluxo 8 — Conquistas e Notificações</h2>
+  <p>Conquistas são desbloqueadas automaticamente ao registrar atividade ou encerrar sessão. O sistema avalia todos os critérios elegíveis. Notificações de lembrete por email são configuradas pelo próprio usuário.</p>
+  <div class="mermaid">
+flowchart TD
+    CO[Tela Conquistas /conquistas] --> GC[GET /api/conquistas]
+    GC --> AV[Avaliar conquistas elegíveis]
+    AV --> DU[Desbloquear elegíveis automaticamente]
+    DU --> LI[Listar desbloqueadas + bloqueadas]
+
+    AT[Registrar atividade / encerrar sessão] --> CA[ConquistasService.avaliar]
+    CA --> CR{Critério atingido?}
+    CR -- Sim --> IN[INSERT usuario_conquista]
+    IN --> NW[Notificar no frontend]
+
+    PE[Tela Perfil /perfil] --> NO[Configurar notificações]
+    NO --> GN[GET /api/notificacoes]
+    NO --> PN[PUT /api/notificacoes]
+    PN --> SC[Salvar hora do lembrete + email]
+    SC --> JO[Job nocturno avalia e envia email]
+  </div>
+</div>
+
+<div class="section">
+  <h2>Endereço de Produção</h2>
+  <div class="url-box">https://xp-diario.onrender.com</div>
+  <p style="margin-top:12px;">Banco de dados: <strong>Neon PostgreSQL 16</strong> (AWS sa-east-1). SSL obrigatório. Variáveis de ambiente gerenciadas no painel Render.</p>
+</div>
+
+</div>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#ede9fe', primaryTextColor: '#1e1b4b', primaryBorderColor: '#7c3aed', lineColor: '#6d28d9', fontSize: '14px' } });</script>
+</body>
+</html>

@@ -1,12 +1,13 @@
 # Auditoria e Continuidade - XP Diario
 
-Data: 18/06/2026
+Data da ultima atualizacao: 2026-06-18
 Branch atual: `feat/relayout`
-Branch comparada: `origin/feat/redesign-visual-gamificado`
 
 ## Objetivo desta auditoria
 
 Registrar o que ja foi corrigido, o que veio da branch remota apenas no backend e o que ainda precisa ser finalizado para deixar o sistema funcional, sem dados mockados e com navegacao consistente.
+
+---
 
 ## O que ja foi trazido ou corrigido nesta branch
 
@@ -51,30 +52,35 @@ Registrar o que ja foi corrigido, o que veio da branch remota apenas no backend 
   - gravacao automatica em `atividade`
   - soma de XP e desbloqueio de conquistas
   - arquivos: `frontend/estudos.js` e `backend/src/routes/sessoes.js`
-- Historico de tarefas ja limitado na tela principal para 3 itens, com modal para ver o restante:
+- Tela de sessoes refatorada (layout flex sem sobreposicao):
+  - `.focus-panel` agora usa `display: flex; flex-direction: column`
+  - timer em `.focus-timer-wrap` (flex: 1, z-index: 4)
+  - cena pixel art em `.focus-scene` (height: 175px, base separada)
+  - balao de fala em `.focus-bubble` (absoluto dentro de focus-scene)
+  - arquivos: `frontend/estudos.html`, `frontend/styles.css`
+- Historico de tarefas limitado na tela principal para 3 itens, com modal para ver o restante:
   - `frontend/tarefas.html`
   - `frontend/tarefas.js`
 - Sidebars antigas padronizadas:
   - `frontend/turmas.html`
   - `frontend/conquistas.html`
-- Bloco visual divergente `sidebar-quest` removido das telas principais para manter o mesmo sidebar de `Metas` e `Perfil`:
-  - `frontend/app.html`
-  - `frontend/materias.html`
-  - `frontend/cronogramas.html`
-  - `frontend/tarefas.html`
-  - `frontend/estudos.html`
-  - `frontend/relatorio.html`
-- `Cronogramas` e `Tarefas` voltaram a carregar o seletor de contexto `Minha Area` no sidebar:
-  - `frontend/cronogramas.html`
-  - `frontend/tarefas.html`
-  - ambos agora incluem `ctx-switcher` e `context.js`
-- Dashboard principal sem nascer com valores fake mais visiveis:
-  - `frontend/app.html`
-- Relatorios reestruturados para nao exibir cards laterais e blocos estaticos como estado inicial:
-  - `frontend/relatorio.html`
-  - `frontend/relatorio.js`
-- Exclusao de disciplina passou a tratar resposta real de erro/sucesso:
-  - `frontend/materias.html`
+- Bloco visual divergente `sidebar-quest` removido das telas principais:
+  - `frontend/app.html`, `frontend/materias.html`, `frontend/cronogramas.html`
+  - `frontend/tarefas.html`, `frontend/estudos.html`, `frontend/relatorio.html`
+- `Cronogramas` e `Tarefas` carregam o seletor de contexto `Minha Area` no sidebar.
+- Dashboard sem valores fake visiveis: todos os dados vem do backend via app.js.
+- Relatorios reestruturados: dados vem de `/api/relatorio`, sem blocos estaticos no estado inicial.
+- Exclusao de disciplina trata resposta real de erro/sucesso.
+- Botoes de periodo do relatorio com labels corrigidos: Semana / Mes / Trimestre.
+- Brand e logout padronizados em `conquistas.html` e `turmas.html`:
+  - removido icone `fa-graduation-cap` do brand
+  - brand-name usa formato padrao `XP Diario`
+  - brand-sub alterado de "Estudo Inteligente" para "Estudo em aventura"
+  - logout: `fa-sign-out-alt` substituido por `fa-right-from-bracket`
+- Favicon path corrigido em `turmas.html` (relativo → absoluto `/favicon.svg`).
+- Perfil com classes CSS adicionadas (`perfil-hero`, `perfil-avatar`, `rank-progresso-card`, `stat-mini`).
+
+---
 
 ## Diferencas uteis encontradas na branch remota de redesign
 
@@ -87,83 +93,52 @@ Esses itens de backend eram relevantes na branch `feat/redesign-visual-gamificad
 
 Esses pontos ja foram incorporados aqui.
 
+---
+
 ## Problemas ainda em aberto
 
-### 1. Navegacao lateral inconsistente
-
-Situacao:
-- A ordem principal do menu ja foi padronizada.
-- O problema do bloco lateral extra com personagem tambem foi removido das telas principais.
-
-Impacto:
-- O embaralhamento principal do menu foi resolvido.
-
-Acao pendente:
-- Apenas revisar visualmente se ainda resta alguma pagina secundaria fora do padrao.
-
-### 2. Dados mockados ainda existem
-
-Situacao:
-- Ainda ha trechos estaticos ou parcialmente mockados em:
-  - `frontend/app.html`
-  - `frontend/relatorio.html`
-  - partes de `frontend/relatorio.js`
-- Alguns valores de apoio ainda estao "bonitos", mas nao 100% derivados do banco.
-
-Acao pendente:
-- Dashboard principal:
-  - streak, xp, moedas, recompensa, cronograma do dia, tarefas e conquistas devem vir integralmente do backend.
-- Relatorios:
-  - revisar se ainda sobra qualquer texto percentual fixo ou grafico residual nao alimentado pelo backend.
-
-### 3. CRUDs precisam ser auditados ponta a ponta
+### 1. Validacao de CRUDs em uso real
 
 Estado atual:
-- Materias: modal existe
-- Cronogramas: modal existe
-- Tarefas: modal existe
-- Metas: modal existe
-
-Pendencias:
-- Validar create, update e delete contra o Neon em todas as telas.
-- Eliminar qualquer resto de formulario inline antigo.
-- Garantir feedback de erro/sucesso consistente.
-- Materias ja teve delete melhorado no frontend, mas ainda falta validar os demais CRUDs com fluxo real autenticado.
-
-### 4. Sessao de estudo ainda precisa ser refinada
-
-Estado atual:
-- Backend de sessoes existe e o frontend ja conversa com `/api/sessoes`.
-- Ao encerrar:
-  - persiste sessao
-  - registra atividade
-  - soma XP
-  - tenta desbloquear conquistas
-- A tela ja esta no formato pedido com botao inicial grande, modal de escolha de disciplina, `Start`, timer e `Stop`.
-
-Pendencias:
-- Validar em uso real com um usuario autenticado no banco se nao ha duplicacao de atividade ou efeito colateral de pontuacao.
-
-### 5. Relatorios ainda nao estao redondos
-
-Situacao:
-- `frontend/relatorio.html` ainda mistura estrutura final com blocos estaticos.
+- Backend de materias, metas, tarefas, cronogramas e sessoes esta completo e funcional.
+- Nao ha dados mockados nas telas (todos os dados vem do banco Neon).
 
 Acao pendente:
-- Trocar todos os cards superiores por dados reais.
-- Remover percentuais e totais fixos.
-- Validar historico de sessoes, barras por disciplina e heatmap.
+- Fazer testes de usuario com conta real no banco Neon para confirmar que nao ha efeito colateral de pontuacao duplicada ou registro de atividade em duplicata ao encerrar sessao.
 
-### 6. Padronizacao de portugues
+### 2. Validacao da sessao de estudo em uso real
 
-Ja corrigido parcialmente:
-- varios textos de login
-- alguns textos de sessoes, metas e relatorios
+Estado atual:
+- A logica de backend esta correta: apenas 1 sessao ativa por usuario, calculo de segundos via EXTRACT(EPOCH), conversao em minutos, criacao de atividade automatica.
 
-Ainda precisa revisar:
-- `frontend/conquistas.html`
-- `frontend/turmas.html`
-- textos com "Sessoes", "Relatorio", "MatÃ©rias" em arquivos antigos
+Acao pendente:
+- Testar com usuario autenticado real para confirmar que o encerramento nao gera atividade duplicada quando a pagina e recarregada durante a sessao.
+
+### 3. Encoding antigo em telas legadas
+
+Ja parcialmente corrigido.
+
+Acao pendente:
+- Revisar se algum arquivo ainda contem sequencias `MatÃ©rias` ou similar (encoding Windows-1252 exibido como UTF-8).
+
+---
+
+## Estado da documentacao
+
+Documentacao atualizada em 2026-06-18. Todos os arquivos em `docs/` refletem o estado atual do codigo:
+
+- `docs/DOCUMENTACAO_TECNICA.md` — documento principal completo (novo)
+- `docs/ARTEFATOS_VISUAIS_ATUALIZADOS.md` — DER resumido e regras de negocio (atualizado)
+- `docs/SPRINT_TELAS_USUARIO_FINAL.md` — telas e endpoints completos (atualizado)
+- `docs/DIAGRAMAS_TELAS_USUARIO_FINAL.md` — todos os diagramas com codigo Mermaid (atualizado)
+- `docs/REGISTRAR_ESTUDO.md` — referencia de API com payloads (atualizado)
+- `docs/mermaid/DER.mmd` — 13 tabelas completas (atualizado)
+- `docs/mermaid/Diagrama de Classe.mmd` — 13 classes + 2 services (atualizado)
+- `docs/mermaid/Diagrama de caso de Uso.mmd` — 3 roles, 21 casos de uso (atualizado)
+- `docs/mermaid/Fluxograma N1.mmd` — autenticacao + navegacao + sessao (atualizado)
+- `docs/mermaid/Fluxograma N2.mmd` — fluxo tecnico da sessao de estudo (atualizado)
+
+---
 
 ## Arquivos mais importantes para continuar
 
@@ -199,15 +174,8 @@ Ainda precisa revisar:
 - `frontend/conquistas.html`
 - `frontend/styles.css`
 
-## Proxima ordem recomendada de trabalho
-
-1. Auditar CRUD real de `materias`, `metas`, `tarefas`, `cronogramas` e `turmas` com usuario autenticado.
-2. Fechar os ultimos dados mockados de dashboard e relatorios.
-3. Revisar textos/PT-BR restantes e encoding antigo em telas legadas.
-4. So depois voltar ao ajuste fino visual do login e dos personagens.
-
 ## Observacoes
 
 - O servidor local responde em `http://localhost:3000`.
 - A conexao com Neon esta configurada via fallback em `backend/src/config/db.js`.
-- A branch atual ja contem alteracoes nao commitadas; revisar com `git diff` antes de commitar.
+- A branch atual contem alteracoes nao commitadas; revisar com `git diff` antes de commitar.

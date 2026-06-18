@@ -5,11 +5,14 @@ classDiagram
         +string us_nome
         +string us_email
         +int us_pontos_total
+        +string us_tipo
     }
 
     class Disciplina {
         +int di_id
         +string di_disciplina
+        +string di_cor
+        +int di_usuario_id
     }
 
     class Meta {
@@ -18,6 +21,7 @@ classDiagram
         +int me_disciplina
         +int me_tempo_min
         +string me_tipo
+        +date me_data_inicio
     }
 
     class Atividade {
@@ -25,7 +29,9 @@ classDiagram
         +int at_usuario_id
         +int at_disciplina
         +int at_tempo_min
+        +int at_tarefas_concluidas
         +date at_data
+        +string at_descricao
     }
 
     class Conquista {
@@ -51,8 +57,55 @@ classDiagram
         +string nc_fuso_horario
     }
 
-    class StreakService {
-        +calcularStreakAtual(datas)
+    class Tarefa {
+        +int ta_id
+        +string ta_titulo
+        +string ta_status
+        +date ta_prazo
+        +int ta_usuario_id
+        +int ta_disciplina_id
+        +boolean ta_concluida
+    }
+
+    class TarefaHistorico {
+        +int th_id
+        +int th_tarefa_id
+        +int th_usuario_id
+        +string th_acao
+        +string th_titulo_snapshot
+    }
+
+    class CronogramaEstudo {
+        +int cr_id
+        +int cr_usuario_id
+        +int cr_disciplina
+        +date cr_data
+        +time cr_horario_inicio
+        +int cr_duracao_min
+    }
+
+    class SessaoEstudo {
+        +int se_id
+        +int se_usuario_id
+        +int se_disciplina
+        +string se_status
+        +timestamp se_inicio
+        +int se_segundos_focados
+    }
+
+    class Turma {
+        +int tu_id
+        +string tu_nome
+        +string tu_codigo
+        +int tu_professor_id
+        +boolean tu_ativa
+    }
+
+    class TurmaAluno {
+        +int ta_id
+        +int ta_turma_id
+        +int ta_aluno_id
+        +timestamp ta_entrou_em
     }
 
     class ConquistasService {
@@ -60,12 +113,28 @@ classDiagram
         +listarConquistasComStatus(usuarioId)
     }
 
+    class NotificacoesService {
+        +enviarLembretes()
+    }
+
+    Usuario "1" --> "*" Disciplina : cadastra
     Usuario "1" --> "*" Meta : possui
     Usuario "1" --> "*" Atividade : registra
     Usuario "1" --> "*" UsuarioConquista : possui
     Usuario "1" --> "0..1" NotificacaoConfig : configura
+    Usuario "1" --> "*" Tarefa : gerencia
+    Usuario "1" --> "*" CronogramaEstudo : agenda
+    Usuario "1" --> "*" SessaoEstudo : inicia
+    Usuario "1" --> "*" Turma : cria
+    Usuario "1" --> "*" TurmaAluno : participa
     Disciplina "1" --> "*" Meta : organiza
     Disciplina "1" --> "*" Atividade : recebe
+    Disciplina "1" --> "*" Tarefa : classifica
+    Disciplina "1" --> "*" CronogramaEstudo : compoe
+    Disciplina "1" --> "*" SessaoEstudo : foca
     Conquista "1" --> "*" UsuarioConquista : referencia
-    Atividade --> StreakService : alimenta
-    Atividade --> ConquistasService : dispara avaliacao
+    Tarefa "1" --> "*" TarefaHistorico : gera
+    Turma "1" --> "*" TurmaAluno : possui
+    Atividade --> ConquistasService : dispara
+    SessaoEstudo --> Atividade : gera
+    SessaoEstudo --> ConquistasService : avalia

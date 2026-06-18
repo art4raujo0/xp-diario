@@ -29,8 +29,14 @@
     </aside>
 
     <main class="content">
-      <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand">XP Di&aacute;rio</span></div>
-      <div class="page-header"><div><h2>Perfil</h2><p class="page-subtitle">Sua pontuacao e progresso geral.</p></div></div>
+      <div class="topbar"><button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button><span class="topbar-brand fw-black">XP Di&aacute;rio</span></div>
+      <div class="app-topbar">
+        <div class="flex-grow-1">
+          <h2 class="mb-0 fw-black">Perfil</h2>
+          <p class="page-subtitle">Sua pontua&ccedil;&atilde;o e progresso geral.</p>
+        </div>
+        <div class="user-chip"><div class="avatar-sprite"></div><div><div class="fw-black lh-1" data-user-name>Estudante</div><small class="text-muted fw-bold" data-user-level>N&iacute;vel 1</small></div></div>
+      </div>
       <div id="conteudo"><div class="card-panel p-5 text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Carregando perfil...</div></div>
     </main>
   </div>

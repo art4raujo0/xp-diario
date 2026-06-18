@@ -1,82 +1,65 @@
 # Artefatos Visuais Atualizados
 
-Este arquivo consolida o estado real do codigo backend apos as historias de:
+Data de referencia: 2026-06-18
+Branch: `feat/relayout`
 
-- conquistas automaticas por usuario
-- pontuacao acumulativa por estudo
-- notificacoes de lembrete por email
+Este arquivo consolida o estado real do banco de dados e dos diagramas apos a implementacao completa do sistema XP Diario.
 
-## DER vigente (texto fonte)
+---
 
-```mermaid
-erDiagram
-    USUARIOS {
-        INT us_id PK
-        VARCHAR us_nome
-        VARCHAR us_email
-        VARCHAR us_senha_hash
-        INT us_tentativas_falhas
-        TIMESTAMP us_bloqueado_ate
-        INT us_pontos_total
-    }
+## DER vigente
 
-    DISCIPLINA {
-        INT di_id PK
-        VARCHAR di_disciplina
-    }
+Arquivo fonte: `docs/mermaid/DER.mmd`
 
-    META {
-        INT me_id PK
-        VARCHAR me_tipo
-        INT me_tempo_min
-        DATE me_data_inicio
-        INT me_disciplina FK
-        INT me_usuario_id FK
-    }
+O sistema possui 13 tabelas:
 
-    ATIVIDADE {
-        INT at_id PK
-        INT at_disciplina FK
-        INT at_usuario_id FK
-        INT at_tempo_min
-        INT at_tarefas_concluidas
-        DATE at_data
-    }
+| Tabela             | Prefixo | Descricao                                       |
+|--------------------|---------|------------------------------------------------|
+| usuarios           | us_     | Contas de usuario (aluno, professor, admin)    |
+| disciplina         | di_     | Materias de estudo por usuario                 |
+| meta               | me_     | Metas de tempo por disciplina                  |
+| atividade          | at_     | Registros de estudo (manuals e via sessao)     |
+| conquista          | co_     | Definicao de conquistas e criterios            |
+| usuario_conquista  | uc_     | Conquistas desbloqueadas por usuario           |
+| notificacoes_config| nc_     | Configuracao de lembretes por email            |
+| tarefa             | ta_     | Tarefas com status e prazo                     |
+| tarefa_historico   | th_     | Auditoria de acoes sobre tarefas               |
+| cronograma_estudo  | cr_     | Agendamentos de estudo com horario             |
+| sessao_estudo      | se_     | Sessoes de foco com timer ao vivo              |
+| turma              | tu_     | Turmas criadas por professores                 |
+| turma_aluno        | ta_     | Vinculo aluno-turma (matriculas)               |
 
-    CONQUISTA {
-        INT co_id PK
-        VARCHAR co_codigo
-        VARCHAR co_titulo
-        VARCHAR co_criterio_tipo
-        INT co_criterio_valor
-    }
+---
 
-    USUARIO_CONQUISTA {
-        INT uc_id PK
-        INT uc_usuario_id FK
-        INT uc_conquista_id FK
-        TIMESTAMP uc_desbloqueado_em
-    }
+## Conquistas cadastradas (seed)
 
-    NOTIFICACOES_CONFIG {
-        INT nc_id PK
-        INT nc_usuario_id FK
-        BOOLEAN nc_ativo
-        TIME nc_horario
-        VARCHAR nc_fuso_horario
-        DATE nc_ultimo_envio
-        TIMESTAMP nc_atualizado_em
-    }
+| Codigo    | Titulo                    | Criterio tipo    | Valor |
+|-----------|---------------------------|------------------|-------|
+| TEMPO_1H  | Primeira Hora             | tempo_total_min  | 60    |
+| TEMPO_5H  | Foco Total                | tempo_total_min  | 300   |
+| STREAK_3  | Constancia Inicial        | streak_dias      | 3     |
+| STREAK_7  | Sequencia Forte           | streak_dias      | 7     |
+| META_1    | Meta Cumprida             | metas_concluidas | 1     |
+| META_3    | Colecionador de Metas     | metas_concluidas | 3     |
 
-    USUARIOS ||--o{ META : possui
-    USUARIOS ||--o{ ATIVIDADE : registra
-    USUARIOS ||--o{ USUARIO_CONQUISTA : desbloqueia
-    USUARIOS ||--o| NOTIFICACOES_CONFIG : configura
-    CONQUISTA ||--o{ USUARIO_CONQUISTA : referencia
-    DISCIPLINA ||--o{ META : organiza
-    DISCIPLINA ||--o{ ATIVIDADE : recebe
-```
+---
 
-## Observacao
+## Roles de usuario
 
-As imagens raster (`.png` e `.jpeg`) da pasta `docs` podem permanecer defasadas visualmente. A referencia vigente para arquitetura e regras passa a ser os arquivos Markdown e Mermaid atualizados.
+| Tipo      | Permissoes                                                        |
+|-----------|-------------------------------------------------------------------|
+| aluno     | Acesso completo as funcionalidades proprias                       |
+| professor | + criar/gerenciar turmas, ver alunos com pontuacao               |
+| admin     | + acesso irrestrito a todas as turmas e usuarios                 |
+
+---
+
+## Regras de negocio principais
+
+- XP: 1 ponto por minuto estudado (via atividade manual ou sessao encerrada)
+- Streak: calculado por dias consecutivos com pelo menos 1 atividade
+- Conquistas: avaliadas automaticamente ao registrar atividade ou encerrar sessao
+- Sessao: apenas 1 sessao ativa por usuario (status iniciada ou pausada)
+- Disciplinas: isoladas por usuario autenticado
+- Turma: codigo de 6 caracteres aleatorio, apenas turmas ativas aceitam novos alunos
+- Reset de senha: token expira em 1 hora, uso unico

@@ -1,10 +1,42 @@
 %%{init: {'theme': 'neutral'}}%%
-flowchart TD
-    A[GET /api/perfil] --> B[Validar JWT]
-    B --> C[Buscar usuario no banco]
-    C --> D[Retornar us_pontos_total]
+flowchart LR
+    subgraph Frontend
+        F1[estudos.html] --> F2[carregarSessaoAtiva]
+        F2 --> F3{Sessao ativa?}
+        F3 -- Sim --> F4[Mostrar timer em andamento]
+        F3 -- Nao --> F5[Mostrar botao Iniciar]
+        F5 --> F6[Modal: selecionar disciplina]
+        F6 --> F7[POST /api/sessoes/iniciar]
+        F4 --> F8[setInterval 1s: atualizar display]
+        F8 --> F9[PATCH /api/sessoes/:id/encerrar]
+    end
 
-    E[GET /api/conquistas] --> F[Validar JWT]
-    F --> G[Calcular metricas do usuario]
-    G --> H[Desbloquear elegiveis nao desbloqueadas]
-    H --> I[Retornar todas com status]
+    subgraph Backend
+        B1[POST /api/sessoes/iniciar] --> B2{Sessao ativa ja existe?}
+        B2 -- Sim --> B3[Retornar sessao existente]
+        B2 -- Nao --> B4[INSERT sessao_estudo status=iniciada]
+        B4 --> B5[Retornar sessao criada]
+
+        B6[PATCH /api/sessoes/:id/encerrar] --> B7[Calcular segundos focados]
+        B7 --> B8[Converter para minutos]
+        B8 --> B9{Minutos maior que zero?}
+        B9 -- Sim --> B10[INSERT atividade]
+        B10 --> B11[UPDATE us_pontos_total += minutos]
+        B11 --> B12[Avaliar conquistas elegiveis]
+        B12 --> B13[Retornar resumo com XP e conquistas]
+        B9 -- Nao --> B14[Encerrar sem registrar atividade]
+    end
+
+    subgraph Banco
+        DB1[(sessao_estudo)]
+        DB2[(atividade)]
+        DB3[(usuarios)]
+        DB4[(usuario_conquista)]
+    end
+
+    F7 --> B1
+    F9 --> B6
+    B4 --> DB1
+    B10 --> DB2
+    B11 --> DB3
+    B12 --> DB4

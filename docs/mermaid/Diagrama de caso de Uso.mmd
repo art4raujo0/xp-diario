@@ -1,15 +1,75 @@
 %%{init: {'theme': 'neutral'}}%%
 flowchart TB
-    U([Usuario autenticado])
-    U --> A([Registrar estudo])
-    U --> B([Visualizar historico de estudos])
-    U --> C([Gerenciar metas])
-    U --> D([Gerenciar materias])
-    U --> E([Visualizar progresso])
-    U --> F([Visualizar streak])
-    U --> G([Visualizar conquistas])
-    U --> H([Visualizar perfil com pontuacao])
-    U --> K([Configurar notificacoes por email])
+    Aluno([Aluno])
+    Professor([Professor])
+    Admin([Administrador])
 
-    A --> I([Ganhar pontos automaticamente])
-    A --> J([Desbloquear conquistas elegiveis])
+    subgraph Auth["Autenticacao"]
+        UC1([Fazer login])
+        UC2([Criar conta])
+        UC3([Recuperar senha])
+    end
+
+    subgraph Estudo["Gestao de Estudo"]
+        UC4([Gerenciar disciplinas])
+        UC5([Gerenciar metas])
+        UC6([Gerenciar tarefas])
+        UC7([Agendar cronograma])
+        UC8([Iniciar sessao de estudo])
+        UC9([Encerrar sessao e salvar])
+    end
+
+    subgraph Progresso["Acompanhamento"]
+        UC10([Visualizar dashboard])
+        UC11([Visualizar relatorios])
+        UC12([Ver conquistas])
+        UC13([Ver perfil e XP])
+        UC14([Configurar notificacoes])
+    end
+
+    subgraph Turmas["Turmas"]
+        UC15([Criar turma])
+        UC16([Gerenciar alunos da turma])
+        UC17([Entrar em turma via codigo])
+        UC18([Ver turmas matriculadas])
+    end
+
+    subgraph Sistema["Sistema automatico"]
+        UC19([Calcular XP automaticamente])
+        UC20([Desbloquear conquistas])
+        UC21([Enviar lembretes por email])
+    end
+
+    Aluno --> UC1
+    Aluno --> UC2
+    Aluno --> UC3
+    Aluno --> UC4
+    Aluno --> UC5
+    Aluno --> UC6
+    Aluno --> UC7
+    Aluno --> UC8
+    Aluno --> UC9
+    Aluno --> UC10
+    Aluno --> UC11
+    Aluno --> UC12
+    Aluno --> UC13
+    Aluno --> UC14
+    Aluno --> UC17
+    Aluno --> UC18
+
+    Professor --> UC1
+    Professor --> UC4
+    Professor --> UC10
+    Professor --> UC11
+    Professor --> UC12
+    Professor --> UC13
+    Professor --> UC15
+    Professor --> UC16
+
+    Admin --> UC15
+    Admin --> UC16
+    Admin --> UC17
+
+    UC9 --> UC19
+    UC9 --> UC20
+    UC14 --> UC21
