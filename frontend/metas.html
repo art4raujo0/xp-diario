@@ -41,6 +41,18 @@
       </div>
 
       <div id="mensagem" class="mb-3"></div>
+      <div class="card-panel p-3 mb-3 d-flex flex-wrap gap-2 align-items-center">
+        <span class="text-muted fw-bold small"><i class="fas fa-filter me-1"></i>Filtrar:</span>
+        <select id="filtro-tipo" class="form-select form-select-sm" style="width:auto;" onchange="aplicarFiltros()">
+          <option value="">Todos os tipos</option>
+          <option value="diaria">Di&aacute;rias</option>
+          <option value="semanal">Semanais</option>
+          <option value="mensal">Mensais</option>
+        </select>
+        <select id="filtro-disciplina" class="form-select form-select-sm" style="width:auto;" onchange="aplicarFiltros()">
+          <option value="">Todas as disciplinas</option>
+        </select>
+      </div>
       <div id="lista" class="card-panel p-3"><div class="p-4 text-center text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Carregando metas...</div></div>
     </main>
   </div>
@@ -78,6 +90,7 @@
   <script>
     const API_METAS = '/api/metas';
     const API_DISC = '/api/materias';
+    let metasCache = [];
 
     function token() { return localStorage.getItem('xp_diario_token'); }
     function cabecalhos() { return { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` }; }
@@ -89,8 +102,31 @@
     async function carregarDisciplinas() {
       const res = await fetch(API_DISC, { headers: cabecalhos() });
       const disciplinas = await res.json();
-      const select = document.getElementById('disciplina');
-      select.innerHTML = `<option value="">Todas</option>${disciplinas.map((d) => `<option value="${d.di_id}">${d.di_disciplina}</option>`).join('')}`;
+      const selectModal = document.getElementById('disciplina');
+      const selectFiltro = document.getElementById('filtro-disciplina');
+      const opts = disciplinas.map((d) => `<option value="${d.di_id}">${d.di_disciplina}</option>`).join('');
+      selectModal.innerHTML = `<option value="">Todas</option>${opts}`;
+      selectFiltro.innerHTML = `<option value="">Todas as disciplinas</option>${opts}`;
+    }
+
+    function renderMetas(metas) {
+      const lista = document.getElementById('lista');
+      if (!Array.isArray(metas) || metas.length === 0) {
+        lista.innerHTML = '<div class="p-5 text-center text-muted"><i class="fas fa-bullseye fs-2 mb-3 d-block" style="color:#d1c4e9;"></i><p class="mb-0">Nenhuma meta encontrada para os filtros selecionados.</p></div>';
+        return;
+      }
+      const tipoCor = { diaria: '#eff6ff', semanal: '#f0fdf4', mensal: '#fff7ed' };
+      const tipoTextCor = { diaria: '#3b82f6', semanal: '#16a34a', mensal: '#ea580c' };
+      lista.innerHTML = `<div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Tipo</th><th>Tempo</th><th>Disciplina</th><th>Data</th><th class="text-end">Acoes</th></tr></thead><tbody>${metas.map((meta) => `<tr><td><span class="badge rounded-pill" style="background:${tipoCor[meta.me_tipo] || '#f1f5f9'};color:${tipoTextCor[meta.me_tipo] || '#64748b'};padding:5px 12px;font-size:0.75rem;">${meta.me_tipo}</span></td><td class="fw-semibold">${meta.me_tempo_min} min</td><td class="text-muted">${meta.di_disciplina || 'Todas'}</td><td style="font-size:0.85rem;color:#94a3b8;">${formatarDataBr(meta.me_data_inicio)}</td><td class="text-end"><button class="btn-icon me-1" onclick='editar(${JSON.stringify(meta)})'><i class="fas fa-edit"></i></button><button class="btn-icon danger" onclick="deletar(${meta.me_id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody></table></div>`;
+    }
+
+    function aplicarFiltros() {
+      const tipo = document.getElementById('filtro-tipo').value;
+      const disciplina = document.getElementById('filtro-disciplina').value;
+      let filtradas = metasCache;
+      if (tipo) filtradas = filtradas.filter((m) => m.me_tipo === tipo);
+      if (disciplina) filtradas = filtradas.filter((m) => String(m.me_disciplina) === disciplina);
+      renderMetas(filtradas);
     }
 
     async function carregarMetas() {
@@ -98,15 +134,12 @@
         const res = await fetch(API_METAS, { headers: cabecalhos() });
         if (res.status === 401) { window.location.href = '/login'; return; }
         const metas = await res.json();
-        const lista = document.getElementById('lista');
-        if (!Array.isArray(metas) || metas.length === 0) {
-          lista.innerHTML = '<div class="p-5 text-center text-muted"><i class="fas fa-bullseye fs-2 mb-3 d-block" style="color:#d1c4e9;"></i><p class="mb-0">Nenhuma meta configurada ainda.</p></div>';
+        metasCache = Array.isArray(metas) ? metas : [];
+        if (metasCache.length === 0) {
+          document.getElementById('lista').innerHTML = '<div class="p-5 text-center text-muted"><i class="fas fa-bullseye fs-2 mb-3 d-block" style="color:#d1c4e9;"></i><p class="mb-0">Nenhuma meta configurada ainda.</p></div>';
           return;
         }
-
-        const tipoCor = { diaria: '#eff6ff', semanal: '#f0fdf4', mensal: '#fff7ed' };
-        const tipoTextCor = { diaria: '#3b82f6', semanal: '#16a34a', mensal: '#ea580c' };
-        lista.innerHTML = `<div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Tipo</th><th>Tempo</th><th>Disciplina</th><th>Data</th><th class="text-end">Acoes</th></tr></thead><tbody>${metas.map((meta) => `<tr><td><span class="badge rounded-pill" style="background:${tipoCor[meta.me_tipo] || '#f1f5f9'};color:${tipoTextCor[meta.me_tipo] || '#64748b'};padding:5px 12px;font-size:0.75rem;">${meta.me_tipo}</span></td><td class="fw-semibold">${meta.me_tempo_min} min</td><td class="text-muted">${meta.di_disciplina || 'Todas'}</td><td style="font-size:0.85rem;color:#94a3b8;">${formatarDataBr(meta.me_data_inicio)}</td><td class="text-end"><button class="btn-icon me-1" onclick='editar(${JSON.stringify(meta)})'><i class="fas fa-edit"></i></button><button class="btn-icon danger" onclick="deletar(${meta.me_id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody></table></div>`;
+        aplicarFiltros();
       } catch (err) {
         console.error(err);
       }
