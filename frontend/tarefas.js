@@ -69,7 +69,35 @@ function renderListaTarefas(tarefas) {
     return;
   }
 
-  lista.innerHTML = `<div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead><tr><th>Status</th><th>Titulo</th><th>Disciplina</th><th>Prazo</th><th>Atualizada</th><th class="text-end">Acoes</th></tr></thead><tbody>${tarefasCache.map((tarefa) => `<tr><td><span class="task-badge ${tarefa.ta_status}"><i class="fas ${tarefa.ta_status === 'concluida' ? 'fa-circle-check' : 'fa-hourglass-half'}"></i>${tarefa.ta_status}</span></td><td><div class="fw-semibold">${tarefa.ta_titulo || '-'}</div><div class="text-muted small">${tarefa.ta_descricao || 'Sem descricao'}</div></td><td class="text-muted">${tarefa.di_disciplina || 'Nao vinculada'}</td><td class="text-muted">${formatarData(tarefa.ta_prazo)}</td><td class="text-muted small">${formatarDataHora(tarefa.ta_atualizado_em)}</td><td class="text-end"><button class="btn-icon me-1" title="${tarefa.ta_status === 'concluida' ? 'Voltar para pendente' : 'Marcar como concluida'}" onclick="alternarStatus(${tarefa.ta_id}, '${tarefa.ta_status}')"><i class="fas ${tarefa.ta_status === 'concluida' ? 'fa-rotate-left' : 'fa-check'}"></i></button><button class="btn-icon me-1" title="Editar" onclick="editarTarefaPorId(${tarefa.ta_id})"><i class="fas fa-pen"></i></button><button class="btn-icon danger" title="Excluir" onclick="excluirTarefa(${tarefa.ta_id})"><i class="fas fa-trash"></i></button></td></tr>`).join('')}</tbody></table></div>`;
+  lista.innerHTML = tarefasCache.map((tarefa) => {
+    const cor = tarefa.di_cor || '#94a3b8';
+    const concluida = tarefa.ta_status === 'concluida';
+    const discPill = tarefa.di_disciplina
+      ? `<span class="disc-pill" style="background:${hexToRgba(cor, 0.13)};color:${cor};">${tarefa.di_disciplina}</span>`
+      : '';
+    const prazo = tarefa.ta_prazo
+      ? `<span class="task-date"><i class="fas fa-calendar-days"></i>${formatarData(tarefa.ta_prazo)}</span>`
+      : '';
+    const statusBadge = `<span class="task-badge ${tarefa.ta_status}"><i class="fas ${concluida ? 'fa-circle-check' : 'fa-hourglass-half'}"></i>${concluida ? 'Conc.' : 'Pendente'}</span>`;
+    const desc = tarefa.ta_descricao ? `<div class="task-row-desc">${tarefa.ta_descricao}</div>` : '';
+
+    return `<div class="task-row-item${concluida ? ' concluida' : ''}">
+  <button class="task-check${concluida ? ' checked' : ''}" title="${concluida ? 'Voltar para pendente' : 'Marcar como concluida'}" onclick="alternarStatus(${tarefa.ta_id}, '${tarefa.ta_status}')">
+    ${concluida ? '<i class="fas fa-check"></i>' : ''}
+  </button>
+  <div class="task-row-body">
+    <div class="task-row-top">
+      <span class="task-row-title${concluida ? ' text-decoration-line-through text-muted' : ''}">${tarefa.ta_titulo || '-'}</span>
+      ${discPill}${prazo}${statusBadge}
+    </div>
+    ${desc}
+  </div>
+  <div class="task-row-actions">
+    <button class="btn-icon" title="Editar" onclick="editarTarefaPorId(${tarefa.ta_id})"><i class="fas fa-pen"></i></button>
+    <button class="btn-icon danger" title="Excluir" onclick="excluirTarefa(${tarefa.ta_id})"><i class="fas fa-trash"></i></button>
+  </div>
+</div>`;
+  }).join('');
 }
 
 function montarHistoricoHtml(historico) {

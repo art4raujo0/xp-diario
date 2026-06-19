@@ -113,7 +113,8 @@ async function listarTarefasEHistorico(usuarioId) {
          t.ta_criado_em,
          t.ta_atualizado_em,
          t.ta_disciplina_id,
-         d.di_disciplina
+         d.di_disciplina,
+         d.di_cor
        FROM tarefa t
        LEFT JOIN disciplina d ON d.di_id = t.ta_disciplina_id
        WHERE t.ta_usuario_id = $1

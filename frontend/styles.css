@@ -1780,3 +1780,146 @@ textarea.form-control {
   .timer-ring { width: 230px; height: 230px; }
   .timer-time { font-size: 3rem; }
 }
+
+/* ===== TAREFAS — card rows ===== */
+.task-row-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.12s;
+}
+.task-row-item:last-child { border-bottom: 0; }
+.task-row-item:hover { background: #fafbff; border-radius: 14px; }
+.task-row-item.concluida { opacity: 0.72; }
+
+.task-check {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 2.5px solid #d1d5db;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+.task-check.checked {
+  border-color: #16a34a;
+  background: #16a34a;
+  color: #fff;
+}
+.task-check:hover { border-color: var(--purple); }
+
+.task-row-body { flex: 1; min-width: 0; }
+
+.task-row-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.task-row-title {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--text);
+  flex: 1;
+  min-width: 120px;
+}
+
+.task-row-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 700;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.disc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.task-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.task-row-actions {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.task-row-item:hover .task-row-actions { opacity: 1; }
+
+/* ===== SESSIONS — foco médio + combo ===== */
+.foco-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+.foco-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.foco-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #a78bfa, #f0a5ff);
+  border-radius: 99px;
+  transition: width 0.8s ease;
+}
+.foco-bar-label {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #fff;
+  white-space: nowrap;
+  min-width: 36px;
+  text-align: right;
+}
+
+.combo-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.combo-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.10);
+  display: grid;
+  place-items: center;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.4);
+  transition: background 0.3s, border-color 0.3s;
+}
+.combo-dot.done {
+  background: linear-gradient(135deg, #a78bfa, #f0a5ff);
+  border-color: #f0a5ff;
+  color: #fff;
+}

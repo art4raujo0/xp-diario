@@ -60,6 +60,13 @@ function fecharGameModal(id) {
   if (modal) modal.hide();
 }
 
+function hexToRgba(hex, alpha) {
+  const r = parseInt((hex || '#94a3b8').slice(1, 3), 16);
+  const g = parseInt((hex || '#94a3b8').slice(3, 5), 16);
+  const b = parseInt((hex || '#94a3b8').slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 function nivelPorXp(xp) {
   return Math.max(1, Math.floor(Number(xp || 0) / 100) + 1);
 }

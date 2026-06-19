@@ -100,7 +100,12 @@ function atualizarPainelSessao() {
   duracaoDetalhe.textContent = formatarDuracaoSegundos(totalSegundos);
   minutosSalvos.textContent = `${minutosInteiros} min`;
   xpSessao.textContent = `${minutosInteiros} XP`;
-  foco.textContent = `${Math.max(80, 100 - Math.floor(totalSegundos / 300))}%`;
+  const focoValor = Math.max(80, 100 - Math.floor(totalSegundos / 300));
+  foco.textContent = `${focoValor}%`;
+  const focoFill = document.getElementById('foco-medio-fill');
+  const focoLabel = document.getElementById('foco-medio-label');
+  if (focoFill) focoFill.style.width = `${focoValor}%`;
+  if (focoLabel) focoLabel.textContent = `${focoValor}%`;
   balao.textContent = 'Continue assim! Seu XP esta subindo.';
   btnAbrir.classList.add('d-none');
   btnParar.classList.remove('d-none');
@@ -224,6 +229,39 @@ async function encerrarSessao() {
   await carregarUsuarioAtual();
 }
 
+function renderCombo(historico) {
+  const hoje = new Date().toISOString().slice(0, 10);
+  const diasComSessao = new Set((historico || []).map((a) => String(a.at_data || '').slice(0, 10)));
+  let streak = 0;
+  for (let i = 0; i < 30; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    if (diasComSessao.has(key)) streak++;
+    else break;
+  }
+
+  const comboValor = document.getElementById('combo-valor');
+  const comboMelhor = document.getElementById('combo-melhor');
+  const comboDots = document.getElementById('combo-dots');
+  if (comboValor) comboValor.textContent = `${streak} ${streak === 1 ? 'dia' : 'dias'}`;
+
+  const semana = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    semana.push(d.toISOString().slice(0, 10));
+  }
+  if (comboDots) {
+    const dias = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+    comboDots.innerHTML = semana.map((d, i) => {
+      const done = diasComSessao.has(d);
+      return `<div class="combo-dot${done ? ' done' : ''}" title="${d}">${done ? '<i class="fas fa-check" style="font-size:0.55rem;"></i>' : dias[i]}</div>`;
+    }).join('');
+  }
+  if (comboMelhor && streak > 0) comboMelhor.textContent = `Melhor: ${streak} dias`;
+}
+
 async function carregarHistorico() {
   const lista = document.getElementById('lista');
   const res = await fetch(API_ATIVIDADES, { headers: cabecalhos() });
@@ -234,6 +272,7 @@ async function carregarHistorico() {
 
   const dados = await res.json();
   const historico = dados.historico || [];
+  renderCombo(historico);
   if (!historico.length) {
     lista.innerHTML = `
       <div class="p-5 text-center text-muted">
