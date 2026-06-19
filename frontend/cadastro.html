@@ -75,12 +75,20 @@
               <button type="button" class="toggle-senha" onclick="toggleSenha('senha', this)" tabindex="-1"><i class="fas fa-eye"></i></button>
             </div>
           </div>
-          <div class="mb-4">
+          <div class="mb-3">
             <label for="confirmarSenha" class="form-label">Confirmar senha</label>
             <div class="input-wrapper">
               <input type="password" class="form-control" id="confirmarSenha" placeholder="Digite sua senha novamente" required>
               <button type="button" class="toggle-senha" onclick="toggleSenha('confirmarSenha', this)" tabindex="-1"><i class="fas fa-eye"></i></button>
             </div>
+          </div>
+          <div class="mb-3">
+            <label for="objetivo_estudo" class="form-label">Objetivo de estudo <span class="text-muted fw-normal small">(opcional)</span></label>
+            <input type="text" class="form-control" id="objetivo_estudo" maxlength="255" placeholder="Ex: Passar no vestibular, aprender programa&ccedil;&atilde;o...">
+          </div>
+          <div class="mb-4">
+            <label for="horas_disponiveis" class="form-label">Horas dispon&iacute;veis por dia <span class="text-muted fw-normal small">(opcional)</span></label>
+            <input type="number" class="form-control" id="horas_disponiveis" min="0.5" max="24" step="0.5" placeholder="Ex: 2, 4, 6...">
           </div>
           <button type="submit" class="btn btn-primary w-100 py-3" id="btn-cadastrar"><i class="fas fa-star me-2"></i>Criar conta</button>
           <p class="small text-muted text-center fw-bold mt-4 mb-0">Ja tem uma conta? <a href="/login" class="small-link">Entrar</a></p>

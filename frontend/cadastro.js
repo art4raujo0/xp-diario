@@ -65,10 +65,12 @@ document.getElementById('form-cadastro').addEventListener('submit', async (event
     btnCadastrar.disabled = true;
 
     try {
+        const objetivoEstudo = (document.getElementById('objetivo_estudo')?.value || '').trim() || undefined;
+        const horasDisponiveis = document.getElementById('horas_disponiveis')?.value ? Number(document.getElementById('horas_disponiveis').value) : undefined;
         const resposta = await fetch('/api/cadastro', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, email, senha, confirmarSenha, us_tipo: tipoSelecionado })
+            body: JSON.stringify({ nome, email, senha, confirmarSenha, us_tipo: tipoSelecionado, objetivo_estudo: objetivoEstudo, horas_disponiveis: horasDisponiveis })
         });
 
         const dados = await resposta.json();

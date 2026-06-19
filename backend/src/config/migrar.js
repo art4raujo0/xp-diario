@@ -21,7 +21,9 @@ async function executarMigracoes() {
        ADD COLUMN IF NOT EXISTS us_pontos_total INTEGER NOT NULL DEFAULT 0 CHECK (us_pontos_total >= 0),
        ADD COLUMN IF NOT EXISTS us_tipo VARCHAR(20) NOT NULL DEFAULT 'aluno',
        ADD COLUMN IF NOT EXISTS us_reset_token_hash VARCHAR(64) NULL,
-       ADD COLUMN IF NOT EXISTS us_reset_expira_em TIMESTAMP NULL`,
+       ADD COLUMN IF NOT EXISTS us_reset_expira_em TIMESTAMP NULL,
+       ADD COLUMN IF NOT EXISTS us_objetivo_estudo VARCHAR(255) NULL,
+       ADD COLUMN IF NOT EXISTS us_horas_disponiveis NUMERIC(4,1) NULL`,
 
     `DO $$
      BEGIN

@@ -11,6 +11,9 @@ router.post('/', async (req, res) => {
   const senha = req.body.senha;
   const confirmarSenha = req.body.confirmarSenha;
   const tipo = ['professor', 'aluno'].includes(req.body.us_tipo) ? req.body.us_tipo : 'aluno';
+  const objetivoEstudo = req.body.objetivo_estudo ? String(req.body.objetivo_estudo).trim().slice(0, 255) : null;
+  const horasDisponiveisRaw = req.body.horas_disponiveis ? Number(req.body.horas_disponiveis) : null;
+  const horasDisponiveis = horasDisponiveisRaw !== null && horasDisponiveisRaw > 0 && horasDisponiveisRaw <= 24 ? horasDisponiveisRaw : null;
 
   if (!nome || !email || !senha || !confirmarSenha) {
     return res.status(400).json({ erro: 'Todos os campos são obrigatórios.' });
@@ -45,10 +48,10 @@ router.post('/', async (req, res) => {
 
     const senhaHash = await bcrypt.hash(senha, 10);
     const novoUsuario = await pool.query(
-      `INSERT INTO usuarios (us_nome, us_email, us_senha_hash, us_tipo)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO usuarios (us_nome, us_email, us_senha_hash, us_tipo, us_objetivo_estudo, us_horas_disponiveis)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING us_id, us_nome, us_email, us_tipo`,
-      [nome, email, senhaHash, tipo]
+      [nome, email, senhaHash, tipo, objetivoEstudo, horasDisponiveis]
     );
 
     const usuario = novoUsuario.rows[0];
