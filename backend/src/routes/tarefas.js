@@ -120,6 +120,7 @@ async function listarTarefasEHistorico(usuarioId) {
        WHERE t.ta_usuario_id = $1
        ORDER BY
          CASE WHEN t.ta_status = 'pendente' THEN 0 ELSE 1 END,
+         CASE WHEN t.ta_prioridade = 'alta' THEN 0 WHEN t.ta_prioridade = 'media' THEN 1 ELSE 2 END,
          t.ta_prazo ASC NULLS LAST,
          t.ta_atualizado_em DESC`,
       [usuarioId]
@@ -182,6 +183,8 @@ router.post("/", autenticar, async (req, res) => {
     const descricao = normalizarTexto(req.body.ta_descricao);
     const prazo = normalizarData(req.body.ta_prazo);
     const hoje = obterDataHojeLocal();
+    const prioridadeRaw = req.body.ta_prioridade ? String(req.body.ta_prioridade).trim().toLowerCase() : null;
+    const prioridade = ['alta', 'media', 'baixa'].includes(prioridadeRaw) ? prioridadeRaw : null;
 
     if (!titulo) {
       return res.status(400).json({ erro: "Titulo da tarefa e obrigatorio" });
@@ -205,8 +208,8 @@ router.post("/", autenticar, async (req, res) => {
 
     const result = await client.query(
       `INSERT INTO tarefa
-       (ta_usuario_id, ta_titulo, ta_descricao, ta_prazo, ta_disciplina, ta_disciplina_id, ta_status, ta_concluida)
-       VALUES ($1, $2, $3, $4, $5, $6, 'pendente', FALSE)
+       (ta_usuario_id, ta_titulo, ta_descricao, ta_prazo, ta_disciplina, ta_disciplina_id, ta_status, ta_concluida, ta_prioridade)
+       VALUES ($1, $2, $3, $4, $5, $6, 'pendente', FALSE, $7)
        RETURNING *`,
       [
         usuarioId,
@@ -214,7 +217,8 @@ router.post("/", autenticar, async (req, res) => {
         descricao || null,
         prazo,
         disciplina ? disciplina.di_id : null,
-        disciplina ? disciplina.di_id : null
+        disciplina ? disciplina.di_id : null,
+        prioridade
       ]
     );
 
@@ -255,6 +259,8 @@ router.put("/:id", autenticar, async (req, res) => {
     const titulo = normalizarTexto(req.body.ta_titulo);
     const descricao = normalizarTexto(req.body.ta_descricao);
     const prazo = normalizarData(req.body.ta_prazo);
+    const prioridadeRaw = req.body.ta_prioridade ? String(req.body.ta_prioridade).trim().toLowerCase() : null;
+    const prioridade = ['alta', 'media', 'baixa'].includes(prioridadeRaw) ? prioridadeRaw : null;
 
     if (!Number.isInteger(tarefaId) || tarefaId <= 0) {
       return res.status(400).json({ erro: "Tarefa invalida" });
@@ -308,8 +314,9 @@ router.put("/:id", autenticar, async (req, res) => {
            ta_prazo = $3,
            ta_disciplina = $4,
            ta_disciplina_id = $5,
+           ta_prioridade = $6,
            ta_atualizado_em = NOW()
-       WHERE ta_id = $6 AND ta_usuario_id = $7
+       WHERE ta_id = $7 AND ta_usuario_id = $8
        RETURNING *`,
       [
         titulo,
@@ -317,6 +324,7 @@ router.put("/:id", autenticar, async (req, res) => {
         prazo,
         disciplina ? disciplina.di_id : null,
         disciplina ? disciplina.di_id : null,
+        prioridade,
         tarefaId,
         usuarioId
       ]

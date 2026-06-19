@@ -119,7 +119,8 @@ async function executarMigracoes() {
        ADD COLUMN IF NOT EXISTS ta_status VARCHAR(20) NOT NULL DEFAULT 'pendente',
        ADD COLUMN IF NOT EXISTS ta_concluida_em TIMESTAMP NULL,
        ADD COLUMN IF NOT EXISTS ta_criado_em TIMESTAMP NOT NULL DEFAULT NOW(),
-       ADD COLUMN IF NOT EXISTS ta_atualizado_em TIMESTAMP NOT NULL DEFAULT NOW()`,
+       ADD COLUMN IF NOT EXISTS ta_atualizado_em TIMESTAMP NOT NULL DEFAULT NOW(),
+       ADD COLUMN IF NOT EXISTS ta_prioridade VARCHAR(10) NULL`,
 
     `UPDATE tarefa SET ta_disciplina_id = ta_disciplina WHERE ta_disciplina_id IS NULL AND ta_disciplina IS NOT NULL`,
     `UPDATE tarefa SET ta_disciplina = ta_disciplina_id WHERE ta_disciplina IS NULL AND ta_disciplina_id IS NOT NULL`,

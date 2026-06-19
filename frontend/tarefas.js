@@ -38,6 +38,7 @@ function limparForm() {
   document.getElementById('titulo').value = '';
   document.getElementById('prazo').value = '';
   document.getElementById('materia').value = '';
+  document.getElementById('prioridade').value = '';
   document.getElementById('descricao').value = '';
   document.getElementById('btnSalvarTarefa').innerHTML = '<i class="fas fa-floppy-disk me-2"></i>Salvar Tarefa';
 }
@@ -78,6 +79,11 @@ function renderListaTarefas(tarefas) {
     const prazo = tarefa.ta_prazo
       ? `<span class="task-date"><i class="fas fa-calendar-days"></i>${formatarData(tarefa.ta_prazo)}</span>`
       : '';
+    const prioridadeMap = { alta: ['🔴', '#ef4444'], media: ['🟡', '#f59e0b'], baixa: ['🟢', '#16a34a'] };
+    const prioMap = prioridadeMap[tarefa.ta_prioridade];
+    const prioridadeBadge = prioMap
+      ? `<span style="font-size:.72rem;font-weight:700;color:${prioMap[1]};background:${prioMap[1]}18;padding:3px 8px;border-radius:999px;">${prioMap[0]} ${tarefa.ta_prioridade.charAt(0).toUpperCase() + tarefa.ta_prioridade.slice(1)}</span>`
+      : '';
     const statusBadge = `<span class="task-badge ${tarefa.ta_status}"><i class="fas ${concluida ? 'fa-circle-check' : 'fa-hourglass-half'}"></i>${concluida ? 'Conc.' : 'Pendente'}</span>`;
     const desc = tarefa.ta_descricao ? `<div class="task-row-desc">${tarefa.ta_descricao}</div>` : '';
 
@@ -88,7 +94,7 @@ function renderListaTarefas(tarefas) {
   <div class="task-row-body">
     <div class="task-row-top">
       <span class="task-row-title${concluida ? ' text-decoration-line-through text-muted' : ''}">${tarefa.ta_titulo || '-'}</span>
-      ${discPill}${prazo}${statusBadge}
+      ${prioridadeBadge}${discPill}${prazo}${statusBadge}
     </div>
     ${desc}
   </div>
@@ -182,6 +188,7 @@ async function salvarTarefa() {
   const prazo = dataBrParaIso(document.getElementById('prazo').value);
   const materiaId = document.getElementById('materia').value;
   const descricao = document.getElementById('descricao').value.trim();
+  const prioridade = document.getElementById('prioridade').value;
   if (!titulo) {
     exibirMensagem('Titulo da tarefa e obrigatorio.', 'danger');
     return;
@@ -190,7 +197,7 @@ async function salvarTarefa() {
   const resposta = await fetch(id ? `${API_TAREFAS}/${id}` : API_TAREFAS, {
     method: id ? 'PUT' : 'POST',
     headers: cabecalhos(),
-    body: JSON.stringify({ ta_titulo: titulo, ta_descricao: descricao || undefined, ta_prazo: prazo || undefined, ta_disciplina_id: materiaId || undefined })
+    body: JSON.stringify({ ta_titulo: titulo, ta_descricao: descricao || undefined, ta_prazo: prazo || undefined, ta_disciplina_id: materiaId || undefined, ta_prioridade: prioridade || undefined })
   });
 
   const dados = await resposta.json();
@@ -213,6 +220,7 @@ function editarTarefaPorId(id) {
   document.getElementById('titulo').value = tarefa.ta_titulo || '';
   document.getElementById('prazo').value = formatarDataBr(tarefa.ta_prazo);
   document.getElementById('materia').value = tarefa.ta_disciplina_id || '';
+  document.getElementById('prioridade').value = tarefa.ta_prioridade || '';
   document.getElementById('descricao').value = tarefa.ta_descricao || '';
   document.getElementById('btnSalvarTarefa').innerHTML = '<i class="fas fa-floppy-disk me-2"></i>Atualizar Tarefa';
   abrirGameModal('modalTarefa');
