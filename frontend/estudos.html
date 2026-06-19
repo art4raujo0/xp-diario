@@ -81,6 +81,7 @@
             <div class="subject-row"><span class="pixel-icon icon-purple"><i class="fas fa-hourglass-start"></i></span><strong>In&iacute;cio</strong><span id="sessao-inicio-detalhe">--:--</span></div>
             <div class="subject-row"><span class="pixel-icon icon-yellow"><i class="fas fa-hourglass-end"></i></span><strong>Dura&ccedil;&atilde;o</strong><span id="sessao-duracao-detalhe">00:00</span></div>
             <div class="subject-row"><span class="pixel-icon icon-green"><i class="fas fa-floppy-disk"></i></span><strong>Status</strong><span id="sessao-status-detalhe">N&atilde;o iniciada</span></div>
+            <div class="subject-row" id="row-tipo-estudo" style="display:none"><span class="pixel-icon icon-blue"><i class="fas fa-tag"></i></span><strong>Tipo</strong><span id="sessao-tipo-detalhe" class="text-muted small"></span></div>
             <div class="subject-row" id="row-descricao" style="display:none"><span class="pixel-icon icon-purple"><i class="fas fa-pencil"></i></span><strong>Objetivo</strong><span id="sessao-descricao-detalhe" class="text-muted small"></span></div>
             <div class="subject-row" id="row-tarefas" style="display:none"><span class="pixel-icon icon-green"><i class="fas fa-list-check"></i></span><strong>Tarefas</strong><span id="sessao-tarefas-detalhe" class="fw-bold"></span></div>
             <div class="subject-row">
@@ -133,6 +134,17 @@
             <label class="form-label" for="sessaoMateria">Disciplina</label>
             <select id="sessaoMateria" class="form-select">
               <option value="">Carregando...</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="sessaoTipoEstudo">Tipo de estudo <span class="text-muted fw-normal small">(opcional)</span></label>
+            <select id="sessaoTipoEstudo" class="form-select">
+              <option value="">Selecione o tipo...</option>
+              <option value="leitura">Leitura</option>
+              <option value="revisao">Revis&atilde;o</option>
+              <option value="exercicios">Exerc&iacute;cios</option>
+              <option value="videoaula">Videoaula</option>
+              <option value="pratica">Pr&aacute;tica</option>
             </select>
           </div>
           <div class="mb-3">

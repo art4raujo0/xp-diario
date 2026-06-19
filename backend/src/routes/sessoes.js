@@ -5,6 +5,8 @@ const { desbloquearConquistasElegiveis } = require('../services/conquistasServic
 
 const router = express.Router();
 
+const TIPOS_ESTUDO_VALIDOS = ['leitura', 'revisao', 'exercicios', 'videoaula', 'pratica'];
+
 function mapSessao(row) {
   if (!row) return null;
   return {
@@ -17,7 +19,8 @@ function mapSessao(row) {
     segundos_correntes: Number(row.se_segundos_correntes != null ? row.se_segundos_correntes : (row.se_segundos_focados || 0)),
     ultimo_inicio: row.se_ultimo_inicio,
     descricao: row.se_descricao || null,
-    tarefas: Number(row.se_tarefas || 0)
+    tarefas: Number(row.se_tarefas || 0),
+    tipo_estudo: row.se_tipo_estudo || null
   };
 }
 
@@ -108,6 +111,8 @@ router.post('/iniciar', autenticar, async (req, res) => {
     const disciplina = req.body.disciplina ? Number(req.body.disciplina) : null;
     const descricao = req.body.descricao ? String(req.body.descricao).trim().slice(0, 255) : null;
     const tarefas = Number.isInteger(Number(req.body.tarefas)) ? Math.max(0, Number(req.body.tarefas)) : 0;
+    const tipoEstudoRaw = req.body.tipo_estudo ? String(req.body.tipo_estudo).trim().toLowerCase() : null;
+    const tipoEstudo = tipoEstudoRaw && TIPOS_ESTUDO_VALIDOS.includes(tipoEstudoRaw) ? tipoEstudoRaw : null;
 
     const ativa = await pool.query(
       `SELECT * FROM sessao_estudo
@@ -121,10 +126,10 @@ router.post('/iniciar', autenticar, async (req, res) => {
     }
 
     const result = await pool.query(
-      `INSERT INTO sessao_estudo (se_usuario_id, se_disciplina, se_status, se_ultimo_inicio, se_descricao, se_tarefas)
-       VALUES ($1, $2, 'iniciada', NOW(), $3, $4)
+      `INSERT INTO sessao_estudo (se_usuario_id, se_disciplina, se_status, se_ultimo_inicio, se_descricao, se_tarefas, se_tipo_estudo)
+       VALUES ($1, $2, 'iniciada', NOW(), $3, $4, $5)
        RETURNING *`,
-      [req.usuario.id, Number.isInteger(disciplina) && disciplina > 0 ? disciplina : null, descricao, tarefas]
+      [req.usuario.id, Number.isInteger(disciplina) && disciplina > 0 ? disciplina : null, descricao, tarefas, tipoEstudo]
     );
 
     res.status(201).json({ sucesso: true, sessao: mapSessao(result.rows[0]) });

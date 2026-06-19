@@ -112,6 +112,7 @@ function atualizarPainelSessao() {
 
   const rowDesc = document.getElementById('row-descricao');
   const rowTar = document.getElementById('row-tarefas');
+  const rowTipo = document.getElementById('row-tipo-estudo');
   if (rowDesc) {
     rowDesc.style.display = sessaoAtual.descricao ? '' : 'none';
     const el = document.getElementById('sessao-descricao-detalhe');
@@ -122,13 +123,21 @@ function atualizarPainelSessao() {
     const el = document.getElementById('sessao-tarefas-detalhe');
     if (el) el.textContent = sessaoAtual.tarefas;
   }
+  if (rowTipo) {
+    const tipoLabel = { leitura: 'Leitura', revisao: 'Revisão', exercicios: 'Exercícios', videoaula: 'Videoaula', pratica: 'Prática' };
+    rowTipo.style.display = sessaoAtual.tipo_estudo ? '' : 'none';
+    const el = document.getElementById('sessao-tipo-detalhe');
+    if (el) el.textContent = tipoLabel[sessaoAtual.tipo_estudo] || sessaoAtual.tipo_estudo || '';
+  }
 }
 
 function abrirModalSessao() {
   const desc = document.getElementById('sessaoDescricao');
   const tar = document.getElementById('sessaoTarefas');
+  const tipo = document.getElementById('sessaoTipoEstudo');
   if (desc) desc.value = '';
   if (tar) tar.value = '0';
+  if (tipo) tipo.value = '';
   abrirGameModal('modalSessaoInicio');
 }
 
@@ -163,6 +172,7 @@ async function carregarSessaoAtiva() {
       disciplina: sessao.disciplina,
       descricao: sessao.descricao || null,
       tarefas: Number(sessao.tarefas || 0),
+      tipo_estudo: sessao.tipo_estudo || null,
       inicio_label: sessao.inicio
         ? new Date(sessao.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         : '--:--',
@@ -187,12 +197,13 @@ async function iniciarSessao() {
 
   const descricao = (document.getElementById('sessaoDescricao')?.value || '').trim();
   const tarefas = Math.max(0, Number(document.getElementById('sessaoTarefas')?.value || 0));
+  const tipoEstudo = (document.getElementById('sessaoTipoEstudo')?.value || '').trim() || null;
 
   try {
     const res = await fetch(`${API_SESSOES}/iniciar`, {
       method: 'POST',
       headers: cabecalhos(),
-      body: JSON.stringify({ disciplina, descricao: descricao || null, tarefas })
+      body: JSON.stringify({ disciplina, descricao: descricao || null, tarefas, tipo_estudo: tipoEstudo })
     });
     const dados = await res.json();
     if (!res.ok) {

@@ -184,7 +184,8 @@ async function executarMigracoes() {
      $$`,
     `ALTER TABLE IF EXISTS sessao_estudo
        ADD COLUMN IF NOT EXISTS se_descricao TEXT NULL,
-       ADD COLUMN IF NOT EXISTS se_tarefas INTEGER NOT NULL DEFAULT 0`,
+       ADD COLUMN IF NOT EXISTS se_tarefas INTEGER NOT NULL DEFAULT 0,
+       ADD COLUMN IF NOT EXISTS se_tipo_estudo VARCHAR(30) NULL`,
     `CREATE INDEX IF NOT EXISTS idx_sessao_estudo_usuario_status ON sessao_estudo (se_usuario_id, se_status, se_inicio DESC)`,
 
     `CREATE TABLE IF NOT EXISTS notificacoes_config (
