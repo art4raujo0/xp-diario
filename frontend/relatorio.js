@@ -128,6 +128,47 @@ async function buscarRelatorio() {
   }
 }
 
+function renderizarEvolucaoDiaria(evolucao) {
+  const section = document.getElementById('evolucao-diaria-section');
+  const container = document.getElementById('evolucao-bars');
+  if (!section || !container) return;
+  if (!evolucao || evolucao.length === 0) { section.style.display = 'none'; return; }
+
+  const maxMin = Math.max(...evolucao.map(e => e.minutos), 1);
+  container.innerHTML = evolucao.map(e => {
+    const h = Math.round((e.minutos / maxMin) * 72);
+    const label = e.data ? e.data.slice(5) : '';
+    return `<div class="d-flex flex-column align-items-center" style="min-width:32px;">
+      <div style="height:${h}px;width:20px;background:linear-gradient(180deg,#6d5dfb,#a78bfa);border-radius:4px 4px 0 0;" title="${e.minutos} min"></div>
+      <span style="font-size:0.6rem;color:#94a3b8;margin-top:2px;">${label}</span>
+    </div>`;
+  }).join('');
+  section.style.removeProperty('display');
+}
+
+function renderizarComparativoMetas(comparativo) {
+  const section = document.getElementById('comparativo-metas-section');
+  const lista = document.getElementById('comparativo-metas-lista');
+  if (!section || !lista) return;
+  if (!comparativo || comparativo.length === 0) { section.style.display = 'none'; return; }
+
+  lista.innerHTML = comparativo.map(m => {
+    const pct = m.percentual;
+    const corBarra = pct >= 100 ? '#16a34a' : pct >= 50 ? '#f59e0b' : '#ef4444';
+    return `<div class="mb-3">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <span class="fw-semibold" style="font-size:0.9rem;">${m.nome}</span>
+        <span class="small text-muted">${formatarTempo(m.estudado_min)} / ${formatarTempo(m.meta_min)}</span>
+      </div>
+      <div style="background:#f1f5f9;border-radius:99px;height:10px;overflow:hidden;">
+        <div style="height:10px;width:${pct}%;background:${corBarra};border-radius:99px;transition:width .4s;"></div>
+      </div>
+      <span class="small fw-bold" style="color:${corBarra};">${pct}% concluído</span>
+    </div>`;
+  }).join('');
+  section.style.removeProperty('display');
+}
+
 function renderizarRelatorio(dados) {
   dadosRelatorio = dados;
   document.getElementById('btns-exportar').style.removeProperty('display');
@@ -158,6 +199,11 @@ function renderizarRelatorio(dados) {
         <p class="mb-0 fw-semibold">Nenhum estudo registrado no período selecionado.</p>
         <p class="small mt-1">Registre uma sessão de estudo para ver seu relatório aqui.</p>
       </div>`;
+    const ev = document.getElementById('evolucao-diaria-section');
+    const cm = document.getElementById('comparativo-metas-section');
+    if (ev) ev.style.display = 'none';
+    if (cm) cm.style.display = 'none';
+    renderizarComparativoMetas(dados.comparativo_metas);
     return;
   }
 
@@ -207,6 +253,9 @@ function renderizarRelatorio(dados) {
         <tbody>${linhas}</tbody>
       </table>
     </div>`;
+
+  renderizarEvolucaoDiaria(dados.evolucao_diaria);
+  renderizarComparativoMetas(dados.comparativo_metas);
 }
 
 async function renderizarCardsLateraisRelatorio(resumo) {
