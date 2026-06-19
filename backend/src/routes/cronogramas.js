@@ -143,6 +143,38 @@ async function existeCronogramaDuplicado({ usuarioId, disciplinaId, data, horari
   return result.rowCount > 0;
 }
 
+async function existeSobreposicaoHorario({ usuarioId, data, horarioInicio, duracaoMin, ignorarId }) {
+  const params = [usuarioId, data, horarioInicio, duracaoMin];
+  let filtroId = "";
+
+  if (ignorarId) {
+    params.push(ignorarId);
+    filtroId = `AND cr_id <> $${params.length}`;
+  }
+
+  const result = await pool.query(
+    `SELECT cr_id
+     FROM cronograma_estudo
+     WHERE cr_usuario_id = $1
+       AND cr_data = $2
+       AND (
+         EXTRACT(HOUR FROM cr_horario_inicio) * 60 + EXTRACT(MINUTE FROM cr_horario_inicio)
+       ) < (
+         EXTRACT(HOUR FROM $3::time) * 60 + EXTRACT(MINUTE FROM $3::time) + $4
+       )
+       AND (
+         EXTRACT(HOUR FROM cr_horario_inicio) * 60 + EXTRACT(MINUTE FROM cr_horario_inicio) + cr_duracao_min
+       ) > (
+         EXTRACT(HOUR FROM $3::time) * 60 + EXTRACT(MINUTE FROM $3::time)
+       )
+       ${filtroId}
+     LIMIT 1`,
+    params
+  );
+
+  return result.rowCount > 0;
+}
+
 function tratarErroDependenciaBanco(error, res) {
   if (error && error.code === "42P01") {
     return res.status(500).json({
@@ -218,6 +250,11 @@ router.post("/", autenticar, async (req, res) => {
       });
     }
 
+    const sobreposicao = await existeSobreposicaoHorario({ usuarioId, data, horarioInicio, duracaoMin });
+    if (sobreposicao) {
+      return res.status(409).json({ erro: "Este horário conflita com outro cronograma já cadastrado" });
+    }
+
     const result = await pool.query(
       `INSERT INTO cronograma_estudo
        (cr_usuario_id, cr_disciplina, cr_data, cr_horario_inicio, cr_duracao_min)
@@ -278,6 +315,11 @@ router.put("/:id", autenticar, async (req, res) => {
       return res.status(409).json({
         erro: "Já existe um cronograma para esta matéria, data e horário"
       });
+    }
+
+    const sobreposicao = await existeSobreposicaoHorario({ usuarioId, data, horarioInicio, duracaoMin, ignorarId: id });
+    if (sobreposicao) {
+      return res.status(409).json({ erro: "Este horário conflita com outro cronograma já cadastrado" });
     }
 
     const result = await pool.query(
