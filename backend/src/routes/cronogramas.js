@@ -96,8 +96,8 @@ function validarCronograma(body) {
     return { erro: "Horário de início inválido" };
   }
 
-  if (!Number.isInteger(duracaoMin) || duracaoMin <= 0) {
-    return { erro: "Duração da sessão deve ser maior que zero" };
+  if (!Number.isInteger(duracaoMin) || duracaoMin < 30) {
+    return { erro: "Duração mínima do cronograma é de 30 minutos" };
   }
 
   return {
